@@ -1,0 +1,24 @@
+parameters:
+    mobile_detect.redirect: ~
+    
+    mobile_detect.mobile_detector.class: SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
+    mobile_detect.request_listener.class: SunCat\MobileDetectBundle\EventListener\RequestListener
+    mobile_detect.twig.extension.class: SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension
+
+services:
+    mobile_detect.mobile_detector:
+        class: %mobile_detect.mobile_detector.class%
+        arguments: [ '@request=' ]
+    mobile_detect.request_listener:
+        class: %mobile_detect.request_listener.class%
+        arguments: [ '@mobile_detect.mobile_detector', '@request', %mobile_detect.redirect% ]
+        scope: request
+        tags: 
+            - { name: kernel.event_listener, event: kernel.request, method: handleRequest }
+            - { name: kernel.event_listener, event: kernel.response, method: handleResponse }
+    mobile_detect.twig.extension:
+      class: %mobile_detect.twig.extension.class%
+      arguments: [ "@mobile_detect.mobile_detector" ]
+      strict: false
+      tags: 
+          - { name: twig.extension }
