@@ -19,5 +19,6 @@
         "psr-0": {
             "SunCat\\MobileDetectBundle": ""
         }
-    }
+    },
+    "target-dir": "SunCat/MobileDetectBundle"
 }
