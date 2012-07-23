@@ -1,19 +1,19 @@
 {
     "name": "suncat/mobile-detect-bundle",
     "description": "Symfony2 bundle for detect mobile devices, managing mobile view types, redirect to mobile version.",
-    "keywords": ["mobile", "mobile detect", "mobile detector", "mobile device", "symfony mobile"],
+    "keywords": ["mobile", "mobile detect", "mobile detector", "mobile device", "symfony mobile", "mobile view managing", "mobile redirect"],
     "homepage": "https://github.com/suncat2000/MobileDetectBundle",
     "type": "symfony-bundle",
+    "license": "MIT",    
     "authors": [
         {
             "name": "Nikolay Ivlev",
-            "email": "nikolay.kotovsky@gmail.com",
-            "homepage": "http://www.creotika.ru"
+            "email": "nikolay.kotovsky@gmail.com"
         }
     ],
     "require": {
         "php": ">=5.3.0",
-	"suncat/php-mobile-detect": "2.0.9"
+	"suncat/php-mobile-detect": ">=2.0.9"
     },
     "autoload": {
         "psr-0": {
