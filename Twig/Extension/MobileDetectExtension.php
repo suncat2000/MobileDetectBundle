@@ -15,10 +15,10 @@ class MobileDetectExtension extends Twig_Extension
     private $mobileDetector;
 
     /**
-     * Constructor
-     * @param \SunCat\MobileDetectBundle\DeviceDetector\MobileDetector $mobileDetector 
+     * Set mobile detector
+     * @param MobileDetector $mobileDetector 
      */
-    public function __construct(MobileDetector $mobileDetector)
+    public function setMobileDetector(MobileDetector $mobileDetector)
     {
         $this->mobileDetector = $mobileDetector;
     }
