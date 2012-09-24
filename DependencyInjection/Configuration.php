@@ -42,6 +42,12 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('switch_device_view')
+                    ->isRequired()
+                    ->children()
+                        ->booleanNode('save_referer_path')->defaultTrue()->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

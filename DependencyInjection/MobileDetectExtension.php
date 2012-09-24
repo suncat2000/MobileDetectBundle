@@ -39,6 +39,7 @@ class MobileDetectExtension extends Extension
         }
 
         $container->setParameter('mobile_detect.redirect', $config['redirect']);
+        $container->setParameter('mobile_detect.switch_device_view.save_referer_path', $config['switch_device_view']['save_referer_path']);
     }
 
     /**

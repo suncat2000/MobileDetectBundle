@@ -18,6 +18,9 @@ class RequestListener
     protected $deviceView;
     protected $request;
 
+    protected $currentHost;
+    protected $pathUri;
+
     protected $redirectConf;
     protected $needModifyResponse = false;
     protected $modifyResponseClosure;
@@ -28,7 +31,7 @@ class RequestListener
      * @param Request        $request        Request object
      * @param type           $redirectConf   Config redirect
      */
-    public function __construct(MobileDetector $mobileDetector, Request $request, $redirectConf)
+    public function __construct(MobileDetector $mobileDetector, Request $request, $redirectConf, $fullPath = true)
     {
         // Mobile_Detect class & Request
         $this->mobileDetector = $mobileDetector;
@@ -38,6 +41,11 @@ class RequestListener
         // Configs mobile & tablet
         $this->redirectConf = $redirectConf;
         $this->currentHost = $this->request->getScheme() . '://' . $this->request->getHost();
+
+        // Path info
+        if (true === $fullPath) {
+            $this->pathUri = $this->request->getUriForPath($this->request->getPathInfo());
+        }
     }
 
     /**
@@ -218,7 +226,9 @@ class RequestListener
      */
     private function getRedirectResponseBySwitchParam()
     {
-        return $this->deviceView->getRedirectResponseBySwitchParam($this->currentHost);
+        $redirectUrl = null !== $this->pathUri ? $this->pathUri : $this->currentHost;
+
+        return $this->deviceView->getRedirectResponseBySwitchParam($redirectUrl);
     }
 
     /**

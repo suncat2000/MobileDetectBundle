@@ -12,6 +12,16 @@ This Bundle use [php-mobile-detect](https://github.com/suncat2000/php-mobile-det
 * Manages site views for the variuos mobile devices (`mobile`, `tablet`, `full`, `not_mobile`)
 * Redirects to mobile and tablet sites
 
+
+Switch device view
+============
+
+For switch device view, use `device_view` GET parameter:
+
+````
+http://site.com?device_view={full/mobile/tablet}
+````
+
 Installation
 ============
 
@@ -74,6 +84,7 @@ mobile_detect:
     redirect:
         mobile: ~
         tablet: ~
+    switch_device_view: ~
 ````
 
 ### Full conﬁguration
@@ -83,13 +94,18 @@ mobile_detect:
 mobile_detect:
     redirect:
         mobile:
-            is_enabled: true # default false
-            host: http://m.site.com # with scheme (http|https), default null, url validate
-            status_code: 301 # default 302
+            is_enabled: true            # default false
+            host: http://m.site.com     # with scheme (http|https), default null, url validate
+            status_code: 301            # default 302
         tablet:
-            is_enabled: true # default false
-            host: http://t.site.com # with scheme (http|https), default null, url validate
-            status_code: 301 # default 302
+            is_enabled: true            # default false
+            host: http://t.site.com     # with scheme (http|https), default null, url validate
+            status_code: 301            # default 302
+    switch_device_view:
+        save_referer_path: false        # default true
+                                        # true  redirectUrl = http://site.com/current/path
+                                        # false redirectUrl = http://site.com
+                                    
 ````
 
 PHP examples

@@ -1,5 +1,6 @@
 parameters:
     mobile_detect.redirect: ~
+    mobile_detect.switch_device_view.save_referer_path: ~
     
     mobile_detect.mobile_detector.class: SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
     mobile_detect.request_listener.class: SunCat\MobileDetectBundle\EventListener\RequestListener
@@ -11,7 +12,7 @@ services:
         arguments: [ '@request=' ]
     mobile_detect.request_listener:
         class: %mobile_detect.request_listener.class%
-        arguments: [ '@mobile_detect.mobile_detector', '@request=', %mobile_detect.redirect% ]
+        arguments: [ '@mobile_detect.mobile_detector', '@request=', %mobile_detect.redirect%, %mobile_detect.switch_device_view.save_referer_path% ]
         tags: 
             - { name: kernel.event_listener, event: kernel.request, method: handleRequest }
             - { name: kernel.event_listener, event: kernel.response, method: handleResponse }

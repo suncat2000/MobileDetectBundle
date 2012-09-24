@@ -139,17 +139,17 @@ class DeviceView
      * 
      * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie 
      */
-    public function getRedirectResponseBySwitchParam($host)
+    public function getRedirectResponseBySwitchParam($redirectUrl)
     {
         $statusCode = 302;
 
         switch ($this->getSwitchParamValue()) {
             case self::VIEW_MOBILE:
-                return new RedirectResponseWithCookie($host, $statusCode, $this->getCookie(self::VIEW_MOBILE));
+                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->getCookie(self::VIEW_MOBILE));
             case self::VIEW_TABLET:
-                return new RedirectResponseWithCookie($host, $statusCode, $this->getCookie(self::VIEW_TABLET));
+                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->getCookie(self::VIEW_TABLET));
             default:
-                return new RedirectResponseWithCookie($host, $statusCode, $this->getCookie(self::VIEW_FULL));
+                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->getCookie(self::VIEW_FULL));
         }
     }
 
