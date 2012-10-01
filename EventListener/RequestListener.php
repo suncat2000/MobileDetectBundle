@@ -5,18 +5,27 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 
 /**
- * Request listener 
+ * Request listener
  */
 class RequestListener
 {
+    CONST REDIRECT = 'redirect';
+    CONST NO_REDIRECT = 'no_redirect';
+    CONST REDIRECT_WITHOUT_PATH = 'redirect_without_path';
+
+    CONST MOBILE    = 'mobile';
+    CONST TABLET    = 'tablet';
+
     protected $mobileDetector;
     protected $deviceView;
     protected $request;
+    protected $router;
 
     protected $currentHost;
     protected $pathUri;
@@ -29,14 +38,16 @@ class RequestListener
      * Constructor
      * @param MobileDetector $mobileDetector Mobile detect object
      * @param Request        $request        Request object
+     * @param Router         $router         Router Object
      * @param type           $redirectConf   Config redirect
      */
-    public function __construct(MobileDetector $mobileDetector, Request $request, $redirectConf, $fullPath = true)
+    public function __construct(MobileDetector $mobileDetector, Request $request, Router $router, $redirectConf,  $fullPath = true)
     {
         // Mobile_Detect class & Request
         $this->mobileDetector = $mobileDetector;
         $this->deviceView = $this->mobileDetector->getDeviceView();
         $this->request = $request;
+        $this->router = $router;
 
         // Configs mobile & tablet
         $this->redirectConf = $redirectConf;
@@ -51,11 +62,12 @@ class RequestListener
     /**
      * Handle Request
      * @param GetResponseEvent $event
-     * 
+     *
      * @return null
      */
     public function handleRequest(GetResponseEvent $event)
     {
+
         // Set flag for response handle by GET switch param and type of view
         if ($this->deviceView->hasSwitchParam()) {
             $event->setResponse($this->getRedirectResponseBySwitchParam());
@@ -71,15 +83,18 @@ class RequestListener
 
         // Redirect to tablet version and set 'tablet' device view (in cookie)
         if ($this->hasTabletRedirect()) {
-            $event->setResponse($this->getTabletRedirectResponse());
-
+            if($response = $this->getTabletRedirectResponse()){
+                $event->setResponse($response);
+            }
             return;
         }
 
         // Redirect to mobile version and set 'mobile' device view (in cookie)
         if ($this->hasMobileRedirect()) {
-            $event->setResponse($this->getMobileRedirectResponse());
 
+            if($response = $this->getMobileRedirectResponse()){
+                $event->setResponse($response);
+            }
             return;
         }
 
@@ -104,16 +119,16 @@ class RequestListener
         // Set closure modifier not_mobile Response
         if ($this->needNotMobileResponseModify()) {
             $this->deviceView->setNotMobileView();
-
             return;
         }
+
     }
 
     /**
      * Handle Response
      * @param FilterResponseEvent $event
-     * 
-     * @return null 
+     *
+     * @return null
      */
     public function handleResponse(FilterResponseEvent $event)
     {
@@ -127,10 +142,11 @@ class RequestListener
 
     /**
      * Detect mobile redirect
-     * @return boolean 
+     * @return boolean
      */
     private function hasMobileRedirect()
     {
+
         if (!$this->redirectConf['mobile']['is_enabled']) {
             return false;
         }
@@ -138,7 +154,8 @@ class RequestListener
         $isMobile = $this->mobileDetector->isMobile();
         $isMobileHost = ($this->currentHost === $this->redirectConf['mobile']['host']);
 
-        if ($isMobile && !$isMobileHost) {
+
+        if ($isMobile && !$isMobileHost && ($this->getRoutingOption(self::MOBILE) != self::NO_REDIRECT)) {
             return true;
         }
 
@@ -147,7 +164,7 @@ class RequestListener
 
     /**
      * Detect tablet redirect
-     * @return boolean 
+     * @return boolean
      */
     private function hasTabletRedirect()
     {
@@ -158,7 +175,8 @@ class RequestListener
         $isTablet = $this->mobileDetector->isTablet();
         $isTabletHost = ($this->currentHost === $this->redirectConf['tablet']['host']);
 
-        if ($isTablet && !$isTabletHost) {
+        if ($isTablet && !$isTabletHost && ($this->getRoutingOption(self::TABLET) != self::NO_REDIRECT)) {
+
             return true;
         }
 
@@ -167,12 +185,14 @@ class RequestListener
 
     /**
      * If need modify Response for tablet
-     * @return boolean 
+     * @return boolean
      */
     private function needTabletResponseModify()
     {
+
         if ((null === $this->deviceView->getViewType() || $this->deviceView->isTabletView()) &&
-                $this->mobileDetector->isTablet()) {
+            $this->mobileDetector->isTablet()) {
+
 
             $this->modifyResponseClosure = function($deviceView, $event) {
                 return $deviceView->modifyTabletResponse($event->getResponse());
@@ -186,12 +206,12 @@ class RequestListener
 
     /**
      * If need modify Response for tablet
-     * @return boolean 
+     * @return boolean
      */
     private function needMobileResponseModify()
     {
         if ((null === $this->deviceView->getViewType() || $this->deviceView->isMobileView()) &&
-                $this->mobileDetector->isMobile()) {
+            $this->mobileDetector->isMobile()) {
 
             $this->modifyResponseClosure = function($deviceView, $event) {
                 return $deviceView->modifyMobileResponse($event->getResponse());
@@ -205,7 +225,7 @@ class RequestListener
 
     /**
      * If need modify Response for non mobile device
-     * @return boolean 
+     * @return boolean
      */
     private function needNotMobileResponseModify()
     {
@@ -222,7 +242,7 @@ class RequestListener
 
     /**
      * Get RedirectResponse by switch param
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse 
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getRedirectResponseBySwitchParam()
     {
@@ -233,28 +253,67 @@ class RequestListener
 
     /**
      * Get mobile RedirectResponse
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse 
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getMobileRedirectResponse()
     {
-        return $this->deviceView->getMobileRedirectResponse(
-            $this->redirectConf['mobile']['host'],
-            $this->redirectConf['mobile']['status_code']
-        );
+        if($host = $this->getRedirectUrl(self::MOBILE)) {
+            return $this->deviceView->getMobileRedirectResponse(
+                $host,
+                $this->redirectConf[self::MOBILE]['status_code']
+            );
+        }
     }
+
+
 
     /**
      * Get tablet RedirectResponse
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse 
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getTabletRedirectResponse()
     {
-        return $this->deviceView->getTabletRedirectResponse(
-            $this->redirectConf['tablet']['host'],
-            $this->redirectConf['tablet']['status_code']
-        );
+        if($host = $this->getRedirectUrl(self::TABLET)) {
+
+            return $this->deviceView->getTabletRedirectResponse(
+                $host,
+                $this->redirectConf[self::TABLET]['status_code']
+            );
+        }
     }
+
+    /**
+     * @param string $platform
+     * @return string
+     */
+    private function getRedirectUrl($platform)
+    {
+        if($routingOption = $this->getRoutingOption($platform)){
+            switch($routingOption) {
+                case self::REDIRECT:
+                    return $this->redirectConf[$platform]['host'].$this->request->getRequestUri();
+                case self::REDIRECT_WITHOUT_PATH:
+                    return  $this->redirectConf[$platform]['host'];
+            }
+        }
+    }
+
+    /**
+     * Gets named option from current route
+     *
+     * @param string $name
+     * @return string|null
+     */
+    private function getRoutingOption($name)
+    {
+        $route = $this->router->getRouteCollection()->get($this->request->get('_route'));
+        $option = $route->getOption($name);
+
+        if(in_array($option, array(self::REDIRECT, self::REDIRECT_WITHOUT_PATH, self::NO_REDIRECT))){
+            return $option;
+        }
+
+        return false;
+    }
+
 }
-
-
-

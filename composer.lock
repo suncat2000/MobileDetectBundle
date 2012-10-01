@@ -1,0 +1,61 @@
+{
+    "hash": "8bdd95eace9595c6145e6760b565ad4d",
+    "packages": [
+        {
+            "package": "doctrine/common",
+            "version": "2.3.0"
+        },
+        {
+            "package": "suncat/php-mobile-detect",
+            "version": "v2.0.9"
+        },
+        {
+            "package": "symfony/config",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/dependency-injection",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/event-dispatcher",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/filesystem",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/framework-bundle",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/http-foundation",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/http-kernel",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/routing",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/templating",
+            "version": "v2.1.2"
+        },
+        {
+            "package": "symfony/translation",
+            "version": "v2.1.2"
+        }
+    ],
+    "packages-dev": null,
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ]
+}
