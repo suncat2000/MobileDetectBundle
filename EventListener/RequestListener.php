@@ -293,8 +293,6 @@ class RequestListener
                 case self::REDIRECT_WITHOUT_PATH:
                     return  $this->redirectConf[$platform]['host'];
             }
-        } else {
-            return $this->redirectConf[$platform]['action'];
         }
     }
 
@@ -309,11 +307,13 @@ class RequestListener
         $route = $this->router->getRouteCollection()->get($this->request->get('_route'));
         $option = $route->getOption($name);
 
+        if(!$option) {
+            $option = $this->redirectConf[$name]['action'];
+        }
+
         if(in_array($option, array(self::REDIRECT, self::REDIRECT_WITHOUT_PATH, self::NO_REDIRECT))){
             return $option;
         }
-
-
 
         return false;
     }
