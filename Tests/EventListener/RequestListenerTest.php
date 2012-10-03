@@ -7,7 +7,8 @@ use SunCat\MobileDetectBundle\EventListener\RequestListener,
     SunCat\MobileDetectBundle\Helper\DeviceView,
 
     PHPUnit_Framework_TestCase,
-    Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent AS Event,
+    Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
+    Symfony\Component\HttpKernel\Event\FilterResponseEvent,
     Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpKernel\HttpKernelInterface,
     Symfony\Component\HttpFoundation\HeaderBag,
@@ -64,7 +65,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $listener = new RequestListener($this->mobileDetector, $this->request, $this->router, array());
         $this->deviceView->expects($this->once())->method('hasSwitchParam')->will($this->returnValue(true));
         $this->deviceView->expects($this->once())->method('getRedirectResponseBySwitchParam')->will($this->returnValue($this->getMock('Symfony\Component\HttpFoundation\Response')));
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
 
         $listener->handleRequest($event);
     }
@@ -78,7 +79,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->deviceView->expects($this->once())->method('hasSwitchParam')->will($this->returnValue(false));
         $this->deviceView->expects($this->once())->method('isFullView')->will($this->returnValue(true));
         $this->deviceView->expects($this->never())->method('asTabletRedirect');
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $listener->handleRequest($event);
     }
 
@@ -92,7 +93,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->deviceView->expects($this->once())->method('isFullView')->will($this->returnValue(false));
         $this->deviceView->expects($this->once())->method('isNotMobileView')->will($this->returnValue(true));
         $this->deviceView->expects($this->never())->method('asTabletRedirect');
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $listener->handleRequest($event);
     }
 
@@ -113,7 +114,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
         $this->deviceView->expects($this->once())->method('getTabletRedirectResponse')->with('http://testsite.com/some/parameters', 123)->will($this->returnValue($response));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::REDIRECT, 2)));
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $listener->handleRequest($event);
 
         $this->assertEquals($response, $event->getResponse());
@@ -136,7 +137,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
         $this->deviceView->expects($this->once())->method('getTabletRedirectResponse')->with('http://testsite.com', 123)->will($this->returnValue($response));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::REDIRECT_WITHOUT_PATH, 2)));
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $listener->handleRequest($event);
 
         $this->assertEquals($response, $event->getResponse());
@@ -155,7 +156,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->mobileDetector->expects($this->exactly(2))->method('isTablet')->will($this->returnValue(true));
 
         $this->router->expects($this->exactly(1))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::NO_REDIRECT, 1)));
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $this->deviceView->expects($this->once())->method('hasSwitchParam')->will($this->returnValue(false));
         $listener->handleRequest($event);
     }
@@ -177,7 +178,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
         $this->deviceView->expects($this->once())->method('getMobileRedirectResponse')->with('http://testsite.com/some/parameters', 123)->will($this->returnValue($response));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::REDIRECT, 2)));
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $listener->handleRequest($event);
 
         $this->assertEquals($response, $event->getResponse());
@@ -200,7 +201,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
         $this->deviceView->expects($this->once())->method('getMobileRedirectResponse')->with('http://testsite.com', 123)->will($this->returnValue($response));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::REDIRECT_WITHOUT_PATH, 2)));
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $listener->handleRequest($event);
 
         $this->assertEquals($response, $event->getResponse());
@@ -219,7 +220,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->mobileDetector->expects($this->exactly(2))->method('isMobile')->will($this->returnValue(true));
 
         $this->router->expects($this->exactly(1))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::NO_REDIRECT, 1)));
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
         $this->deviceView->expects($this->once())->method('hasSwitchParam')->will($this->returnValue(false));
         $listener->handleRequest($event);
     }
@@ -235,7 +236,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         );
         $listener = new RequestListener($this->mobileDetector, $this->request, $this->router, $this->config);
         $this->deviceView->expects($this->once())->method('setNotMobileView');
-        $listener->handleRequest($this->createEvent('some content'));
+        $listener->handleRequest($this->createGetResponseEvent('some content'));
     }
 
     /**
@@ -245,26 +246,69 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     {
         $this->config = array(
             'mobile' => array('is_enabled' => false, 'host' => 'http://mobilesite.com', 'status_code' => 123),
-            'tablet' => array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321)git status
+            'tablet' => array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321)
         );
-
 
         $this->mobileDetector->expects($this->exactly(2))->method('isTablet')->will($this->returnValue(true));
         $this->deviceView->expects($this->once())->method('getViewType')->will($this->returnValue('some device'));
         $this->deviceView->expects($this->once())->method('isTabletView')->will($this->returnValue(true));
 
-      //  $this->deviceView->expects($this->once())->method('modifyTabletResponse')->will($this->returnValue(true));
         $this->deviceView->expects($this->once())->method('setTabletView');
-        $event = $this->createEvent('some content');
+        $event = $this->createGetResponseEvent('some content');
 
         $listener = new RequestListener($this->mobileDetector, $this->request, $this->router, $this->config);
         $listener->handleRequest($event);
 
     }
 
+    /**
+     * @test
+     */
+    public function handleRequestNeedMobileResponseModify()
+    {
+        $this->config = array(
+            'mobile' => array('is_enabled' => false, 'host' => 'http://tabletsite.com', 'status_code' => 123),
+            'tablet' => array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321)
+        );
 
+        $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
+        $this->deviceView->expects($this->exactly(2))->method('getViewType')->will($this->returnValue('some device'));
+        $this->deviceView->expects($this->once())->method('isMobileView')->will($this->returnValue(true));
 
+        $this->deviceView->expects($this->once())->method('setMobileView');
+        $event = $this->createGetResponseEvent('some content');
 
+        $listener = new RequestListener($this->mobileDetector, $this->request, $this->router, $this->config);
+        $listener->handleRequest($event);
+    }
+
+    /**
+     * @test
+     */
+    public function handleResponse()
+    {
+        $this->config = array(
+            'mobile' => array('is_enabled' => false, 'host' => 'http://tabletsite.com', 'status_code' => 123),
+            'tablet' => array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321)
+        );
+
+        $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
+        $this->deviceView->expects($this->exactly(2))->method('getViewType')->will($this->returnValue('some device'));
+        $this->deviceView->expects($this->once())->method('isMobileView')->will($this->returnValue(true));
+
+        $this->deviceView->expects($this->once())->method('setMobileView');
+        $event = $this->createGetResponseEvent('some content');
+
+        $listener = new RequestListener($this->mobileDetector, $this->request, $this->router, $this->config);
+        $listener->handleRequest($event);
+
+        $response = new Response('Some content', 200);
+        $modifiedResponse = new Response('Some content', 200);
+        $this->deviceView->expects($this->once())->method('modifyMobileResponse')->will($this->returnValue($modifiedResponse));
+
+        $event = $this->createFilterResponseEvent($response);
+        $listener->handleResponse($event);
+    }
 
     /**
      * @param $returnValue
@@ -285,16 +329,25 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      * @param array $headers
      * @return \Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent
      */
-    private function createEvent($content, $method = 'GET', $headers = array())
+    private function createGetResponseEvent($content, $method = 'GET', $headers = array())
     {
-        $server = array('REQUEST_METHOD' => $method);
-        $event = new Event($this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'), $this->request, HttpKernelInterface::MASTER_REQUEST, $content);
+        $event = new GetResponseForControllerResultEvent($this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'), $this->request, HttpKernelInterface::MASTER_REQUEST, $content);
         $event->getRequest()->headers = new HeaderBag($headers);
         return $event;
     }
 
-
-
+    /**
+     * @param $response
+     * @param string $method
+     * @param array $headers
+     * @return \Symfony\Component\HttpKernel\Event\FilterResponseEvent
+     */
+    private function createFilterResponseEvent($response, $method = 'GET', $headers = array())
+    {
+        $event = new FilterResponseEvent($this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'), $this->request, HttpKernelInterface::MASTER_REQUEST, $response);
+        $event->getRequest()->headers = new HeaderBag($headers);
+        return $event;
+    }
 
 }
 

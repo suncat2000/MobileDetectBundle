@@ -105,14 +105,12 @@ class RequestListener
         // Set closure modifier tablet Response
         if ($this->needTabletResponseModify()) {
             $this->deviceView->setTabletView();
-
             return;
         }
 
         // Set closure modifier mobile Response
         if ($this->needMobileResponseModify()) {
             $this->deviceView->setMobileView();
-
             return;
         }
 
