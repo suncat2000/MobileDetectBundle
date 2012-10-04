@@ -89,6 +89,11 @@ mobile_detect:
 
 ### Full conﬁguration
 
+You can change default behaviour of your redirects with action parameter.
+- redirect redirects to appropriate host with your current path. 
+- no_redirect: No redirection. Default behaviour.
+- redirect_without_path. Redirects to appropriate host index page.
+
 ````
 #app/conﬁg/conﬁg.yml
 mobile_detect:
@@ -97,16 +102,30 @@ mobile_detect:
             is_enabled: true            # default false
             host: http://m.site.com     # with scheme (http|https), default null, url validate
             status_code: 301            # default 302
+            action: redirect            # redirect, no_redirect, redirect_without_path 
         tablet:
             is_enabled: true            # default false
             host: http://t.site.com     # with scheme (http|https), default null, url validate
             status_code: 301            # default 302
+            action: redirect            # redirect, no_redirect, redirect_without_path 
     switch_device_view:
         save_referer_path: false        # default true
                                         # true  redirectUrl = http://site.com/current/path
-                                        # false redirectUrl = http://site.com
-                                    
+                                        # false redirectUrl = http://site.com                                    
 ````
+
+You can also create route specific rules for redirecting in your routing.yml.
+Just put appropriate platform to options field and add it redirecting rule.
+
+````
+#routing.yml
+
+someaction:
+    pattern:  /someaction
+    defaults: { _controller: YourBundle:Index:someaction }
+    options:  { mobile: redirect, tablet: no_redirect }         # redirect, no_redirect, redirect_without_path 
+````
+
 
 PHP examples
 ============
