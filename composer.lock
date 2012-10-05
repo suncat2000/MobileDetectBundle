@@ -1,0 +1,17 @@
+{
+    "hash": "864a92ed2ce50408c39d4d165926ae55",
+    "packages": [
+        {
+            "package": "suncat/php-mobile-detect",
+            "version": "v2.0.9"
+        }
+    ],
+    "packages-dev": null,
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ]
+}
