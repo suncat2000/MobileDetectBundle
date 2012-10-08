@@ -4,6 +4,7 @@ namespace SunCat\MobileDetectBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use SunCat\MobileDetectBundle\EventListener\RequestListener;
 
 /**
  * This is the class that validates and merges configuration from your app/config files
@@ -30,6 +31,7 @@ class Configuration implements ConfigurationInterface
                                 ->booleanNode('is_enabled')->defaultFalse()->end()
                                 ->scalarNode('host')->defaultNull()->end()
                                 ->scalarNode('status_code')->defaultValue(302)->cannotBeEmpty()->end()
+                                ->scalarNode('action')->defaultValue(RequestListener::REDIRECT)->cannotBeEmpty()->end()
                             ->end()
                         ->end()
                         ->arrayNode('tablet')
@@ -38,6 +40,7 @@ class Configuration implements ConfigurationInterface
                                 ->booleanNode('is_enabled')->defaultFalse()->end()
                                 ->scalarNode('host')->defaultNull()->end()
                                 ->scalarNode('status_code')->defaultValue(302)->cannotBeEmpty()->end()
+                                ->scalarNode('action')->defaultValue(RequestListener::REDIRECT)->cannotBeEmpty()->end()
                             ->end()
                         ->end()
                     ->end()
