@@ -39,9 +39,10 @@ class RequestListener
      * @param MobileDetector $mobileDetector Mobile detect object
      * @param Request        $request        Request object
      * @param Router         $router         Router Object
-     * @param type           $redirectConf   Config redirect
+     * @param array          $redirectConf   Config redirect
+     * @param boolean        $fullPath       Full path or front page
      */
-    public function __construct(MobileDetector $mobileDetector, Request $request, Router $router, $redirectConf,  $fullPath = true)
+    public function __construct(MobileDetector $mobileDetector, Request $request, Router $router, array $redirectConf,  $fullPath = true)
     {
         // Mobile_Detect class & Request
         $this->mobileDetector = $mobileDetector;
@@ -83,18 +84,20 @@ class RequestListener
 
         // Redirect to tablet version and set 'tablet' device view (in cookie)
         if ($this->hasTabletRedirect()) {
-            if($response = $this->getTabletRedirectResponse()){
+            if (($response = $this->getTabletRedirectResponse())) {
                 $event->setResponse($response);
             }
+
             return;
         }
 
         // Redirect to mobile version and set 'mobile' device view (in cookie)
         if ($this->hasMobileRedirect()) {
 
-            if($response = $this->getMobileRedirectResponse()){
+            if (($response = $this->getMobileRedirectResponse())) {
                 $event->setResponse($response);
             }
+
             return;
         }
 
@@ -105,18 +108,21 @@ class RequestListener
         // Set closure modifier tablet Response
         if ($this->needTabletResponseModify()) {
             $this->deviceView->setTabletView();
+
             return;
         }
 
         // Set closure modifier mobile Response
         if ($this->needMobileResponseModify()) {
             $this->deviceView->setMobileView();
+
             return;
         }
 
         // Set closure modifier not_mobile Response
         if ($this->needNotMobileResponseModify()) {
             $this->deviceView->setNotMobileView();
+
             return;
         }
 
@@ -255,7 +261,7 @@ class RequestListener
      */
     private function getMobileRedirectResponse()
     {
-        if($host = $this->getRedirectUrl(self::MOBILE)) {
+        if (($host = $this->getRedirectUrl(self::MOBILE))) {
             return $this->deviceView->getMobileRedirectResponse(
                 $host,
                 $this->redirectConf[self::MOBILE]['status_code']
@@ -271,8 +277,7 @@ class RequestListener
      */
     private function getTabletRedirectResponse()
     {
-        if($host = $this->getRedirectUrl(self::TABLET)) {
-
+        if (($host = $this->getRedirectUrl(self::TABLET))) {
             return $this->deviceView->getTabletRedirectResponse(
                 $host,
                 $this->redirectConf[self::TABLET]['status_code']
@@ -281,12 +286,15 @@ class RequestListener
     }
 
     /**
+     * Get redirest url
+     * 
      * @param string $platform
+     * 
      * @return string
      */
     private function getRedirectUrl($platform)
     {
-        if($routingOption = $this->getRoutingOption($platform)){
+        if (($routingOption = $this->getRoutingOption($platform))) {
             switch($routingOption) {
                 case self::REDIRECT:
                     return $this->redirectConf[$platform]['host'].$this->request->getRequestUri();
@@ -300,6 +308,7 @@ class RequestListener
      * Gets named option from current route
      *
      * @param string $name
+     * 
      * @return string|null
      */
     private function getRoutingOption($name)
@@ -307,11 +316,11 @@ class RequestListener
         $route = $this->router->getRouteCollection()->get($this->request->get('_route'));
         $option = $route->getOption($name);
 
-        if(!$option) {
+        if (!$option) {
             $option = $this->redirectConf[$name]['action'];
         }
 
-        if(in_array($option, array(self::REDIRECT, self::REDIRECT_WITHOUT_PATH, self::NO_REDIRECT))){
+        if (in_array($option, array(self::REDIRECT, self::REDIRECT_WITHOUT_PATH, self::NO_REDIRECT))) {
             return $option;
         }
 

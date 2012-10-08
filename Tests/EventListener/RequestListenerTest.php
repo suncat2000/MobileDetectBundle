@@ -17,6 +17,9 @@ use SunCat\MobileDetectBundle\EventListener\RequestListener,
     Symfony\Component\Routing\RouteCollection,
     Symfony\Component\Routing\Route;
 
+/**
+ * Request Listener Test 
+ */
 class RequestListenerTest extends PHPUnit_Framework_TestCase
 {
 
@@ -42,7 +45,11 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
     private $config = array();
 
-    public function setUp() {
+    /**
+     * Set up 
+     */
+    public function setUp()
+    {
         parent::setUp();
 
         $this->mobileDetector = $this->getMockBuilder('SunCat\MobileDetectBundle\DeviceDetector\MobileDetector')->disableOriginalConstructor()->getMock();
@@ -311,7 +318,11 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $returnValue
+     * createRouteCollecitonWithRouteAndRoutingOption
+     * 
+     * @param type $returnValue Return value
+     * @param type $times       Times
+     * 
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function createRouteCollecitonWithRouteAndRoutingOption($returnValue, $times)
@@ -320,32 +331,41 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $route->expects($this->exactly($times))->method('getOption')->will($this->returnValue($returnValue));
         $routeCollection = $this->getMock('Symfony\Component\Routing\RouteCollection');
         $routeCollection->expects($this->exactly($times))->method('get')->will($this->returnValue($route));
+
         return $routeCollection;
     }
 
     /**
-     * @param $content
-     * @param string $method
-     * @param array $headers
+     * createGetResponseEvent
+     * 
+     * @param type   $content Content
+     * @param string $method  Method
+     * @param array  $headers Headers
+     * 
      * @return \Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent
      */
     private function createGetResponseEvent($content, $method = 'GET', $headers = array())
     {
         $event = new GetResponseForControllerResultEvent($this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'), $this->request, HttpKernelInterface::MASTER_REQUEST, $content);
         $event->getRequest()->headers = new HeaderBag($headers);
+
         return $event;
     }
 
     /**
-     * @param $response
-     * @param string $method
-     * @param array $headers
+     * createFilterResponseEvent
+     * 
+     * @param type   $response Response
+     * @param string $method   Method
+     * @param array  $headers  Headers
+     * 
      * @return \Symfony\Component\HttpKernel\Event\FilterResponseEvent
      */
     private function createFilterResponseEvent($response, $method = 'GET', $headers = array())
     {
         $event = new FilterResponseEvent($this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'), $this->request, HttpKernelInterface::MASTER_REQUEST, $response);
         $event->getRequest()->headers = new HeaderBag($headers);
+
         return $event;
     }
 

@@ -135,7 +135,7 @@ class DeviceView
     /**
      * Get RedirectResponsy by switch param value
      * 
-     * @param string $host
+     * @param string $redirectUrl
      * 
      * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie 
      */
