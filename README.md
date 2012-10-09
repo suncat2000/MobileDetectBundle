@@ -208,71 +208,73 @@ Twig examples
 {% endif %}
 ````
 
-Example: Setting up redirection to mobile site that is the same Symfony 2 instance as your main site:
+Usage Example: 
 ============
+
+### Setting up redirection to mobile site that is the same Symfony 2 instance as your main site.
 
 In this example lets assume that you have a website http://site.com and you wish just to activate
 redirection to mobile site http://m.site.com when user is using mobile device.
 
 1. set up mobile redirection to your config.yml
 
-````
-mobile_detect:
-    redirect:
-        mobile:
-            is_enabled: true
-            host: http://m.site.com
-            status_code: 301
-            action: redirect
-        tablet: ~
-    switch_device_view: ~
-````
-
-Now when you hit to http://site.com you are redirected to http://m.site.com.
-At this point if the http://m.site.com is configured to point to your project you will get circular reference error.
-To get rid of the circular reference error we want to disable mobile redirecting when we land on our mobile site.
+    ````
+    mobile_detect:
+        redirect:
+            mobile:
+                is_enabled: true
+                host: http://m.site.com
+                status_code: 301
+                action: redirect
+            tablet: ~
+        switch_device_view: ~
+    ````
+    
+    Now when you hit to http://site.com you are redirected to http://m.site.com.
+    At this point if the http://m.site.com is configured to point to your project you will get circular reference error.
+    To get rid of the circular reference error we want to disable mobile redirecting when we land on our mobile site.
 
 2. crete new app.php file that has name for example app_mobile.php and change following:
-```php
-$kernel = new AppKernel('prod', false);
-```
-to:
-```php
-$kernel = new AppKernel('mobile', false);
-```
-Now your mobile site has its own environment and we can nicely create some custom configuration for it and disable
-mobile redirecting.
+    ```php
+    $kernel = new AppKernel('prod', false);
+    ```
+    to:
+    ```php
+    $kernel = new AppKernel('mobile', false);
+    ```
+    Now your mobile site has its own environment and we can nicely create some custom configuration for it and disable
+    mobile redirecting.
 
 
 3. create config_mobile.yml
-Create config_mobile.yml next to your config.yml and disable mobile redirecting. This should take care of the circular
-reference errors.
+    Create config_mobile.yml next to your config.yml and disable mobile redirecting. This should take care of the circular
+    reference errors.
 
-Also you might  want to define your routing file as mobile specific. If you do, just create new routing_mobile.yml
-file and use it just like the default routing.yml.  This gives you nice opportunity to route requests to
-custom mobile specific controllers that can render views that are designed for mobile. This way you don't need to write
-platform specific conditions to your view files.
-
-````
-framework:
-    router:
-        resource: "%kernel.root_dir%/config/routing_mobile.yml"
-
-
-mobile_detect:
-    redirect:
-        mobile:
-            is_enabled: false
-        tablet: ~
-    switch_device_view: ~
-````
+    Also you might  want to define your routing file as mobile specific. If you do, just create new routing_mobile.yml
+    file and use it just like the default routing.yml.  This gives you nice opportunity to route requests to
+    custom mobile specific controllers that can render views that are designed for mobile. This way you don't need to write
+    platform specific conditions to your view files.
+    
+    ````
+    framework:
+        router:
+            resource: "%kernel.root_dir%/config/routing_mobile.yml"
+    
+    
+    mobile_detect:
+        redirect:
+            mobile:
+                is_enabled: false
+            tablet: ~
+        switch_device_view: ~
+    ````
 
 4. Config your http server
-Make sure that in your http server virtual host you make http://m.site.com to use app_mobile.php as its script file
-instead of app.php.
-
-After you have restarted your http server everything should work.
-Also remember to clear the cache if you do changes to configs or you might end to get frustrated for nothing.
+    Make sure that in your http server virtual host you make http://m.site.com to use app_mobile.php as its script file
+    instead of app.php.
+    
+    After you have restarted your http server everything should work.
+    Also remember to clear the cache if you do changes to configs or you might end to get frustrated for nothing.
 
 
 
