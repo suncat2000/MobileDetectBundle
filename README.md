@@ -6,10 +6,10 @@ Symfony2 bundle for detect mobile devices, manage mobile view and redirect to th
 Introduction
 ============
 
-This Bundle use [php-mobile-detect](https://github.com/suncat2000/php-mobile-detect) (fork of [Mobile_Detect](http://code.google.com/p/php-mobile-detect/) class) and provides the following features:
+This Bundle use [Mobile_Detect](https://github.com/serbanghita/Mobile-Detect) class and provides the following features:
 
 * Detect the various mobile devices by Name, OS, browser User-Agent
-* Manages site views for the variuos mobile devices (`mobile`, `tablet`, `full`, `not_mobile`)
+* Manages site views for the variuos mobile devices (`mobile`, `tablet`, `full`)
 * Redirects to mobile and tablet sites
 
 
@@ -32,7 +32,7 @@ Add to `composer.json` in your project to `require` section:
 ````
 ...
     {
-        "suncat/php-mobile-detect": "2.0.9",
+        "mobiledetect/mobiledetectlib": "dev-master",
         "suncat/mobile-detect-bundle": "dev-master"
     }
 ...
@@ -41,30 +41,6 @@ Add to `composer.json` in your project to `require` section:
 Run command:
 `php composer.phar install`
 
-### Submodules
-
-Add this bundle and `php-mobile-detect` library to your project as Git submodules:
-````
-$ git submodule add git://github.com/suncat2000/php-mobile-detect.git vendor/php-mobile-detect
-$ git submodule add git://github.com/suncat2000/MobileDetectBundle.git vendor/bundles/SunCat/MobileDetectBundle
-````
-
-Register the namespace `SunCat` to your project's autoloader bootstrap script:
-
-``` php
-//app/autoload.php
-$loader->registerNamespaces(array(
-    // ...
-    'SunCat' => __DIR__.'/../vendor/bundles',
-    // ...
-));
-
-$loader->registerPreﬁxes(array(
-    // ...
-    'Mobile_' => __DIR__.'/../vendor/php-mobile-detect/lib',
-    // ...
-));
-```
 ### Add this bundle to your application's kernel
 ``` php
 //app/AppKernel.php

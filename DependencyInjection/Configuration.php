@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the MobileDetectBundle.
+ *
+ * (c) Nikolay Ivlev <nikolay.kotovsky@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SunCat\MobileDetectBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -7,9 +16,10 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use SunCat\MobileDetectBundle\EventListener\RequestListener;
 
 /**
- * This is the class that validates and merges configuration from your app/config files
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
+ * Bundle configuration
+ * 
+ * @author suncat2000 <nikolay.kotovsky@gmail.com>
+ * @author HenriVesala <email@gmail.com>
  */
 class Configuration implements ConfigurationInterface
 {

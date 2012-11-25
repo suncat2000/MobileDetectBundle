@@ -1,24 +1,23 @@
 <?php
 
+/*
+ * This file is part of the MobileDetectBundle.
+ *
+ * (c) Nikolay Ivlev <nikolay.kotovsky@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SunCat\MobileDetectBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use SunCat\MobileDetectBundle\DependencyInjection\Compiler\CLIListenerPass;
 
 /**
- * MobileDetectBundle 
+ * MobileDetectBundle
+ * 
+ * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class MobileDetectBundle extends Bundle
 {
-    /**
-     * Build method
-     * @param ContainerBuilder $container 
-     */
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-
-        $container->addCompilerPass(new CLIListenerPass());
-    }
 }

@@ -1,17 +1,25 @@
 <?php
+
+/*
+ * This file is part of the MobileDetectBundle.
+ *
+ * (c) Nikolay Ivlev <nikolay.kotovsky@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SunCat\MobileDetectBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
-
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
-use SunCat\MobileDetectBundle\Helper\DeviceView;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Request listener
+ * 
+ * @author suncat2000 <nikolay.kotovsky@gmail.com>
+ * @author HenriVesala <email@gmail.com>
  */
 class RequestListener
 {
@@ -36,19 +44,17 @@ class RequestListener
 
     /**
      * Constructor
-     * @param MobileDetector $mobileDetector Mobile detect object
-     * @param Request        $request        Request object
-     * @param Router         $router         Router Object
-     * @param array          $redirectConf   Config redirect
-     * @param boolean        $fullPath       Full path or front page
+     * 
+     * @param Container      $serviceContainer Service container
+     * @param array          $redirectConf     Config redirect
+     * @param boolean        $fullPath         Full path or front page
      */
-    public function __construct(MobileDetector $mobileDetector, Request $request, Router $router, array $redirectConf,  $fullPath = true)
+    public function __construct(Container $serviceContainer, array $redirectConf,  $fullPath = true)
     {
-        // Mobile_Detect class & Request
-        $this->mobileDetector = $mobileDetector;
-        $this->deviceView = $this->mobileDetector->getDeviceView();
-        $this->request = $request;
-        $this->router = $router;
+        $this->mobileDetector = $serviceContainer->get('mobile_detect.mobile_detector');
+        $this->deviceView = $serviceContainer->get('mobile_detect.device_view');
+        $this->request = $serviceContainer->get('request');
+        $this->router = $serviceContainer->get('router');
 
         // Configs mobile & tablet
         $this->redirectConf = $redirectConf;
@@ -62,6 +68,7 @@ class RequestListener
 
     /**
      * Handle Request
+     * 
      * @param GetResponseEvent $event
      *
      * @return null
@@ -130,6 +137,7 @@ class RequestListener
 
     /**
      * Handle Response
+     * 
      * @param FilterResponseEvent $event
      *
      * @return null
@@ -146,6 +154,7 @@ class RequestListener
 
     /**
      * Detect mobile redirect
+     * 
      * @return boolean
      */
     private function hasMobileRedirect()
@@ -168,6 +177,7 @@ class RequestListener
 
     /**
      * Detect tablet redirect
+     * 
      * @return boolean
      */
     private function hasTabletRedirect()
@@ -189,6 +199,7 @@ class RequestListener
 
     /**
      * If need modify Response for tablet
+     * 
      * @return boolean
      */
     private function needTabletResponseModify()
@@ -210,6 +221,7 @@ class RequestListener
 
     /**
      * If need modify Response for tablet
+     * 
      * @return boolean
      */
     private function needMobileResponseModify()
@@ -229,6 +241,7 @@ class RequestListener
 
     /**
      * If need modify Response for non mobile device
+     * 
      * @return boolean
      */
     private function needNotMobileResponseModify()
@@ -246,6 +259,7 @@ class RequestListener
 
     /**
      * Get RedirectResponse by switch param
+     * 
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getRedirectResponseBySwitchParam()
@@ -257,6 +271,7 @@ class RequestListener
 
     /**
      * Get mobile RedirectResponse
+     * 
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getMobileRedirectResponse()
@@ -273,6 +288,7 @@ class RequestListener
 
     /**
      * Get tablet RedirectResponse
+     * 
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getTabletRedirectResponse()

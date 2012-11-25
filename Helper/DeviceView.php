@@ -1,15 +1,26 @@
 <?php
 
+/*
+ * This file is part of the MobileDetectBundle.
+ *
+ * (c) Nikolay Ivlev <nikolay.kotovsky@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SunCat\MobileDetectBundle\Helper;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\DependencyInjection\Container;
 
 use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
 
 /**
  * DeviceView
+ * 
+ * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class DeviceView
 {
@@ -25,11 +36,18 @@ class DeviceView
 
     /**
      * Construct
-     * @param \Symfony\Component\HttpFoundation\Request $request 
+     * 
+     * @param \Symfony\Component\DependencyInjection\Container $serviceContainer 
      */
-    public function __construct(Request $request)
+    public function __construct(Container $serviceContainer)
     {
-        $this->request = $request;
+        if (false === $serviceContainer->isScopeActive('request')) {
+            $this->viewType = self::VIEW_NOT_MOBILE;
+
+            return;
+        }
+
+        $this->request = $serviceContainer->get('request');
 
         if ($this->request->query->has(self::SWITCH_PARAM)) {
             $this->viewType = $this->request->query->get(self::SWITCH_PARAM);

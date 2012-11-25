@@ -1,26 +1,39 @@
 <?php
 
+/*
+ * This file is part of the MobileDetectBundle.
+ *
+ * (c) Nikolay Ivlev <nikolay.kotovsky@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace SunCat\MobileDetectBundle\Twig\Extension;
 
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
-use Symfony\Component\DependencyInjection\Container;
+use SunCat\MobileDetectBundle\Helper\DeviceView;
 
 use Twig_Extension;
 
 /**
  * MobileDetectExtension
+ * 
+ * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class MobileDetectExtension extends Twig_Extension
 {
     private $mobileDetector;
 
     /**
-     * Set mobile detector
-     * @param MobileDetector $mobileDetector 
+     * Constructor
+     * 
+     * @param Container $serviceContainer
      */
-    public function setMobileDetector(MobileDetector $mobileDetector)
+    public function __construct(MobileDetector $mobileDetector, DeviceView $deviceView)
     {
         $this->mobileDetector = $mobileDetector;
+        $this->deviceView = $deviceView;
     }
 
     /**
@@ -77,7 +90,7 @@ class MobileDetectExtension extends Twig_Extension
      */
     public function isFullView()
     {
-        return $this->mobileDetector->getDeviceView()->isFullView();
+        return $this->deviceView->isFullView();
     }
 
     /**
@@ -86,7 +99,7 @@ class MobileDetectExtension extends Twig_Extension
      */
     public function isMobileView()
     {
-        return $this->mobileDetector->getDeviceView()->isMobileView();
+        return $this->deviceView->isMobileView();
     }
 
     /**
@@ -95,7 +108,7 @@ class MobileDetectExtension extends Twig_Extension
      */
     public function isTabletView()
     {
-        return $this->mobileDetector->getDeviceView()->isTabletView();
+        return $this->deviceView->isTabletView();
     }
 
     /**
@@ -104,7 +117,7 @@ class MobileDetectExtension extends Twig_Extension
      */
     public function isNotMobileView()
     {
-        return $this->mobileDetector->getDeviceView()->isNotMobileView();
+        return $this->deviceView->isNotMobileView();
     }
 
     /**

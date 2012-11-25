@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
-	    "suncat/php-mobile-detect": ">=2.0.9"
+        "mobiledetect/mobiledetectlib": "dev-master"
     },
     "require-dev": {
         "symfony/framework-bundle": "2.1.*"

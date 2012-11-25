@@ -3,23 +3,24 @@ parameters:
     mobile_detect.switch_device_view.save_referer_path: ~
     
     mobile_detect.mobile_detector.class: SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
+    mobile_detect.device_view.class: SunCat\MobileDetectBundle\Helper\DeviceView
     mobile_detect.request_listener.class: SunCat\MobileDetectBundle\EventListener\RequestListener
     mobile_detect.twig.extension.class: SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension
 
 services:
     mobile_detect.mobile_detector:
         class: %mobile_detect.mobile_detector.class%
-        arguments: [ '@request=' ]
+    mobile_detect.device_view:
+        class: %mobile_detect.device_view.class%
+        arguments: [ '@service_container' ]
     mobile_detect.request_listener:
         class: %mobile_detect.request_listener.class%
-        arguments: [ '@mobile_detect.mobile_detector', '@request=', @router, %mobile_detect.redirect%, %mobile_detect.switch_device_view.save_referer_path% ]
+        arguments: [ '@service_container', %mobile_detect.redirect%, %mobile_detect.switch_device_view.save_referer_path% ]
         tags: 
             - { name: kernel.event_listener, event: kernel.request, method: handleRequest }
             - { name: kernel.event_listener, event: kernel.response, method: handleResponse }
     mobile_detect.twig.extension:
       class: %mobile_detect.twig.extension.class%
-      calls: 
-        - [ setMobileDetector, [ "@mobile_detect.mobile_detector"] ]
-      strict: false
+      arguments: [ '@mobile_detect.mobile_detector', '@mobile_detect.device_view' ]
       tags: 
           - { name: twig.extension }
