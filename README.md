@@ -3,6 +3,8 @@ MobileDetectBundle
 
 Symfony2 bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
 
+[![knpbundles.com](http://knpbundles.com/suncat2000/MobileDetectBundle/badge-short)](http://knpbundles.com/suncat2000/MobileDetectBundle)
+
 Introduction
 ============
 
