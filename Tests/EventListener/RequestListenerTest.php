@@ -57,6 +57,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
+        $test = $this;
+
         $this->mobileDetector = $this->getMockBuilder('SunCat\MobileDetectBundle\DeviceDetector\MobileDetector')->disableOriginalConstructor()->getMock();
         $this->deviceView = $this->getMockBuilder('SunCat\MobileDetectBundle\Helper\DeviceView')->disableOriginalConstructor()->getMock();
         $this->router = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Routing\Router')->disableOriginalConstructor()->getMock();
@@ -75,8 +77,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
             $this->equalTo('router')
         ))
             ->will($this->returnCallback(
-                function($param) {
-                    return $this->serviceContainerReturnsRequestedMockClass($param);
+                function ($param) use ($test) {
+                    return $test->serviceContainerReturnsRequestedMockClass($param);
                 }
         ));
     }
@@ -85,7 +87,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      * @param $param
      * @return PHPUnit_Framework_MockObject_MockBuilder
      */
-    private function serviceContainerReturnsRequestedMockClass($param)
+    public function serviceContainerReturnsRequestedMockClass($param)
     {
         switch($param) {
             case 'mobile_detect.mobile_detector':
