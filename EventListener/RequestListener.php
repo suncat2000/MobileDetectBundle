@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Container;
  * Request listener
  * 
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
- * @author HenriVesala <email@gmail.com>
+ * @author HenriVesala <henri.vesala@gmail.com>
  */
 class RequestListener
 {
