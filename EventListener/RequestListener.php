@@ -30,18 +30,16 @@ class RequestListener
     CONST MOBILE    = 'mobile';
     CONST TABLET    = 'tablet';
 
+    protected $container;
     protected $mobileDetector;
     protected $deviceView;
-    protected $request;
-    protected $router;
-
-    protected $currentHost;
-    protected $pathUri;
 
     protected $redirectConf;
+    protected $isFullPath;
+    
     protected $needModifyResponse = false;
     protected $modifyResponseClosure;
-
+    
     /**
      * Constructor
      * 
@@ -51,19 +49,13 @@ class RequestListener
      */
     public function __construct(Container $serviceContainer, array $redirectConf,  $fullPath = true)
     {
+        $this->container = $serviceContainer;
         $this->mobileDetector = $serviceContainer->get('mobile_detect.mobile_detector');
         $this->deviceView = $serviceContainer->get('mobile_detect.device_view');
-        $this->request = $serviceContainer->get('request');
-        $this->router = $serviceContainer->get('router');
-
+        
         // Configs mobile & tablet
         $this->redirectConf = $redirectConf;
-        $this->currentHost = $this->request->getScheme() . '://' . $this->request->getHost();
-
-        // Path info
-        if (true === $fullPath) {
-            $this->pathUri = $this->request->getUriForPath($this->request->getPathInfo());
-        }
+        $this->isFullPath = $fullPath;
     }
 
     /**
@@ -165,7 +157,7 @@ class RequestListener
         }
 
         $isMobile = $this->mobileDetector->isMobile();
-        $isMobileHost = ($this->currentHost === $this->redirectConf['mobile']['host']);
+        $isMobileHost = ($this->getCurrentHost() === $this->redirectConf['mobile']['host']);
 
 
         if ($isMobile && !$isMobileHost && ($this->getRoutingOption(self::MOBILE) != self::NO_REDIRECT)) {
@@ -187,7 +179,7 @@ class RequestListener
         }
 
         $isTablet = $this->mobileDetector->isTablet();
-        $isTabletHost = ($this->currentHost === $this->redirectConf['tablet']['host']);
+        $isTabletHost = ($this->getCurrentHost() === $this->redirectConf['tablet']['host']);
 
         if ($isTablet && !$isTabletHost && ($this->getRoutingOption(self::TABLET) != self::NO_REDIRECT)) {
 
@@ -264,8 +256,13 @@ class RequestListener
      */
     private function getRedirectResponseBySwitchParam()
     {
-        $redirectUrl = null !== $this->pathUri ? $this->pathUri : $this->currentHost;
-
+        if (true === $this->isFullPath) {
+            $request = $this->container->get('request');
+            $redirectUrl = $request->getUriForPath($request->getPathInfo());
+        } else {
+            $redirectUrl = $this->getCurrentHost();
+        }
+        
         return $this->deviceView->getRedirectResponseBySwitchParam($redirectUrl);
     }
 
@@ -313,7 +310,7 @@ class RequestListener
         if (($routingOption = $this->getRoutingOption($platform))) {
             switch($routingOption) {
                 case self::REDIRECT:
-                    return $this->redirectConf[$platform]['host'].$this->request->getRequestUri();
+                    return $this->redirectConf[$platform]['host'].$this->container->get('request')->getRequestUri();
                 case self::REDIRECT_WITHOUT_PATH:
                     return  $this->redirectConf[$platform]['host'];
             }
@@ -329,7 +326,13 @@ class RequestListener
      */
     private function getRoutingOption($name)
     {
-        $route = $this->router->getRouteCollection()->get($this->request->get('_route'));
+        $route = $this
+                    ->container
+                    ->get('router')
+                    ->getRouteCollection()
+                    ->get($this->container->get('request')->get('_route'))
+                ;
+        
         $option = $route->getOption($name);
 
         if (!$option) {
@@ -341,6 +344,15 @@ class RequestListener
         }
 
         return false;
+    }
+    
+    /**
+     * @return string
+     */
+    private function getCurrentHost()
+    {
+        $request = $this->container->get('request');
+        return $request->getScheme() . '://' . $request->getHost();
     }
 
 }
