@@ -64,11 +64,13 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->router = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Routing\Router')->disableOriginalConstructor()->getMock();
 
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $this->request->expects($this->once())->method('getScheme')->will($this->returnValue('http'));
-        $this->request->expects($this->once())->method('getHost')->will($this->returnValue('testhost.com'));
+        $this->request->expects($this->any())->method('getScheme')->will($this->returnValue('http'));
+        $this->request->expects($this->any())->method('getHost')->will($this->returnValue('testhost.com'));
+        $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
+        $this->request->expects($this->any())->method('getUriForPath')->will($this->returnValue('/'));
 
         $this->serviceContainer = $this->getMockBuilder('Symfony\Component\DependencyInjection\Container')->disableOriginalConstructor()->getMock();
-        $this->serviceContainer->expects($this->exactly(4))
+        $this->serviceContainer->expects($this->any())
             ->method('get')
             ->with($this->logicalOr(
             $this->equalTo('mobile_detect.mobile_detector'),
@@ -353,7 +355,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $event = $this->createFilterResponseEvent($response);
         $listener->handleResponse($event);
     }
-
+    
     /**
      * createRouteCollecitonWithRouteAndRoutingOption
      * 
