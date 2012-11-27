@@ -67,10 +67,11 @@ mobile_detect:
 
 ### Full conﬁguration
 
-You can change default behaviour of your redirects with action parameter.
-- redirect redirects to appropriate host with your current path. 
-- no_redirect: No redirection. Default behaviour.
-- redirect_without_path. Redirects to appropriate host index page.
+You can change default behaviour of your redirects with action parameter:
+
+- `redirect`: redirects to appropriate host with your current path
+- `no_redirect`: no redirection (default behaviour)
+- `redirect_without_path`: redirects to appropriate host index page
 
 ````
 #app/conﬁg/conﬁg.yml
@@ -194,7 +195,7 @@ Usage Example:
 In this example lets assume that you have a website http://site.com and you wish just to activate
 redirection to mobile site http://m.site.com when user is using mobile device.
 
-1. set up mobile redirection to your config.yml
+1. Set up mobile redirection to your config.yml
 
     ````
     mobile_detect:
@@ -212,7 +213,7 @@ redirection to mobile site http://m.site.com when user is using mobile device.
     At this point if the http://m.site.com is configured to point to your project you will get circular reference error.
     To get rid of the circular reference error we want to disable mobile redirecting when we land on our mobile site.
 
-2. crete new app.php file that has name for example app_mobile.php and change following:
+2. Crete new app.php file that has name for example app_mobile.php and change following:
     ```php
     $kernel = new AppKernel('prod', false);
     ```
@@ -224,8 +225,7 @@ redirection to mobile site http://m.site.com when user is using mobile device.
     mobile redirecting.
 
 
-3. create config_mobile.yml
-    Create config_mobile.yml next to your config.yml and disable mobile redirecting. This should take care of the circular
+3. Create config_mobile.yml next to your config.yml and disable mobile redirecting. This should take care of the circular
     reference errors.
 
     Also you might  want to define your routing file as mobile specific. If you do, just create new routing_mobile.yml
@@ -247,8 +247,7 @@ redirection to mobile site http://m.site.com when user is using mobile device.
         switch_device_view: ~
     ````
 
-4. Config your http server
-    Make sure that in your http server virtual host you make http://m.site.com to use app_mobile.php as its script file
+4. Config your http server. Make sure that in your http server virtual host you make http://m.site.com to use app_mobile.php as its script file
     instead of app.php.
     
     After you have restarted your http server everything should work.
