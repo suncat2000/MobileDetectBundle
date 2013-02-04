@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * MobileDetectBundle
- * 
+ *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class MobileDetectBundle extends Bundle

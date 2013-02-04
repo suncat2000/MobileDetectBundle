@@ -4,7 +4,7 @@
     "keywords": ["mobile", "mobile detect", "symfony mobile", "mobile view managing", "mobile redirect"],
     "homepage": "https://github.com/suncat2000/MobileDetectBundle",
     "type": "symfony-bundle",
-    "license": "MIT",    
+    "license": "MIT",
     "authors": [
         {
             "name": "Nikolay Ivlev",
