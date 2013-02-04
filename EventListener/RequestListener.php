@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Request listener
- * 
+ *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  * @author HenriVesala <henri.vesala@gmail.com>
  */
@@ -36,23 +36,23 @@ class RequestListener
 
     protected $redirectConf;
     protected $isFullPath;
-    
+
     protected $needModifyResponse = false;
     protected $modifyResponseClosure;
-    
+
     /**
      * Constructor
-     * 
-     * @param Container      $serviceContainer Service container
-     * @param array          $redirectConf     Config redirect
-     * @param boolean        $fullPath         Full path or front page
+     *
+     * @param Container $serviceContainer Service container
+     * @param array     $redirectConf     Config redirect
+     * @param boolean   $fullPath         Full path or front page
      */
     public function __construct(Container $serviceContainer, array $redirectConf,  $fullPath = true)
     {
         $this->container = $serviceContainer;
         $this->mobileDetector = $serviceContainer->get('mobile_detect.mobile_detector');
         $this->deviceView = $serviceContainer->get('mobile_detect.device_view');
-        
+
         // Configs mobile & tablet
         $this->redirectConf = $redirectConf;
         $this->isFullPath = $fullPath;
@@ -60,7 +60,7 @@ class RequestListener
 
     /**
      * Handle Request
-     * 
+     *
      * @param GetResponseEvent $event
      *
      * @return null
@@ -77,7 +77,6 @@ class RequestListener
 
         // If full view or not mobile
         if ($this->deviceView->isFullView() || $this->deviceView->isNotMobileView()) {
-
             return;
         }
 
@@ -129,7 +128,7 @@ class RequestListener
 
     /**
      * Handle Response
-     * 
+     *
      * @param FilterResponseEvent $event
      *
      * @return null
@@ -146,7 +145,7 @@ class RequestListener
 
     /**
      * Detect mobile redirect
-     * 
+     *
      * @return boolean
      */
     private function hasMobileRedirect()
@@ -159,7 +158,6 @@ class RequestListener
         $isMobile = $this->mobileDetector->isMobile();
         $isMobileHost = ($this->getCurrentHost() === $this->redirectConf['mobile']['host']);
 
-
         if ($isMobile && !$isMobileHost && ($this->getRoutingOption(self::MOBILE) != self::NO_REDIRECT)) {
             return true;
         }
@@ -169,7 +167,7 @@ class RequestListener
 
     /**
      * Detect tablet redirect
-     * 
+     *
      * @return boolean
      */
     private function hasTabletRedirect()
@@ -182,7 +180,6 @@ class RequestListener
         $isTabletHost = ($this->getCurrentHost() === $this->redirectConf['tablet']['host']);
 
         if ($isTablet && !$isTabletHost && ($this->getRoutingOption(self::TABLET) != self::NO_REDIRECT)) {
-
             return true;
         }
 
@@ -191,7 +188,7 @@ class RequestListener
 
     /**
      * If need modify Response for tablet
-     * 
+     *
      * @return boolean
      */
     private function needTabletResponseModify()
@@ -199,7 +196,6 @@ class RequestListener
 
         if ((null === $this->deviceView->getViewType() || $this->deviceView->isTabletView()) &&
             $this->mobileDetector->isTablet()) {
-
 
             $this->modifyResponseClosure = function($deviceView, $event) {
                 return $deviceView->modifyTabletResponse($event->getResponse());
@@ -213,7 +209,7 @@ class RequestListener
 
     /**
      * If need modify Response for tablet
-     * 
+     *
      * @return boolean
      */
     private function needMobileResponseModify()
@@ -233,7 +229,7 @@ class RequestListener
 
     /**
      * If need modify Response for non mobile device
-     * 
+     *
      * @return boolean
      */
     private function needNotMobileResponseModify()
@@ -251,7 +247,7 @@ class RequestListener
 
     /**
      * Get RedirectResponse by switch param
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getRedirectResponseBySwitchParam()
@@ -262,13 +258,13 @@ class RequestListener
         } else {
             $redirectUrl = $this->getCurrentHost();
         }
-        
+
         return $this->deviceView->getRedirectResponseBySwitchParam($redirectUrl);
     }
 
     /**
      * Get mobile RedirectResponse
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getMobileRedirectResponse()
@@ -281,11 +277,9 @@ class RequestListener
         }
     }
 
-
-
     /**
      * Get tablet RedirectResponse
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     private function getTabletRedirectResponse()
@@ -300,15 +294,15 @@ class RequestListener
 
     /**
      * Get redirest url
-     * 
+     *
      * @param string $platform
-     * 
+     *
      * @return string
      */
     private function getRedirectUrl($platform)
     {
         if (($routingOption = $this->getRoutingOption($platform))) {
-            switch($routingOption) {
+            switch ($routingOption) {
                 case self::REDIRECT:
                     return $this->redirectConf[$platform]['host'].$this->container->get('request')->getRequestUri();
                 case self::REDIRECT_WITHOUT_PATH:
@@ -321,7 +315,7 @@ class RequestListener
      * Gets named option from current route
      *
      * @param string $name
-     * 
+     *
      * @return string|null
      */
     private function getRoutingOption($name)
@@ -332,7 +326,7 @@ class RequestListener
                     ->getRouteCollection()
                     ->get($this->container->get('request')->get('_route'))
                 ;
-        
+
         $option = $route->getOption($name);
 
         if (!$option) {
@@ -345,13 +339,14 @@ class RequestListener
 
         return false;
     }
-    
+
     /**
      * @return string
      */
     private function getCurrentHost()
     {
         $request = $this->container->get('request');
+
         return $request->getScheme() . '://' . $request->getHost();
     }
 

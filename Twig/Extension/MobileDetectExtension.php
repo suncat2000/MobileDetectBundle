@@ -18,7 +18,7 @@ use Twig_Extension;
 
 /**
  * MobileDetectExtension
- * 
+ *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class MobileDetectExtension extends Twig_Extension
@@ -27,7 +27,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Constructor
-     * 
+     *
      * @param Container $serviceContainer
      */
     public function __construct(MobileDetector $mobileDetector, DeviceView $deviceView)
@@ -38,7 +38,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Get extension twig function
-     * @return array 
+     * @return array
      */
     public function getFunctions()
     {
@@ -55,7 +55,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is mobile
-     * @return boolean 
+     * @return boolean
      */
     public function isMobile()
     {
@@ -64,7 +64,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is tablet
-     * @return boolean 
+     * @return boolean
      */
     public function isTablet()
     {
@@ -74,8 +74,8 @@ class MobileDetectExtension extends Twig_Extension
     /**
      * Is device
      * @param string $deviceName is[iPhone|BlackBerry|HTC|Nexus|Dell|Motorola|Samsung|Sony|Asus|Palm|Vertu|...]
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
     public function isDevice($deviceName)
     {
@@ -86,7 +86,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is full view type
-     * @return boolean 
+     * @return boolean
      */
     public function isFullView()
     {
@@ -95,7 +95,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is mobile view type
-     * @return type 
+     * @return type
      */
     public function isMobileView()
     {
@@ -104,7 +104,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is tablet view type
-     * @return type 
+     * @return type
      */
     public function isTabletView()
     {
@@ -113,7 +113,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is not mobile view type
-     * @return type 
+     * @return type
      */
     public function isNotMobileView()
     {
@@ -122,7 +122,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Extension name
-     * @return string 
+     * @return string
      */
     public function getName()
     {

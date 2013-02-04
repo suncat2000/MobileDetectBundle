@@ -49,8 +49,8 @@ class MobileDetectExtension extends Extension
     /**
      * Validate host
      * @param string $url
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
     protected function validHost($url)
     {
