@@ -75,7 +75,7 @@ class RequestListener
             return;
         }
 
-        // If full view or not mobile
+        // If the device view is either the the full view or not the mobile view
         if ($this->deviceView->isFullView() || $this->deviceView->isNotMobileView()) {
             return;
         }
@@ -99,11 +99,12 @@ class RequestListener
             return;
         }
 
-        // If not redirecting
-        // Sets the flag for the response handle and generate closure
+        // No need to redirect
+
+        // Sets the flag for the response handler
         $this->needModifyResponse = true;
 
-        // Set closure modifier tablet Response
+        // Checking the need to modify the Response and set closure
         if ($this->needTabletResponseModify()) {
             $this->deviceView->setTabletView();
 
