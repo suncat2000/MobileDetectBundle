@@ -59,7 +59,7 @@ class RequestListener
     }
 
     /**
-     * Handle Request
+     * Handles the Request
      *
      * @param GetResponseEvent $event
      *
@@ -68,7 +68,7 @@ class RequestListener
     public function handleRequest(GetResponseEvent $event)
     {
 
-        // Set flag for response handle by GET switch param and type of view
+        // Sets the flag for the response handled by the GET switch param and the type of the view.
         if ($this->deviceView->hasSwitchParam()) {
             $event->setResponse($this->getRedirectResponseBySwitchParam());
 
@@ -80,7 +80,7 @@ class RequestListener
             return;
         }
 
-        // Redirect to tablet version and set 'tablet' device view (in cookie)
+        // Redirects to the tablet version and set the 'tablet' device view in a cookie.
         if ($this->hasTabletRedirect()) {
             if (($response = $this->getTabletRedirectResponse())) {
                 $event->setResponse($response);
@@ -89,7 +89,7 @@ class RequestListener
             return;
         }
 
-        // Redirect to mobile version and set 'mobile' device view (in cookie)
+        // Redirects to the mobile version and set the 'mobile' device view in a cookie.
         if ($this->hasMobileRedirect()) {
 
             if (($response = $this->getMobileRedirectResponse())) {
@@ -99,8 +99,8 @@ class RequestListener
             return;
         }
 
-        // If not redirects
-        // Set flag for response handle and generate closure
+        // If not redirecting
+        // Sets the flag for the response handle and generate closure
         $this->needModifyResponse = true;
 
         // Set closure modifier tablet Response
@@ -110,14 +110,14 @@ class RequestListener
             return;
         }
 
-        // Set closure modifier mobile Response
+        // Sets the closure modifier mobile Response
         if ($this->needMobileResponseModify()) {
             $this->deviceView->setMobileView();
 
             return;
         }
 
-        // Set closure modifier not_mobile Response
+        // Sets the closure modifier not_mobile Response
         if ($this->needNotMobileResponseModify()) {
             $this->deviceView->setNotMobileView();
 
@@ -127,7 +127,7 @@ class RequestListener
     }
 
     /**
-     * Handle Response
+     * Handles the Response
      *
      * @param FilterResponseEvent $event
      *
@@ -144,7 +144,7 @@ class RequestListener
     }
 
     /**
-     * Detect mobile redirect
+     * Detects mobile redirections.
      *
      * @return boolean
      */
@@ -166,7 +166,7 @@ class RequestListener
     }
 
     /**
-     * Detect tablet redirect
+     * Detects tablet redirections.
      *
      * @return boolean
      */
@@ -187,7 +187,7 @@ class RequestListener
     }
 
     /**
-     * If need modify Response for tablet
+     * If a modified Response for tablet devices is needed
      *
      * @return boolean
      */
@@ -208,7 +208,7 @@ class RequestListener
     }
 
     /**
-     * If need modify Response for tablet
+     * If a modified Response for mobile devices is needed
      *
      * @return boolean
      */
@@ -228,7 +228,7 @@ class RequestListener
     }
 
     /**
-     * If need modify Response for non mobile device
+     * If a modified Response for non-mobile devices is needed.
      *
      * @return boolean
      */
@@ -246,7 +246,7 @@ class RequestListener
     }
 
     /**
-     * Get RedirectResponse by switch param
+     * Gets the RedirectResponse by switch param.
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -263,7 +263,7 @@ class RequestListener
     }
 
     /**
-     * Get mobile RedirectResponse
+     * Gets the mobile RedirectResponse.
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -278,7 +278,7 @@ class RequestListener
     }
 
     /**
-     * Get tablet RedirectResponse
+     * Gets the tablet RedirectResponse.
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -293,7 +293,7 @@ class RequestListener
     }
 
     /**
-     * Get redirest url
+     * Gets the redirect url.
      *
      * @param string $platform
      *
@@ -312,7 +312,7 @@ class RequestListener
     }
 
     /**
-     * Gets named option from current route
+     * Gets named option from current route.
      *
      * @param string $name
      *
@@ -341,6 +341,8 @@ class RequestListener
     }
 
     /**
+     * Gets the current host.
+     *
      * @return string
      */
     private function getCurrentHost()

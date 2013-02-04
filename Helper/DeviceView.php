@@ -11,10 +11,9 @@
 
 namespace SunCat\MobileDetectBundle\Helper;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\DependencyInjection\Container;
-
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
 
 /**
@@ -35,7 +34,7 @@ class DeviceView
     private $viewType;
 
     /**
-     * Construct
+     * Constructor
      *
      * @param \Symfony\Component\DependencyInjection\Container $serviceContainer
      */
@@ -57,7 +56,7 @@ class DeviceView
     }
 
     /**
-     * Get view type for device
+     * Gets the view type for a device.
      *
      * @return string
      */
@@ -67,7 +66,7 @@ class DeviceView
     }
 
     /**
-     * Is full view type for device
+     * Is the device in full view.
      *
      * @return boolean
      */
@@ -77,7 +76,7 @@ class DeviceView
     }
 
     /**
-     * Is tablet view type for device
+     * Is the device a tablet view type.
      *
      * @return boolean
      */
@@ -87,7 +86,7 @@ class DeviceView
     }
 
     /**
-     * Is mobile view type for device
+     * Is the device a mobile view type.
      *
      * @return boolean
      */
@@ -97,7 +96,7 @@ class DeviceView
     }
 
     /**
-     * Is not mobile view type for device (PC, Mac ...)
+     * Is not the device a mobile view type (PC, Mac, etc.).
      *
      * @return boolean
      */
@@ -107,7 +106,7 @@ class DeviceView
     }
 
     /**
-     * Has switch param in query string (GET)
+     * Has the Request the switch param in the query string (GET header).
      *
      * @return boolean
      */
@@ -117,7 +116,7 @@ class DeviceView
     }
 
     /**
-     * Set tablet view type
+     * Sets the tablet view type.
      */
     public function setTabletView()
     {
@@ -125,7 +124,7 @@ class DeviceView
     }
 
     /**
-     * Set mobile view type
+     * Sets the mobile view type.
      */
     public function setMobileView()
     {
@@ -133,7 +132,7 @@ class DeviceView
     }
 
     /**
-     * Set not mobile view type
+     * Sets the not mobile view type.
      */
     public function setNotMobileView()
     {
@@ -141,7 +140,7 @@ class DeviceView
     }
 
     /**
-     * Get switch param value from query string (GET)
+     * Gets the switch param value from the query string (GET header).
      *
      * @return string
      */
@@ -151,7 +150,7 @@ class DeviceView
     }
 
     /**
-     * Get RedirectResponsy by switch param value
+     * Gets the RedirectResponse by switch param value.
      *
      * @param string $redirectUrl
      *
@@ -172,7 +171,7 @@ class DeviceView
     }
 
     /**
-     * Modify Response for not mobile device
+     * Modifies the Response for non-mobile devices.
      *
      * @param \Symfony\Component\HttpFoundation\Response $response
      *
@@ -186,7 +185,7 @@ class DeviceView
     }
 
     /**
-     * Modify Response for tablet device
+     * Modifies the Response for tablet devices.
      *
      * @param \Symfony\Component\HttpFoundation\Response $response
      *
@@ -200,7 +199,7 @@ class DeviceView
     }
 
     /**
-     * Modify Response for mobile device
+     * Modifies the Response for mobile devices.
      *
      * @param \Symfony\Component\HttpFoundation\Response $response
      *
@@ -214,7 +213,7 @@ class DeviceView
     }
 
     /**
-     * Get RedirectResponse for tablet
+     * Gets the RedirectResponse for tablet devices.
      *
      * @param string $host       Uri host
      * @param int    $statusCode Status code
@@ -227,7 +226,7 @@ class DeviceView
     }
 
     /**
-     * Get RedirectResponse for mobile
+     * Gets the RedirectResponse for mobile devices.
      *
      * @param string $host       Uri host
      * @param int    $statusCode Status code
@@ -240,7 +239,7 @@ class DeviceView
     }
 
     /**
-     * Get cookie
+     * Gets the cookie.
      *
      * @param string $cookieValue
      *
