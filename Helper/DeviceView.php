@@ -19,7 +19,7 @@ use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
 
 /**
  * DeviceView
- * 
+ *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class DeviceView
@@ -36,8 +36,8 @@ class DeviceView
 
     /**
      * Construct
-     * 
-     * @param \Symfony\Component\DependencyInjection\Container $serviceContainer 
+     *
+     * @param \Symfony\Component\DependencyInjection\Container $serviceContainer
      */
     public function __construct(Container $serviceContainer)
     {
@@ -58,8 +58,8 @@ class DeviceView
 
     /**
      * Get view type for device
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function getViewType()
     {
@@ -68,8 +68,8 @@ class DeviceView
 
     /**
      * Is full view type for device
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
     public function isFullView()
     {
@@ -78,8 +78,8 @@ class DeviceView
 
     /**
      * Is tablet view type for device
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
     public function isTabletView()
     {
@@ -88,8 +88,8 @@ class DeviceView
 
     /**
      * Is mobile view type for device
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
     public function isMobileView()
     {
@@ -98,8 +98,8 @@ class DeviceView
 
     /**
      * Is not mobile view type for device (PC, Mac ...)
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
     public function isNotMobileView()
     {
@@ -108,8 +108,8 @@ class DeviceView
 
     /**
      * Has switch param in query string (GET)
-     * 
-     * @return boolean 
+     *
+     * @return boolean
      */
     public function hasSwitchParam()
     {
@@ -117,7 +117,7 @@ class DeviceView
     }
 
     /**
-     * Set tablet view type  
+     * Set tablet view type
      */
     public function setTabletView()
     {
@@ -125,7 +125,7 @@ class DeviceView
     }
 
     /**
-     * Set mobile view type 
+     * Set mobile view type
      */
     public function setMobileView()
     {
@@ -133,7 +133,7 @@ class DeviceView
     }
 
     /**
-     * Set not mobile view type 
+     * Set not mobile view type
      */
     public function setNotMobileView()
     {
@@ -142,8 +142,8 @@ class DeviceView
 
     /**
      * Get switch param value from query string (GET)
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function getSwitchParamValue()
     {
@@ -152,10 +152,10 @@ class DeviceView
 
     /**
      * Get RedirectResponsy by switch param value
-     * 
+     *
      * @param string $redirectUrl
-     * 
-     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie 
+     *
+     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
      */
     public function getRedirectResponseBySwitchParam($redirectUrl)
     {
@@ -173,10 +173,10 @@ class DeviceView
 
     /**
      * Modify Response for not mobile device
-     * 
+     *
      * @param \Symfony\Component\HttpFoundation\Response $response
-     * 
-     * @return \Symfony\Component\HttpFoundation\Response 
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function modifyNotMobileResponse(Response $response)
     {
@@ -187,9 +187,9 @@ class DeviceView
 
     /**
      * Modify Response for tablet device
-     * 
+     *
      * @param \Symfony\Component\HttpFoundation\Response $response
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function modifyTabletResponse(Response $response)
@@ -201,10 +201,10 @@ class DeviceView
 
     /**
      * Modify Response for mobile device
-     * 
+     *
      * @param \Symfony\Component\HttpFoundation\Response $response
-     * 
-     * @return \Symfony\Component\HttpFoundation\Response 
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function modifyMobileResponse(Response $response)
     {
@@ -215,11 +215,11 @@ class DeviceView
 
     /**
      * Get RedirectResponse for tablet
-     * 
+     *
      * @param string $host       Uri host
      * @param int    $statusCode Status code
-     * 
-     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie 
+     *
+     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
      */
     public function getTabletRedirectResponse($host, $statusCode)
     {
@@ -228,11 +228,11 @@ class DeviceView
 
     /**
      * Get RedirectResponse for mobile
-     * 
+     *
      * @param string $host       Uri host
      * @param int    $statusCode Status code
-     * 
-     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie 
+     *
+     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
      */
     public function getMobileRedirectResponse($host, $statusCode)
     {
@@ -241,10 +241,10 @@ class DeviceView
 
     /**
      * Get cookie
-     * 
+     *
      * @param string $cookieValue
-     * 
-     * @return \Symfony\Component\HttpFoundation\Cookie 
+     *
+     * @return \Symfony\Component\HttpFoundation\Cookie
      */
     protected function getCookie($cookieValue)
     {

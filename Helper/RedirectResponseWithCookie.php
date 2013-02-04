@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * RedirectResponseWithCookie
- * 
+ *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class RedirectResponseWithCookie extends RedirectResponse

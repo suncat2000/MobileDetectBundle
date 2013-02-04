@@ -18,7 +18,7 @@ use SunCat\MobileDetectBundle\EventListener\RequestListener,
     Symfony\Component\Routing\Route;
 
 /**
- * Request Listener Test 
+ * Request Listener Test
  */
 class RequestListenerTest extends PHPUnit_Framework_TestCase
 {
@@ -51,7 +51,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     private $config = array();
 
     /**
-     * Set up 
+     * Set up
      */
     public function setUp()
     {
@@ -91,7 +91,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function serviceContainerReturnsRequestedMockClass($param)
     {
-        switch($param) {
+        switch ($param) {
             case 'mobile_detect.mobile_detector':
                 return $this->mobileDetector;
             case 'mobile_detect.device_view':
@@ -355,13 +355,13 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $event = $this->createFilterResponseEvent($response);
         $listener->handleResponse($event);
     }
-    
+
     /**
      * createRouteCollecitonWithRouteAndRoutingOption
-     * 
+     *
      * @param type $returnValue Return value
      * @param type $times       Times
-     * 
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function createRouteCollecitonWithRouteAndRoutingOption($returnValue, $times)
@@ -376,11 +376,11 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
     /**
      * createGetResponseEvent
-     * 
+     *
      * @param type   $content Content
      * @param string $method  Method
      * @param array  $headers Headers
-     * 
+     *
      * @return \Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent
      */
     private function createGetResponseEvent($content, $method = 'GET', $headers = array())
@@ -393,11 +393,11 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
     /**
      * createFilterResponseEvent
-     * 
+     *
      * @param type   $response Response
      * @param string $method   Method
      * @param array  $headers  Headers
-     * 
+     *
      * @return \Symfony\Component\HttpKernel\Event\FilterResponseEvent
      */
     private function createFilterResponseEvent($response, $method = 'GET', $headers = array())
@@ -409,6 +409,3 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     }
 
 }
-
-
-

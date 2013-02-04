@@ -17,7 +17,7 @@ use SunCat\MobileDetectBundle\EventListener\RequestListener;
 
 /**
  * Bundle configuration
- * 
+ *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  * @author HenriVesala <email@gmail.com>
  */
