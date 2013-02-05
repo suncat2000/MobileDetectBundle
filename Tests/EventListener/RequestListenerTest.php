@@ -2,20 +2,19 @@
 
 namespace SunCat\MobileDetectBundle\Tests\RequestListener;
 
-use SunCat\MobileDetectBundle\EventListener\RequestListener,
-    SunCat\MobileDetectBundle\DeviceDetector\MobileDetector,
-    SunCat\MobileDetectBundle\Helper\DeviceView,
-
-    PHPUnit_Framework_TestCase,
-    Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
-    Symfony\Component\HttpKernel\Event\FilterResponseEvent,
-    Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpKernel\HttpKernelInterface,
-    Symfony\Component\HttpFoundation\HeaderBag,
-    Symfony\Bundle\FrameworkBundle\Routing\Router,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\Routing\RouteCollection,
-    Symfony\Component\Routing\Route;
+use PHPUnit_Framework_TestCase;
+use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
+use SunCat\MobileDetectBundle\EventListener\RequestListener;
+use SunCat\MobileDetectBundle\Helper\DeviceView;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\HttpFoundation\HeaderBag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Route;
 
 /**
  * Request Listener Test
@@ -150,7 +149,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     {
         $this->config = array(
             'mobile' => array('is_enabled' => false),
-                'tablet' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123)
+            'tablet' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123)
         );
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));

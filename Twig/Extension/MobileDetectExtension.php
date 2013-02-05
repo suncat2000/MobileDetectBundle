@@ -13,7 +13,6 @@ namespace SunCat\MobileDetectBundle\Twig\Extension;
 
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
-
 use Twig_Extension;
 
 /**
