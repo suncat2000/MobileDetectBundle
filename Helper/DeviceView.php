@@ -247,8 +247,8 @@ class DeviceView
      */
     protected function getCookie($cookieValue)
     {
-        $currentDate = new \Datetime();
+        $currentDate = new \Datetime('+1 month');
 
-        return new Cookie(self::COOKIE_KEY, $cookieValue, $currentDate->modify('+1 month')->format('Y-m-d'));
+        return new Cookie(self::COOKIE_KEY, $cookieValue, $currentDate->format('Y-m-d'));
     }
 }
