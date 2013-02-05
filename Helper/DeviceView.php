@@ -72,7 +72,7 @@ class DeviceView
      */
     public function isFullView()
     {
-        return ($this->viewType == self::VIEW_FULL);
+        return $this->viewType === self::VIEW_FULL;
     }
 
     /**
@@ -82,7 +82,7 @@ class DeviceView
      */
     public function isTabletView()
     {
-        return ($this->viewType == self::VIEW_TABLET);
+        return $this->viewType === self::VIEW_TABLET;
     }
 
     /**
@@ -92,7 +92,7 @@ class DeviceView
      */
     public function isMobileView()
     {
-        return ($this->viewType == self::VIEW_MOBILE);
+        return $this->viewType === self::VIEW_MOBILE;
     }
 
     /**
@@ -102,7 +102,7 @@ class DeviceView
      */
     public function isNotMobileView()
     {
-        return ($this->viewType == self::VIEW_NOT_MOBILE);
+        return $this->viewType === self::VIEW_NOT_MOBILE;
     }
 
     /**
@@ -112,7 +112,7 @@ class DeviceView
      */
     public function hasSwitchParam()
     {
-        return ($this->request->query->has(self::SWITCH_PARAM));
+        return $this->request->query->has(self::SWITCH_PARAM);
     }
 
     /**
