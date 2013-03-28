@@ -9,12 +9,11 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="bootstrap.php"
+         bootstrap="Tests/bootstrap.php"
     >
     <testsuites>
         <testsuite name="MobileDetectBundle testsuite">
-            <directory>.</directory>
-            <exclude>./vendor</exclude>
+            <directory>Tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
