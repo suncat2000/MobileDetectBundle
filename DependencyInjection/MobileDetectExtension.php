@@ -44,6 +44,12 @@ class MobileDetectExtension extends Extension
 
         $container->setParameter('mobile_detect.redirect', $config['redirect']);
         $container->setParameter('mobile_detect.switch_device_view.save_referer_path', $config['switch_device_view']['save_referer_path']);
+        $container->setParameter('mobile_detect.mobile_detector.phone_devices', $config['mobile_detector']['phone_devices']);
+        $container->setParameter('mobile_detect.mobile_detector.tablet_devices', $config['mobile_detector']['tablet_devices']);
+        $container->setParameter('mobile_detect.mobile_detector.operating_systems', $config['mobile_detector']['operating_systems']);
+        $container->setParameter('mobile_detect.mobile_detector.user_agents', $config['mobile_detector']['user_agents']);
+        $container->setParameter('mobile_detect.mobile_detector.utilities', $config['mobile_detector']['utilities']);
+        $container->setParameter('mobile_detect.mobile_detector.properties', $config['mobile_detector']['properties']);
     }
 
     /**
