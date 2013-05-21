@@ -31,14 +31,15 @@ Installation
 
 Add to `composer.json` in your project to `require` section:
 
-````
-...
-    {
+```yaml
+    # ...
+    "require": {
+        # ...
         "mobiledetect/mobiledetectlib": "dev-master",
         "suncat/mobile-detect-bundle": "dev-master"
     }
-...
-````
+    # ...
+```
 
 Run command:
 `php composer.phar install`
@@ -49,23 +50,18 @@ Run command:
 public function registerBundles()
 {
     return array(
-         // ...
+        // ...
         new SunCat\MobileDetectBundle\MobileDetectBundle(),
         // ...
     );
 }
 ```
-### Conﬁgure service in your YAML conﬁguration
-````
-#app/conﬁg/conﬁg.yml
-mobile_detect:
-    redirect:
-        mobile: ~
-        tablet: ~
-    switch_device_view: ~
-````
+### Configuration
 
-### Full conﬁguration
+Run the following command to see the default bundle configuration:
+```bash
+$ php app/console config:dump-reference MobileDetectBundle
+```
 
 You can change default behaviour of your redirects with action parameter:
 
@@ -73,7 +69,7 @@ You can change default behaviour of your redirects with action parameter:
 - `no_redirect`: no redirection (default behaviour)
 - `redirect_without_path`: redirects to appropriate host index page
 
-````
+```yaml
 #app/conﬁg/conﬁg.yml
 mobile_detect:
     redirect:
@@ -91,19 +87,58 @@ mobile_detect:
         save_referer_path: false        # default true
                                         # true  redirectUrl = http://site.com/current/path
                                         # false redirectUrl = http://site.com
-````
+
+    # Custom mobile detection configuration rules
+    mobile_detector:
+
+        # custom phone devices detection rules
+        phone_devices:        [] # Example: [ "CustomPhone": "CustomPhone User Agent regular expression" ]
+
+        # custom tablet devices detection rules
+        tablet_devices:       [] # Example: [ "CustomTablet": "CustomTablet User Agent regular expression" ]
+
+        # custom operating system detection rules
+        operating_systems:    [] # Example: [ "CustomOS": "CustomOS User Agent regular expression" ]
+
+        # custom user agents detection rules
+        user_agents:          [] # Example: [ "CustomUserAgent": "Custom User Agent regular expression" ]
+
+        # custom device modes detection rules
+        utilities:            [] # Example: [ "CustomDeviceMode": "CustomDeviceMode User Agent regular expression" ]
+
+        # custom device property detection rules
+        properties:           []
+```
+
+You can add support for custom device detection by updating the relevant attribute under `mobile_detector`.
+
+For example the configuration below will add support for detection of the custom device `AcmeClient` if the user agent
+header matches the reqular expression `Acme/.+`. The configuration under `properties` will allow us to extract the version
+of the client.
+```yaml
+mobile_detect:
+    # ...
+    mobile_detector:
+        user_agents:
+            AcmeClient: "Acme/.+"
+        properties:
+            AcmeClient: "Acme/[VER]"
+```
+With this configuration you can now call `$container->get('mobile_detect.mobile_detector')->isAcmeClient()` or
+`$container->get('mobile_detect.mobile_detector')->version('AcmeClient')`.
+
 
 You can also create route specific rules for redirecting in your routing.yml.
 Just put appropriate platform to options field and add it redirecting rule.
 
-````
+```yaml
 #routing.yml
 
 someaction:
     pattern:  /someaction
     defaults: { _controller: YourBundle:Index:someaction }
     options:  { mobile: redirect, tablet: no_redirect }         # redirect, no_redirect, redirect_without_path
-````
+```
 
 
 PHP examples
@@ -152,26 +187,26 @@ $mobileDetector->isSafari();
 
 Twig Helper
 ============
-````
+```jinja
 {% if is_mobile() %}
 {% if is_tablet() %}
 {% if is_device('iphone') %} # magic methods is[...]
-````
-````
+```
+```jinja
 {% if is_full_view() %}
 {% if is_mobile_view() %}
 {% if is_tablet_view() %}
 {% if is_not_mobile_view() %}
-````
+```
 
 Twig examples
 ============
 
-````
+```jinja
 {% extends is_mobile() ? "MyBundle:Layout:mobile.html.twig" : "MyBundle:Layout:full.html.twig" %}
-````
+```
 
-````
+```jinja
 {% if is_mobile_view() %}
     {% extends "MyBundle:Layout:mobile.html.twig" %}
 {% else if is_tablet_view() %}
@@ -179,13 +214,13 @@ Twig examples
 {% else if is_full_view() or is_not_mobile_view() %}
     {% extends "MyBundle:Layout:full.html.twig" %}
 {% endif %}
-````
+```
 
-````
+```jinja
 {% if is_device('iphone') %}
     <link rel="stylesheet" href="{{ asset('css/iphone.css') }}" type="text/css" />
 {% endif %}
-````
+```
 
 Usage Example:
 ============
@@ -197,7 +232,7 @@ redirection to mobile site http://m.site.com when user is using mobile device.
 
 1. Set up mobile redirection to your config.yml
 
-    ````
+    ```yaml
     mobile_detect:
         redirect:
             mobile:
@@ -207,7 +242,7 @@ redirection to mobile site http://m.site.com when user is using mobile device.
                 action: redirect
             tablet: ~
         switch_device_view: ~
-    ````
+    ```
 
     Now when you hit to http://site.com you are redirected to http://m.site.com.
     At this point if the http://m.site.com is configured to point to your project you will get circular reference error.
@@ -233,7 +268,7 @@ redirection to mobile site http://m.site.com when user is using mobile device.
     custom mobile specific controllers that can render views that are designed for mobile. This way you don't need to write
     platform specific conditions to your view files.
 
-    ````
+    ```yaml
     framework:
         router:
             resource: "%kernel.root_dir%/config/routing_mobile.yml"
@@ -245,7 +280,7 @@ redirection to mobile site http://m.site.com when user is using mobile device.
                 is_enabled: false
             tablet: ~
         switch_device_view: ~
-    ````
+    ```
 
 4. Config your http server. Make sure that in your http server virtual host you make http://m.site.com to use app_mobile.php as its script file
     instead of app.php.

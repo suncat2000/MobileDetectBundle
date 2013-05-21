@@ -10,6 +10,13 @@ parameters:
 services:
     mobile_detect.mobile_detector:
         class: %mobile_detect.mobile_detector.class%
+        arguments:
+            - %mobile_detect.mobile_detector.phone_devices%
+            - %mobile_detect.mobile_detector.tablet_devices%
+            - %mobile_detect.mobile_detector.operating_systems%
+            - %mobile_detect.mobile_detector.user_agents%
+            - %mobile_detect.mobile_detector.utilities%
+            - %mobile_detect.mobile_detector.properties%
     mobile_detect.device_view:
         class: %mobile_detect.device_view.class%
         arguments: [ '@service_container' ]
