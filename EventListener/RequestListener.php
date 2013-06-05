@@ -14,6 +14,8 @@ namespace SunCat\MobileDetectBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Route;
 
 /**
  * Request listener
@@ -67,6 +69,10 @@ class RequestListener
      */
     public function handleRequest(GetResponseEvent $event)
     {
+        // only handle master request, do not handle sub request like esi includes
+        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+            return;
+        }
 
         // Sets the flag for the response handled by the GET switch param and the type of the view.
         if ($this->deviceView->hasSwitchParam()) {
@@ -321,6 +327,7 @@ class RequestListener
      */
     private function getRoutingOption($name)
     {
+        $option = null;
         $route = $this
                     ->container
                     ->get('router')
@@ -328,7 +335,9 @@ class RequestListener
                     ->get($this->container->get('request')->get('_route'))
                 ;
 
-        $option = $route->getOption($name);
+        if ($route instanceof Route) {
+            $option = $route->getOption($name);
+        }
 
         if (!$option) {
             $option = $this->redirectConf[$name]['action'];
@@ -338,7 +347,7 @@ class RequestListener
             return $option;
         }
 
-        return false;
+        return null;
     }
 
     /**
