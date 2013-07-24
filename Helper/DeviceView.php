@@ -112,7 +112,7 @@ class DeviceView
      */
     public function hasSwitchParam()
     {
-        return $this->request->query->has(self::SWITCH_PARAM);
+        return $this->request && $this->request->query->has(self::SWITCH_PARAM);
     }
 
     /**
@@ -146,6 +146,9 @@ class DeviceView
      */
     public function getSwitchParamValue()
     {
+        if (!$this->request) {
+            return;
+        }
         return $this->request->query->get(self::SWITCH_PARAM, self::VIEW_FULL);
     }
 
