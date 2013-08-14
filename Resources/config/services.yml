@@ -3,7 +3,7 @@ parameters:
     mobile_detect.switch_device_view.save_referer_path: ~
 
 services:
-    mobile_detect.mobile_detector:
+    mobile_detect.mobile_detector.default:
         class: %mobile_detect.mobile_detector.class%
     mobile_detect.device_view:
         class: %mobile_detect.device_view.class%
