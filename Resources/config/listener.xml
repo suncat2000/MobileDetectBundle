@@ -4,10 +4,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="mobile_detect.request_listener.class"/>
+        <parameter key="mobile_detect.redirect"/>
+        <parameter key="mobile_detect.switch_device_view.save_referer_path"/>
+    </parameters>
+
     <services>
-        <service id="media.image_manager" class="%media.image_manager.class%">
-            <argument type="service" id="doctrine.orm.collector_entity_manager" />
-            <argument type="service" id="media.provider.image" />
+        <service id="mobile_detect.request_listener" class="%mobile_detect.request_listener.class%">
+            <argument type="service" id="service_container" />
+            <argument>%mobile_detect.redirect%</argument>
+            <argument>%mobile_detect.switch_device_view.save_referer_path%</argument>
         </service>
     </services>
 </container>
