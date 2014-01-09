@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="media.image_manager.class">Octonus\MediaBundle\Manager\ImageManager</parameter>
+        <parameter key="media.video_manager.class">Octonus\MediaBundle\Manager\VideoManager</parameter>
+        <parameter key="media.media_test_manager.class">Octonus\MediaBundle\Manager\MediaTestManager</parameter>
+        <parameter key="media.image_test_manager.class">Octonus\MediaBundle\Manager\ImageTestManager</parameter>
+        <parameter key="media.video_test_manager.class">Octonus\MediaBundle\Manager\VideoTestManager</parameter>
+        <parameter key="media.metric_test_manager.class">Octonus\MediaBundle\Manager\MetricTestManager</parameter>
+    </parameters>
+
+    <services>
+        <service id="media.image_manager" class="%media.image_manager.class%">
+            <argument type="service" id="doctrine.orm.collector_entity_manager" />
+            <argument type="service" id="media.provider.image" />
+        </service>
+
+        <service id="media.video_manager" class="%media.video_manager.class%">
+            <argument type="service" id="doctrine.orm.collector_entity_manager" />
+            <argument type="service" id="media.provider.video" />
+        </service>
+
+        <service id="media.media_test_manager" class="%media.media_test_manager.class%">
+            <argument type="service" id="doctrine.orm.collector_entity_manager" />
+            <argument type="service" id="media.provider.file" />
+        </service>
+
+        <service id="media.image_test_manager" class="%media.image_test_manager.class%">
+            <argument type="service" id="doctrine.orm.collector_entity_manager" />
+            <argument type="service" id="media.provider.image" />
+        </service>
+
+        <service id="media.video_test_manager" class="%media.video_test_manager.class%">
+            <argument type="service" id="doctrine.orm.collector_entity_manager" />
+            <argument type="service" id="media.provider.video_test" />
+        </service>
+
+        <service id="media.metric_test_manager" class="%media.metric_test_manager.class%">
+            <argument type="service" id="doctrine.orm.collector_entity_manager" />
+            <argument type="service" id="media.provider.metric_test" />
+        </service>
+    </services>
+</container>
