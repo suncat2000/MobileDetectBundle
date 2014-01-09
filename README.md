@@ -36,8 +36,7 @@ Add to `composer.json` in your project to `require` section:
 ````
 ...
     {
-        "mobiledetect/mobiledetectlib": "dev-master",
-        "suncat/mobile-detect-bundle": "dev-master"
+        "suncat/mobile-detect-bundle": "0.9.*"
     }
 ...
 ````
@@ -260,5 +259,6 @@ redirection to mobile site http://m.site.com when user is using mobile device.
 TODO
 ---------
 
+* Write more tests
 * Add conﬁg param `detect_tablet_how_mobile` (default false) and ﬁx detect functional for support this param
 * Add twig function `url_for_switch_view('mobile')` for generation switch view url's
