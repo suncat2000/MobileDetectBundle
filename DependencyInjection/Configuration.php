@@ -61,6 +61,16 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('save_referer_path')->defaultTrue()->end()
                     ->end()
                 ->end()
+                ->arrayNode('service')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('mobile_detector')->defaultValue('mobile_detect.mobile_detector.default')->cannotBeEmpty()->end()
+                    ->end()
+                ->end()
+                ->scalarNode('mobile_detector_class')->defaultValue('SunCat\MobileDetectBundle\DeviceDetector\MobileDetector')->cannotBeEmpty()->end()
+                ->scalarNode('device_view_class')->defaultValue('SunCat\MobileDetectBundle\Helper\DeviceView')->cannotBeEmpty()->end()
+                ->scalarNode('request_listener_class')->defaultValue('SunCat\MobileDetectBundle\EventListener\RequestListener')->cannotBeEmpty()->end()
+                ->scalarNode('extension_class')->defaultValue('SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension')->cannotBeEmpty()->end()
             ->end();
 
         return $treeBuilder;

@@ -2,13 +2,8 @@ parameters:
     mobile_detect.redirect: ~
     mobile_detect.switch_device_view.save_referer_path: ~
 
-    mobile_detect.mobile_detector.class: SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
-    mobile_detect.device_view.class: SunCat\MobileDetectBundle\Helper\DeviceView
-    mobile_detect.request_listener.class: SunCat\MobileDetectBundle\EventListener\RequestListener
-    mobile_detect.twig.extension.class: SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension
-
 services:
-    mobile_detect.mobile_detector:
+    mobile_detect.mobile_detector.default:
         class: %mobile_detect.mobile_detector.class%
     mobile_detect.device_view:
         class: %mobile_detect.device_view.class%
