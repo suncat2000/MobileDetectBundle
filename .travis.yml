@@ -7,14 +7,14 @@ php:
   - 5.5
 
 env:
-  - SYMFONY_VERSION=2.0.*
   - SYMFONY_VERSION=2.1.*
   - SYMFONY_VERSION=2.2.*
   - SYMFONY_VERSION=2.3.*
   - SYMFONY_VERSION=dev-master
 
-install:
-  - composer install
+before_script:
+  - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update
+  - composer update --dev
 
 script:
-  - phpunit
+  - phpunit --coverage-text
