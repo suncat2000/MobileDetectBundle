@@ -11,6 +11,8 @@
 
 namespace SunCat\MobileDetectBundle\DeviceDetector;
 
+use Detection\MobileDetect;
+
 /**
  * MobileDetector class
  *
@@ -19,6 +21,6 @@ namespace SunCat\MobileDetectBundle\DeviceDetector;
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  *
  */
-class MobileDetector extends \Mobile_Detect
+class MobileDetector extends MobileDetect
 {
 }
