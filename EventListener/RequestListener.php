@@ -59,6 +59,24 @@ class RequestListener
         $this->redirectConf = $redirectConf;
         $this->isFullPath = $fullPath;
     }
+    
+    /**
+     * @return array
+     */
+    public function getRedirectConf()
+    {
+        return $this->redirectConf;
+    }
+    
+    /**
+     * @param array $redirectConf
+     * 
+     * @return null
+     */
+    public function setRedirectConf(array $redirectConf)
+    {
+        $this->redirectConf = $redirectConf;
+    }
 
     /**
      * Handles the Request
