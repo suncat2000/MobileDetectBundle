@@ -16,8 +16,6 @@ use Detection\MobileDetect;
 /**
  * MobileDetector class
  *
- * Extends Mobile_Detect
- *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  *
  */
