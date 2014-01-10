@@ -92,6 +92,11 @@ mobile_detect:
         save_referer_path: false        # default true
                                         # true  redirectUrl = http://site.com/current/path
                                         # false redirectUrl = http://site.com
+    service:
+        mobile_detector: mobile_detect.mobile_detector.default
+    device_view_class: SunCat\MobileDetectBundle\Helper\DeviceView
+    request_listener_class: SunCat\MobileDetectBundle\EventListener\RequestListener
+    extension_class: SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension
 ````
 
 You can also create route specific rules for redirecting in your routing.yml.
