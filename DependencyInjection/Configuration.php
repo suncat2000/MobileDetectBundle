@@ -53,6 +53,7 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('action')->defaultValue(RequestListener::REDIRECT)->cannotBeEmpty()->end()
                             ->end()
                         ->end()
+                        ->booleanNode('detect_tablet_as_mobile')->defaultTrue()->end()
                     ->end()
                 ->end()
                 ->arrayNode('switch_device_view')

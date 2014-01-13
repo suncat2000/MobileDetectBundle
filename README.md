@@ -88,6 +88,7 @@ mobile_detect:
             host: http://t.site.com     # with scheme (http|https), default null, url validate
             status_code: 301            # default 302
             action: redirect            # redirect, no_redirect, redirect_without_path
+        detect_tablet_as_mobile: false  # default true
     switch_device_view:
         save_referer_path: false        # default true
                                         # true  redirectUrl = http://site.com/current/path
