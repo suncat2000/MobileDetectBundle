@@ -89,7 +89,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->config = array(
             'mobile' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
             'tablet' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
-            'detect_tablet_as_mobile' => true
+            'detect_tablet_as_mobile' => false
         );
     }
 
@@ -175,22 +175,42 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function handleDeviceIsTabletAndDetectTabletAsMobileIsFalse()
+    public function handleDeviceIsTabletAndTabletRedirectIsDisabledAndDetectTabletAsMobileIsFalse()
     {
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com');
-        $this->config['detect_tablet_as_mobile'] = false;
 
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(false));
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
-
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
 
         $this->deviceView->expects($this->never())->method('getTabletRedirectResponse');
         $this->deviceView->expects($this->never())->method('getMobileRedirectResponse');
 
         $event = $this->createGetResponseEvent('some content');
         $listener->handleRequest($event);
+    }
+
+    /**
+     * @test
+     */
+    public function handleDeviceIsTabletAndTabletRedirectIsDisabledAndDetectTabletAsMobileIsTrue()
+    {
+        $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com', 'status_code' => 123);
+        $this->config['detect_tablet_as_mobile'] = true;
+
+        $listener = new RequestListener($this->serviceContainer, $this->config);
+        $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
+
+        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+
+        $this->deviceView->expects($this->never())->method('getTabletRedirectResponse');
+        $this->deviceView->expects($this->once())->method('getMobileRedirectResponse')->with('http://mobilehost.com', 123)->will($this->returnValue($response));
+        $this->router->expects($this->exactly(2))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::REDIRECT, 2)));
+
+        $event = $this->createGetResponseEvent('some content');
+        $listener->handleRequest($event);
+
+        $this->assertEquals($response, $event->getResponse());
     }
 
     /**
