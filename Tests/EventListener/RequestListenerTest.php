@@ -47,7 +47,10 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     private $router;
 
-    private $config = array();
+    /**
+     * @var array
+     */
+    private $config;
 
     /**
      * Set up
@@ -82,6 +85,12 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
                     return $test->serviceContainerReturnsRequestedMockClass($param);
                 }
         ));
+
+        $this->config = array(
+            'mobile' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
+            'tablet' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
+            'detect_tablet_as_mobile' => true
+        );
     }
 
     /**
@@ -147,10 +156,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestHasTabletRedirect()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => false),
-            'tablet' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123)
-        );
+        $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
+
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
@@ -168,12 +175,31 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function handleDeviceIsTabletAndDetectTabletAsMobileIsFalse()
+    {
+        $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com');
+        $this->config['detect_tablet_as_mobile'] = false;
+
+        $listener = new RequestListener($this->serviceContainer, $this->config);
+        $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(false));
+        $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
+
+        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+
+        $this->deviceView->expects($this->never())->method('getTabletRedirectResponse');
+        $this->deviceView->expects($this->never())->method('getMobileRedirectResponse');
+
+        $event = $this->createGetResponseEvent('some content');
+        $listener->handleRequest($event);
+    }
+
+    /**
+     * @test
+     */
     public function handleRequestHasTabletRedirectWithoutPath()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => false),
-            'tablet' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123)
-        );
+        $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
+
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
@@ -193,10 +219,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestHasTabletNoRedirect()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => false),
-            'tablet' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123)
-        );
+        $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
+
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->exactly(2))->method('isTablet')->will($this->returnValue(true));
 
@@ -211,10 +235,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestHasMobiletRedirect()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123),
-            'tablet' => array('is_enabled' => false)
-        );
+        $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
+
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
 
@@ -234,10 +256,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestHasMobiletRedirectWithoutPath()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123),
-            'tablet' => array('is_enabled' => false)
-        );
+        $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
+
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
 
@@ -257,10 +277,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestHasMobileNoRedirect()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123),
-            'tablet' => array('is_enabled' => false)
-        );
+        $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
+
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->mobileDetector->expects($this->exactly(2))->method('isMobile')->will($this->returnValue(true));
 
@@ -275,10 +293,6 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestNeedNotMobileResponseModify()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => false),
-            'tablet' => array('is_enabled' => false)
-        );
         $listener = new RequestListener($this->serviceContainer, $this->config);
         $this->deviceView->expects($this->once())->method('setNotMobileView');
         $listener->handleRequest($this->createGetResponseEvent('some content'));
@@ -289,10 +303,8 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestNeedTabletResponseModify()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => false, 'host' => 'http://mobilesite.com', 'status_code' => 123),
-            'tablet' => array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321)
-        );
+        $this->config['mobile'] = array('is_enabled' => false, 'host' => 'http://mobilesite.com', 'status_code' => 123);
+        $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321);
 
         $this->mobileDetector->expects($this->exactly(2))->method('isTablet')->will($this->returnValue(true));
         $this->deviceView->expects($this->once())->method('getViewType')->will($this->returnValue('some device'));
@@ -311,10 +323,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestNeedMobileResponseModify()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => false, 'host' => 'http://tabletsite.com', 'status_code' => 123),
-            'tablet' => array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321)
-        );
+        $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321);
 
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
         $this->deviceView->expects($this->exactly(2))->method('getViewType')->will($this->returnValue('some device'));
@@ -332,10 +341,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleResponse()
     {
-        $this->config = array(
-            'mobile' => array('is_enabled' => false, 'host' => 'http://tabletsite.com', 'status_code' => 123),
-            'tablet' => array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321)
-        );
+        $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testhost.com', 'status_code' => 321);
 
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
         $this->deviceView->expects($this->exactly(2))->method('getViewType')->will($this->returnValue('some device'));

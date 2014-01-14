@@ -162,7 +162,11 @@ class RequestListener
             return false;
         }
 
-        $isMobile = $this->mobileDetector->isMobile();
+        if ($this->redirectConf['detect_tablet_as_mobile'] === false) {
+            $isMobile = $this->mobileDetector->isMobile() && !$this->mobileDetector->isTablet();
+        } else {
+            $isMobile = $this->mobileDetector->isMobile();
+        }
         $isMobileHost = ($this->getCurrentHost() === $this->redirectConf['mobile']['host']);
 
         if ($isMobile && !$isMobileHost && ($this->getRoutingOption(self::MOBILE) != self::NO_REDIRECT)) {
