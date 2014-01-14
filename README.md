@@ -266,5 +266,4 @@ TODO
 ---------
 
 * Write more tests
-* Add conﬁg param `detect_tablet_how_mobile` (default false) and ﬁx detect functional for support this param
 * Add twig function `url_for_switch_view('mobile')` for generation switch view url's
