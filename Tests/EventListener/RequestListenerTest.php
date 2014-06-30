@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Route;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Request Listener Test
@@ -117,8 +118,13 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     public function handleRequestHasSwitchParam()
     {
         $listener = new RequestListener($this->serviceContainer, array());
+        $this->request->query = new ParameterBag(array('myparam'=>'myvalue','device_view'=>'mobile'));
         $this->deviceView->expects($this->once())->method('hasSwitchParam')->will($this->returnValue(true));
-        $this->deviceView->expects($this->once())->method('getRedirectResponseBySwitchParam')->will($this->returnValue($this->getMock('Symfony\Component\HttpFoundation\Response')));
+        $this->deviceView
+            ->expects($this->once())
+            ->method('getRedirectResponseBySwitchParam')
+            ->with($this->stringEndsWith('?myparam=myvalue'))
+            ->will($this->returnValue($this->getMock('Symfony\Component\HttpFoundation\Response')));
         $event = $this->createGetResponseEvent('some content');
 
         $listener->handleRequest($event);
