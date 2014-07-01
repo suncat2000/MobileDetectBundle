@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Request listener
@@ -264,8 +265,16 @@ class RequestListener
     protected function getRedirectResponseBySwitchParam()
     {
         if (true === $this->isFullPath) {
+            /* @var $request Request */
             $request = $this->container->get('request');
             $redirectUrl = $request->getUriForPath($request->getPathInfo());
+            $queryParams = $request->query->all();
+            if (array_key_exists('device_view', $queryParams)) {
+                unset($queryParams['device_view']);
+            }
+            if(sizeof($queryParams) > 0) {
+                $redirectUrl .= '?'. Request::normalizeQueryString(http_build_query($queryParams));
+            }
         } else {
             $redirectUrl = $this->getCurrentHost();
         }
