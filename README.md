@@ -91,7 +91,7 @@ mobile_detect:
         detect_tablet_as_mobile: true   # default false
     switch_device_view:
         save_referer_path: false        # default true
-                                        # true  redirectUrl = http://site.com/current/path
+                                        # true  redirectUrl = http://site.com/current/path?currentQuery=string
                                         # false redirectUrl = http://site.com
     service:
         mobile_detector: mobile_detect.mobile_detector.default
@@ -163,6 +163,8 @@ Twig Helper
 {% if is_mobile() %}
 {% if is_tablet() %}
 {% if is_device('iphone') %} # magic methods is[...]
+{% if is_ios() %}
+{% if is_android_os() %}
 ````
 ````
 {% if is_full_view() %}
