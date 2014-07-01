@@ -49,6 +49,8 @@ class MobileDetectExtension extends Twig_Extension
             'is_mobile_view' => new \Twig_Function_Method($this, 'isMobileView'),
             'is_tablet_view' => new \Twig_Function_Method($this, 'isTabletView'),
             'is_not_mobile_view' => new \Twig_Function_Method($this, 'isNotMobileView'),
+            'is_ios' => new \Twig_Function_Method($this, 'isIOS'),
+            'is_android_os' => new \Twig_Function_Method($this, 'isAndroidOS'),
         );
     }
 
@@ -117,6 +119,24 @@ class MobileDetectExtension extends Twig_Extension
     public function isNotMobileView()
     {
         return $this->deviceView->isNotMobileView();
+    }
+
+    /**
+     * Is iOS
+     * @return boolean
+     */
+    public function isIOS()
+    {
+        return $this->mobileDetector->isIOS();
+    }
+
+    /**
+     * Is Android OS
+     * @return boolean
+     */
+    public function isAndroidOS()
+    {
+        return $this->mobileDetector->isAndroidOS();
     }
 
     /**
