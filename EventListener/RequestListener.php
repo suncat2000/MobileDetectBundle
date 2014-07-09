@@ -75,6 +75,8 @@ class RequestListener
             return;
         }
 
+        $this->mobileDetector->setUserAgent($event->getRequest()->headers->get('user-agent'));
+
         // Sets the flag for the response handled by the GET switch param and the type of the view.
         if ($this->deviceView->hasSwitchParam()) {
             $event->setResponse($this->getRedirectResponseBySwitchParam());
