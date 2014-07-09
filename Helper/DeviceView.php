@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
+use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 
 /**
  * DeviceView
@@ -31,6 +32,7 @@ class DeviceView
     const VIEW_NOT_MOBILE   = 'not_mobile';
 
     private $request;
+    private $requestedViewType;
     private $viewType;
 
     /**
@@ -53,6 +55,7 @@ class DeviceView
         } elseif ($this->request->cookies->has(self::COOKIE_KEY)) {
             $this->viewType = $this->request->cookies->get(self::COOKIE_KEY);
         }
+        $this->requestedViewType = $this->viewType;
     }
 
     /**
@@ -63,6 +66,16 @@ class DeviceView
     public function getViewType()
     {
         return $this->viewType;
+    }
+
+    /**
+     * Gets the view type that has explicitly been requested either by switch param, or by cookie.
+     *
+     * @return string The requested view type or null if no view type has been explicitly requested.
+     */
+    public function getRequestedViewType()
+    {
+        return $this->requestedViewType;
     }
 
     /**
@@ -113,6 +126,24 @@ class DeviceView
     public function hasSwitchParam()
     {
         return $this->request && $this->request->query->has(self::SWITCH_PARAM);
+    }
+
+    /**
+     * Sets the view type.
+     * 
+     * @param string $view
+     */
+    public function setView($view)
+    {
+        $this->viewType = $view;
+    }
+
+    /**
+     * Sets the full (desktop) view type.
+     */
+    public function setFullView()
+    {
+        $this->viewType = self::VIEW_FULL;
     }
 
     /**
@@ -188,57 +219,32 @@ class DeviceView
     }
 
     /**
-     * Modifies the Response for tablet devices.
+     * Modifies the Response for the specified device view.
      *
+     * @param string $view The device view for which the response should be modified.
      * @param \Symfony\Component\HttpFoundation\Response $response
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function modifyTabletResponse(Response $response)
+    public function modifyResponse($view, Response $response)
     {
-        $response->headers->setCookie($this->getCookie(self::VIEW_TABLET));
+        $response->headers->setCookie($this->getCookie($view));
 
         return $response;
     }
 
     /**
-     * Modifies the Response for mobile devices.
+     * Gets the RedirectResponse for the specified device view.
      *
-     * @param \Symfony\Component\HttpFoundation\Response $response
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function modifyMobileResponse(Response $response)
-    {
-        $response->headers->setCookie($this->getCookie(self::VIEW_MOBILE));
-
-        return $response;
-    }
-
-    /**
-     * Gets the RedirectResponse for tablet devices.
-     *
+     * @param string $view       The device view for which we want the RedirectResponse.
      * @param string $host       Uri host
      * @param int    $statusCode Status code
      *
      * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
      */
-    public function getTabletRedirectResponse($host, $statusCode)
+    public function getRedirectResponse($view, $host, $statusCode)
     {
-        return new RedirectResponseWithCookie($host, $statusCode, $this->getCookie(self::VIEW_TABLET));
-    }
-
-    /**
-     * Gets the RedirectResponse for mobile devices.
-     *
-     * @param string $host       Uri host
-     * @param int    $statusCode Status code
-     *
-     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
-     */
-    public function getMobileRedirectResponse($host, $statusCode)
-    {
-        return new RedirectResponseWithCookie($host, $statusCode, $this->getCookie(self::VIEW_MOBILE));
+        return new RedirectResponseWithCookie($host, $statusCode, $this->getCookie($view));
     }
 
     /**

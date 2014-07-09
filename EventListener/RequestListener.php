@@ -17,6 +17,9 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\Request;
+use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
+use SunCat\MobileDetectBundle\Helper\DeviceView;
+use Doctrine\Tests\Common\Annotations\True;
 
 /**
  * Request listener
@@ -32,9 +35,16 @@ class RequestListener
 
     CONST MOBILE    = 'mobile';
     CONST TABLET    = 'tablet';
+    CONST FULL      = 'full';
 
     protected $container;
+    /**
+     * @var MobileDetector
+     */
     protected $mobileDetector;
+    /**
+     * @var DeviceView
+     */
     protected $deviceView;
 
     protected $redirectConf;
@@ -71,75 +81,65 @@ class RequestListener
     public function handleRequest(GetResponseEvent $event)
     {
         // only handle master request, do not handle sub request like esi includes
-        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
+        // If the device view is "not the mobile view" (e.g. we're not in the request context)
+        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST || $this->deviceView->isNotMobileView()) {
             return;
         }
 
         // Sets the flag for the response handled by the GET switch param and the type of the view.
         if ($this->deviceView->hasSwitchParam()) {
             $event->setResponse($this->getRedirectResponseBySwitchParam());
-
             return;
         }
 
-        // If the device view is either the the full view or not the mobile view
-        if ($this->deviceView->isFullView() || $this->deviceView->isNotMobileView()) {
-            return;
+        // If neither the SwitchParam nor the cookie are set, detect the view...
+        $cookieIsSet = $this->deviceView->getRequestedViewType() !== null;
+        if (!$cookieIsSet) {
+            if ($this->redirectConf['detect_tablet_as_mobile'] === false && $this->mobileDetector->isTablet()) {
+                $this->deviceView->setTabletView();
+            } elseif ($this->mobileDetector->isMobile()) {
+                $this->deviceView->setMobileView();
+            } else {
+                $this->deviceView->setFullView();
+            }
         }
 
-        // Redirects to the tablet version and set the 'tablet' device view in a cookie.
-        if ($this->hasTabletRedirect()) {
-            if (($response = $this->getTabletRedirectResponse())) {
+        // Check if we must redirect to the target view and do so if needed
+        if ($this->mustRedirect($this->deviceView->getViewType())) {
+            if (($response = $this->getRedirectResponse($this->deviceView->getViewType()))) {
                 $event->setResponse($response);
             }
-
-            return;
-        }
-
-        // Redirects to the mobile version and set the 'mobile' device view in a cookie.
-        if ($this->hasMobileRedirect()) {
-
-            if (($response = $this->getMobileRedirectResponse())) {
-                $event->setResponse($response);
-            }
-
             return;
         }
 
         // No need to redirect
 
-        // Sets the flag for the response handler
+        // We don't need to modify _every_ response: once the cookie is set,
+        // save badwith and CPU cycles by just letting it expire someday.
+        if ($cookieIsSet) {
+            return;
+        }
+
+        // Sets the flag for the response handler and prepares the modification closure
         $this->needModifyResponse = true;
+        $this->prepareResponseModification($this->deviceView->getViewType());
+    }
 
-        // Checking the need to modify the Response and set closure
-        if ($this->needTabletResponseModify()) {
-            $this->deviceView->setTabletView();
-
-            return;
-        }
-
-        // Sets the closure modifier mobile Response
-        if ($this->needMobileResponseModify()) {
-            $this->deviceView->setMobileView();
-
-            return;
-        }
-
-        // Sets the closure modifier not_mobile Response
-        if ($this->needNotMobileResponseModify()) {
-            $this->deviceView->setNotMobileView();
-
-            return;
-        }
-
+    /**
+     * Will this request listener modify the response? This flag will be set during the "handleRequest" phase.
+     * Made public for testability.
+     * 
+     * @return boolean True if the response needs to be modified.
+     */
+    public function needsResponseModification()
+    {
+        return $this->needModifyResponse;
     }
 
     /**
      * Handles the Response
      *
      * @param FilterResponseEvent $event
-     *
-     * @return null
      */
     public function handleResponse(FilterResponseEvent $event)
     {
@@ -152,25 +152,23 @@ class RequestListener
     }
 
     /**
-     * Detects mobile redirections.
-     *
+     * Do we have to redirect?
+     * 
+     * @param string $view For which view should be check?
+     * 
      * @return boolean
      */
-    protected function hasMobileRedirect()
+    protected function mustRedirect($view)
     {
+        if (!isset($this->redirectConf[$view]) || !$this->redirectConf[$view]['is_enabled'] || 
+            ($this->getRoutingOption($view) === self::NO_REDIRECT)) {
 
-        if (!$this->redirectConf['mobile']['is_enabled']) {
             return false;
         }
 
-        if ($this->redirectConf['detect_tablet_as_mobile'] === false) {
-            $isMobile = $this->mobileDetector->isMobile() && !$this->mobileDetector->isTablet();
-        } else {
-            $isMobile = $this->mobileDetector->isMobile();
-        }
-        $isMobileHost = ($this->getCurrentHost() === $this->redirectConf['mobile']['host']);
+        $isHost = ($this->getCurrentHost() === $this->redirectConf[$view]['host']);
 
-        if ($isMobile && !$isMobileHost && ($this->getRoutingOption(self::MOBILE) != self::NO_REDIRECT)) {
+        if (!$isHost) {
             return true;
         }
 
@@ -178,65 +176,17 @@ class RequestListener
     }
 
     /**
-     * Detects tablet redirections.
+     * Prepares the response modification which will take place after the controller logic has been executed.
+     *
+     * @param string $view The view for which to prepare the response modification.
      *
      * @return boolean
      */
-    protected function hasTabletRedirect()
+    protected function prepareResponseModification($view)
     {
-        if (!$this->redirectConf['tablet']['is_enabled']) {
-            return false;
-        }
-
-        $isTablet = $this->mobileDetector->isTablet();
-        $isTabletHost = ($this->getCurrentHost() === $this->redirectConf['tablet']['host']);
-
-        if ($isTablet && !$isTabletHost && ($this->getRoutingOption(self::TABLET) != self::NO_REDIRECT)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * If a modified Response for tablet devices is needed
-     *
-     * @return boolean
-     */
-    protected function needTabletResponseModify()
-    {
-
-        if ((null === $this->deviceView->getViewType() || $this->deviceView->isTabletView()) &&
-            $this->mobileDetector->isTablet()) {
-
-            $this->modifyResponseClosure = function($deviceView, $event) {
-                return $deviceView->modifyTabletResponse($event->getResponse());
-            };
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * If a modified Response for mobile devices is needed
-     *
-     * @return boolean
-     */
-    protected function needMobileResponseModify()
-    {
-        if ((null === $this->deviceView->getViewType() || $this->deviceView->isMobileView()) &&
-            $this->mobileDetector->isMobile()) {
-
-            $this->modifyResponseClosure = function($deviceView, $event) {
-                return $deviceView->modifyMobileResponse($event->getResponse());
-            };
-
-            return true;
-        }
-
-        return false;
+        $this->modifyResponseClosure = function($deviceView, $event) use ($view) {
+            return $deviceView->modifyResponse($view, $event->getResponse());
+        };
     }
 
     /**
@@ -264,50 +214,44 @@ class RequestListener
      */
     protected function getRedirectResponseBySwitchParam()
     {
-        if (true === $this->isFullPath) {
-            /* @var $request Request */
-            $request = $this->container->get('request');
-            $redirectUrl = $request->getUriForPath($request->getPathInfo());
-            $queryParams = $request->query->all();
-            if (array_key_exists('device_view', $queryParams)) {
-                unset($queryParams['device_view']);
-            }
-            if(sizeof($queryParams) > 0) {
-                $redirectUrl .= '?'. Request::normalizeQueryString(http_build_query($queryParams));
-            }
+        if ($this->mustRedirect($this->deviceView->getViewType())) {
+            // Avoid unnecessary redirects: if we need to redirect to another view,
+            // do it in one response while setting the cookie.
+            $redirectUrl = $this->getRedirectUrl($this->deviceView->getViewType());
         } else {
-            $redirectUrl = $this->getCurrentHost();
+            if (true === $this->isFullPath) {
+                /* @var $request Request */
+                $request = $this->container->get('request');
+                $redirectUrl = $request->getUriForPath($request->getPathInfo());
+                $queryParams = $request->query->all();
+                if (array_key_exists('device_view', $queryParams)) {
+                    unset($queryParams['device_view']);
+                }
+                if(sizeof($queryParams) > 0) {
+                    $redirectUrl .= '?'. Request::normalizeQueryString(http_build_query($queryParams));
+                }
+            } else {
+                $redirectUrl = $this->getCurrentHost();
+            }
         }
 
         return $this->deviceView->getRedirectResponseBySwitchParam($redirectUrl);
     }
 
     /**
-     * Gets the mobile RedirectResponse.
-     *
+     * Gets the RedirectResponse for the specified view.
+     * 
+     * @param string $view The view for which we want the RedirectResponse.
+     * 
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function getMobileRedirectResponse()
+    protected function getRedirectResponse($view)
     {
-        if (($host = $this->getRedirectUrl(self::MOBILE))) {
-            return $this->deviceView->getMobileRedirectResponse(
+        if (($host = $this->getRedirectUrl($view))) {
+            return $this->deviceView->getRedirectResponse(
+                $view,
                 $host,
-                $this->redirectConf[self::MOBILE]['status_code']
-            );
-        }
-    }
-
-    /**
-     * Gets the tablet RedirectResponse.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    protected function getTabletRedirectResponse()
-    {
-        if (($host = $this->getRedirectUrl(self::TABLET))) {
-            return $this->deviceView->getTabletRedirectResponse(
-                $host,
-                $this->redirectConf[self::TABLET]['status_code']
+                $this->redirectConf[$view]['status_code']
             );
         }
     }
@@ -322,12 +266,25 @@ class RequestListener
     protected function getRedirectUrl($platform)
     {
         if (($routingOption = $this->getRoutingOption($platform))) {
-            switch ($routingOption) {
-                case self::REDIRECT:
-                    return $this->redirectConf[$platform]['host'].$this->container->get('request')->getRequestUri();
-                case self::REDIRECT_WITHOUT_PATH:
-                    return  $this->redirectConf[$platform]['host'];
+            $redirectUrl = null;
+            if (self::REDIRECT === $routingOption) {
+                // Make sure to hint at the device override, otherwise infinite loop
+                // redirections may occur if different device views are hosted on
+                // different domains (since the cookie can't be shared across domains)
+                $queryParams = $this->container->get('request')->query->all();
+                $queryParams[DeviceView::SWITCH_PARAM] = $platform;
+
+                return $this->redirectConf[$platform]['host'] . $this->container->get('request')->getRequestUri() . '?' . Request::normalizeQueryString(http_build_query($queryParams));
+            } elseif (self::REDIRECT_WITHOUT_PATH === $routingOption) {
+                // Make sure to hint at the device override, otherwise infinite loop
+                // redirections may occur if different device views are hosted on
+                // different domains (since the cookie can't be shared across domains)
+                return $this->redirectConf[$platform]['host'] . '?' . DeviceView::SWITCH_PARAM . '=' . $platform;
+            } else {
+                return null;
             }
+        } else {
+            return null;
         }
     }
 
@@ -352,7 +309,7 @@ class RequestListener
             $option = $route->getOption($name);
         }
 
-        if (!$option) {
+        if (!$option && isset($this->redirectConf[$name])) {
             $option = $this->redirectConf[$name]['action'];
         }
 
