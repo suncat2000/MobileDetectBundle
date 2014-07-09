@@ -462,6 +462,20 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function handleRequestUpdatedMobileDetectorUserAgent()
+    {
+        $this->mobileDetector->expects($this->once())->method('setUserAgent')->with($this->equalTo('agent'));
+
+        $event = $this->createGetResponseEvent('some content');
+        $event->getRequest()->headers->set('user-agent', 'agent');
+
+        $listener = new RequestListener($this->serviceContainer, $this->config);
+        $listener->handleRequest($event);
+    }
+
+    /**
      * createRouteCollecitonWithRouteAndRoutingOption
      *
      * @param type $returnValue Return value
