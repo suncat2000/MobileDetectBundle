@@ -77,6 +77,11 @@ You can change default behaviour of your redirects with action parameter:
 #app/conﬁg/conﬁg.yml
 mobile_detect:
     redirect:
+        full:
+            is_enabled: true            # default false
+            host: http://site.com       # with scheme (http|https), default null, url validate
+            status_code: 301            # default 302
+            action: redirect            # redirect, no_redirect, redirect_without_path
         mobile:
             is_enabled: true            # default false
             host: http://m.site.com     # with scheme (http|https), default null, url validate
@@ -107,7 +112,7 @@ Just put appropriate platform to options field and add it redirecting rule.
 someaction:
     pattern:  /someaction
     defaults: { _controller: YourBundle:Index:someaction }
-    options:  { mobile: redirect, tablet: no_redirect }         # redirect, no_redirect, redirect_without_path
+    options:  { mobile: redirect, tablet: no_redirect, full: redirect_without_path }         # redirect, no_redirect, redirect_without_path
 ```
 
 
@@ -199,10 +204,13 @@ Twig examples
 Usage Example:
 --------------
 
-### Setting up redirection to mobile site that is the same Symfony 2 instance as your main site.
+### Setting up redirection to and from a mobile site that is the same Symfony 2 instance as your main site.
 
-In this example lets assume that you have a website http://site.com and you wish just to activate
-redirection to mobile site http://m.site.com when user is using mobile device.
+In this example, let's assume that you have a website http://site.com and you wish to activate
+redirection to a mobile site http://m.site.com when the user is using a mobile device.
+
+Additionally, when a user with a desktop browser reaches the mobile site http://m.site.com, he
+should be redirected to the full version at http://site.com.
 
 1. **Set up mobile redirection to your config.yml**
 
@@ -218,11 +226,11 @@ redirection to mobile site http://m.site.com when user is using mobile device.
         switch_device_view: ~
     ```
 
-    Now when you hit to http://site.com you are redirected to http://m.site.com.
-    At this point if the http://m.site.com is configured to point to your project you will get circular reference error.
-    To get rid of the circular reference error we want to disable mobile redirecting when we land on our mobile site.
+    Now when you hit http://site.com with a mobile device, you are redirected to http://m.site.com.
+    At this point if the http://m.site.com is configured to point to your project, you will get circular reference error.
+    To get rid of the circular reference error, we want to disable mobile redirecting when we land on our mobile site.
 
-2. **Crete new app.php file that has name for example app_mobile.php and change following:**
+2. **Crete a new `app.php` file with a name like, for example, `app_mobile.php` and change the following:**
     ```php
     $kernel = new AppKernel('prod', false);
     ```
@@ -230,15 +238,15 @@ redirection to mobile site http://m.site.com when user is using mobile device.
     ```php
     $kernel = new AppKernel('mobile', false);
     ```
-    Now your mobile site has its own environment and we can nicely create some custom configuration for it and disable
-    mobile redirecting.
+    Now your mobile site has its own environment and we can nicely create some custom configuration for it, disable
+    mobile redirecting and activate desktop redirection instead.
 
 
-3. **Create config_mobile.yml next to your config.yml and disable mobile redirecting. This should take care of the circular
-    reference errors.**
+3. **Create `config_mobile.yml` next to your `config.yml` and disable mobile redirecting. This should take care of the circular
+    reference errors. Adding the `full` configuration activates desktop redirection.**
 
-    Also you might  want to define your routing file as mobile specific. If you do, just create new routing_mobile.yml
-    file and use it just like the default routing.yml.  This gives you nice opportunity to route requests to
+    Also you might want to define your routing file as mobile specific. If you do, just create new `routing_mobile.yml`
+    file and use it just like the default `routing.yml`. This gives you nice opportunity to route requests to
     custom mobile specific controllers that can render views that are designed for mobile. This way you don't need to write
     platform specific conditions to your view files.
 
@@ -253,11 +261,14 @@ redirection to mobile site http://m.site.com when user is using mobile device.
             mobile:
                 is_enabled: false
             tablet: ~
+            full:
+                is_enabled: true
+                host: http://site.com
         switch_device_view: ~
     ```
 
-4. Config your http server. Make sure that in your http server virtual host you make http://m.site.com to use app_mobile.php as its script file
-    instead of app.php.
+4. Configure your http server: Make sure that in your http server virtual host, you make http://m.site.com use `app_mobile.php` as its script file
+    instead of `app.php`.
 
     After you have restarted your http server everything should work.
     Also remember to clear the cache if you do changes to configs or you might end to get frustrated for nothing.
@@ -268,4 +279,4 @@ TODO
 ---------
 
 * Write more tests
-* Add twig function `url_for_switch_view('mobile')` for generation switch view url's
+* Add twig function `url_for_switch_view('mobile')` for generating switch view url's
