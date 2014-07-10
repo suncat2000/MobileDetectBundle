@@ -204,7 +204,7 @@ Twig examples
 Usage Example:
 --------------
 
-### Setting up redirection to and from a mobile site that is the same Symfony 2 instance as your main site.
+#### Setting up redirection to and from a mobile site that is the same Symfony 2 instance as your main site.
 
 In this example, let's assume that you have a website http://site.com and you wish to activate
 redirection to a mobile site http://m.site.com when the user is using a mobile device.
@@ -267,8 +267,8 @@ should be redirected to the full version at http://site.com.
         switch_device_view: ~
     ```
 
-4. Configure your http server: Make sure that in your http server virtual host, you make http://m.site.com use `app_mobile.php` as its script file
-    instead of `app.php`.
+4. **Configure your http server: Make sure that in your http server virtual host, you make http://m.site.com use `app_mobile.php` as its script file
+    instead of `app.php`.**
 
     After you have restarted your http server everything should work.
     Also remember to clear the cache if you do changes to configs or you might end to get frustrated for nothing.
