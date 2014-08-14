@@ -13,6 +13,7 @@ namespace SunCat\MobileDetectBundle\Helper;
 
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
@@ -31,9 +32,20 @@ class DeviceView
     const VIEW_FULL         = 'full';
     const VIEW_NOT_MOBILE   = 'not_mobile';
 
-    private $request;
-    private $requestedViewType;
-    private $viewType;
+    /**
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
+    protected $request;
+
+    /**
+     * @var string
+     */
+    protected $requestedViewType;
+
+    /**
+     * @var string
+     */
+    protected $viewType;
 
     /**
      * Constructor
