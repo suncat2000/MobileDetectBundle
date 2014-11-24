@@ -178,6 +178,10 @@ Twig Helper
 {% if is_not_mobile_view() %}
 ```
 
+```jinja
+{{ full_view_url() }}
+```
+
 Twig examples
 -------------
 
@@ -198,6 +202,12 @@ Twig examples
 ```jinja
 {% if is_device('iphone') %}
     <link rel="stylesheet" href="{{ asset('css/iphone.css') }}" type="text/css" />
+{% endif %}
+```
+
+```jinja
+{% if is_mobile_view() %}
+    <link rel="canonical" href="{{ full_view_url() }}" />
 {% endif %}
 ```
 
