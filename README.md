@@ -35,7 +35,7 @@ Add to `composer.json` in your project to `require` section:
 
 ```json
 {
-    "suncat/mobile-detect-bundle": "0.9.*"
+    "suncat/mobile-detect-bundle": "0.10.*"
 }
 ```
 
