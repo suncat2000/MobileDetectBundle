@@ -326,7 +326,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function handleRequestHasMobiletRedirectWithoutPath()
+    public function handleRequestHasMobileRedirectWithoutPath()
     {
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
 
