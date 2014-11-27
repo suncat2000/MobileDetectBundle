@@ -268,7 +268,6 @@ class RequestListener
     protected function getRedirectUrl($platform)
     {
         if (($routingOption = $this->getRoutingOption($platform))) {
-            $redirectUrl = null;
             if (self::REDIRECT === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirections may occur if different device views are hosted on
@@ -276,7 +275,7 @@ class RequestListener
                 $queryParams = $this->container->get('request')->query->all();
                 $queryParams[DeviceView::SWITCH_PARAM] = $platform;
 
-                return $this->redirectConf[$platform]['host'] . $this->container->get('request')->getRequestUri() . '?' . Request::normalizeQueryString(http_build_query($queryParams));
+                return rtrim($this->redirectConf[$platform]['host'], '/') . $this->container->get('request')->getPathInfo() . '?' . Request::normalizeQueryString(http_build_query($queryParams));
             } elseif (self::REDIRECT_WITHOUT_PATH === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirections may occur if different device views are hosted on

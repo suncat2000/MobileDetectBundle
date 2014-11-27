@@ -69,7 +69,6 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
         $this->request->expects($this->any())->method('getScheme')->will($this->returnValue('http'));
         $this->request->expects($this->any())->method('getHost')->will($this->returnValue('testhost.com'));
-        $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
         $this->request->expects($this->any())->method('getUriForPath')->will($this->returnValue('/'));
         $this->request->query = new ParameterBag();
 
@@ -131,6 +130,31 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $listener->handleRequest($event);
     }
 
+
+    /**
+     * @test
+     */
+    public function handleRequestHasSwitchParamAndQuery()
+    {
+        $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com');
+
+        $listener = new RequestListener($this->serviceContainer, $this->config);
+
+        $this->request->query = new ParameterBag(array('myparam'=>'myvalue','device_view'=>'mobile'));
+        $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
+        $this->router->expects($this->exactly(2))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::REDIRECT, 2)));
+        $this->deviceView->expects($this->once())->method('hasSwitchParam')->will($this->returnValue(true));
+        $this->deviceView->expects($this->atLeastOnce())->method('getViewType')->will($this->returnValue(DeviceView::VIEW_MOBILE));
+        $this->deviceView
+            ->expects($this->once())
+            ->method('getRedirectResponseBySwitchParam')
+            ->with($this->stringEndsWith('/?device_view=mobile&myparam=myvalue'))
+            ->will($this->returnValue($this->getMock('Symfony\Component\HttpFoundation\Response')));
+        $event = $this->createGetResponseEvent('some content');
+
+        $listener->handleRequest($event);
+    }
+
     /**
      * @test
      */
@@ -172,7 +196,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->deviceView->expects($this->once())->method('isNotMobileView')->will($this->returnValue(false));
         $this->deviceView->expects($this->atLeastOnce())->method('getViewType')->will($this->returnValue('tablet'));
         $this->request->query = new ParameterBag(array('some'=>'param'));
-        $this->request->expects($this->once())->method('getRequestUri')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will($this->returnValue($this->createRouteCollecitonWithRouteAndRoutingOption(RequestListener::REDIRECT, 2)));
         $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
         $this->deviceView
@@ -254,7 +278,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->deviceView->expects($this->once())->method('setTabletView');
         $this->deviceView->expects($this->atLeastOnce())->method('getViewType')->will($this->returnValue('tablet'));
 
-        $this->request->expects($this->never())->method('getRequestUri')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->never())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
         $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
 
         $this->deviceView
@@ -305,7 +329,7 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
         $this->deviceView->expects($this->once())->method('setMobileView');
         $this->deviceView->expects($this->atLeastOnce())->method('getViewType')->will($this->returnValue('mobile'));
 
-        $this->request->expects($this->once())->method('getRequestUri')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->once())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
         $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
 
         $this->deviceView
