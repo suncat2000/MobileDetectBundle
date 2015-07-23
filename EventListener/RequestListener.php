@@ -19,7 +19,6 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\Request;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
-use Doctrine\Tests\Common\Annotations\True;
 
 /**
  * Request listener
