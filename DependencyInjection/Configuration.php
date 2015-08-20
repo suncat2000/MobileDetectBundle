@@ -80,6 +80,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('device_view_class')->defaultValue('SunCat\MobileDetectBundle\Helper\DeviceView')->cannotBeEmpty()->end()
                 ->scalarNode('request_listener_class')->defaultValue('SunCat\MobileDetectBundle\EventListener\RequestListener')->cannotBeEmpty()->end()
                 ->scalarNode('extension_class')->defaultValue('SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension')->cannotBeEmpty()->end()
+                ->scalarNode('data_collector_device_class')->defaultValue('SunCat\MobileDetectBundle\DataCollector\DeviceDataCollector')->cannotBeEmpty()->end()
             ->end();
 
         return $treeBuilder;

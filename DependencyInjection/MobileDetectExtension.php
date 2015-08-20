@@ -49,6 +49,7 @@ class MobileDetectExtension extends Extension
 
         $container->setParameter('mobile_detect.mobile_detector.class', $config['mobile_detector_class']);
         $container->setParameter('mobile_detect.device_view.class', $config['device_view_class']);
+        $container->setParameter('mobile_detect.data_collector_device.class', $config['data_collector_device_class']);
         $container->setParameter('mobile_detect.request_listener.class', $config['request_listener_class']);
         $container->setParameter('mobile_detect.twig.extension.class', $config['extension_class']);
 
