@@ -13,7 +13,7 @@ Introduction
 This Bundle use [Mobile_Detect](https://github.com/serbanghita/Mobile-Detect) class and provides the following features:
 
 * Detect the various mobile devices by Name, OS, browser User-Agent
-* Manages site views for the variuos mobile devices (`mobile`, `tablet`, `full`)
+* Manages site views for the various mobile devices (`mobile`, `tablet`, `full`)
 * Redirects to mobile and tablet sites
 
 
@@ -55,7 +55,7 @@ public function registerBundles()
     );
 }
 ```
-### Conﬁgure service in your YAML conﬁguration
+### Conﬁgure service in your YAML configuration
 ```yaml
 #app/conﬁg/conﬁg.yml
 mobile_detect:
@@ -65,7 +65,7 @@ mobile_detect:
     switch_device_view: ~
 ```
 
-### Full conﬁguration
+### Full configuration
 
 You can change default behaviour of your redirects with action parameter:
 
@@ -105,13 +105,13 @@ mobile_detect:
 ```
 
 You can also create route specific rules for redirecting in your routing.yml.
-Just put appropriate platform to options field and add it redirecting rule.
+Just add appropriate platform(s) to the options field and add a redirect rule.
 
 ```yaml
 #routing.yml
 someaction:
     pattern:  /someaction
-    defaults: { _controller: YourBundle:Index:someaction }
+    defaults: { _controller: YourBundle:Index:someAction }
     options:  { mobile: redirect, tablet: no_redirect, full: redirect_without_path }         # redirect, no_redirect, redirect_without_path
 ```
 
@@ -240,7 +240,7 @@ should be redirected to the full version at http://site.com.
     At this point if the http://m.site.com is configured to point to your project, you will get circular reference error.
     To get rid of the circular reference error, we want to disable mobile redirecting when we land on our mobile site.
 
-2. **Crete a new `app.php` file with a name like, for example, `app_mobile.php` and change the following:**
+2. **Create a new `app.php` file with a name like, for example, `app_mobile.php` and change the following:**
     ```php
     $kernel = new AppKernel('prod', false);
     ```
