@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 /**
  * DeviceDataCollector class
  *
- * @author Jonas HAOUZI <haouzijonas@gmail.com
+ * @author Jonas HAOUZI <haouzijonas@gmail.com>
  *
  */
 class DeviceDataCollector extends DataCollector
@@ -54,32 +54,54 @@ class DeviceDataCollector extends DataCollector
         \Exception $exception = null
     ) {
         $this->data['currentView'] = $this->deviceView->getViewType();
-        $this->data['views'] = [
-            [
+        $this->data['views'] = array(
+            array(
                 'label' => 'Full',
-                'link' => $this->generateSwitchLink(DeviceView::VIEW_FULL),
+                'link' => $this->generateSwitchLink(
+                    $request,
+                    DeviceView::VIEW_FULL
+                ),
                 'isCurrent' => $this->deviceView->isFullView()
-            ],
-            [
+            ),
+            array(
                 'label' => 'Tablet',
-                'link' => $this->generateSwitchLink(DeviceView::VIEW_TABLET),
+                'link' => $this->generateSwitchLink(
+                    $request,
+                    DeviceView::VIEW_TABLET
+                ),
                 'isCurrent' => $this->deviceView->isTabletView()
-            ],
-            [
+            ),
+            array(
                 'label' => 'Mobile',
-                'link' => $this->generateSwitchLink(DeviceView::VIEW_MOBILE),
+                'link' => $this->generateSwitchLink(
+                    $request,
+                    DeviceView::VIEW_MOBILE
+                ),
                 'isCurrent' => $this->deviceView->isMobileView()
-            ],
-        ];
+            ),
+        );
     }
 
     /**
-     * @param $view
+     * @param Request $request
+     * @param         $view
      *
      * @return string
      */
-    private function generateSwitchLink($view){
-        return '?device_view='.$view;
+    private function generateSwitchLink(
+        Request $request,
+        $view
+    ) {
+        $requestSwitchView = $request->duplicate();
+        $requestSwitchView->query->set('device_view', $view);
+        $requestSwitchView->server->set(
+            'QUERY_STRING',
+            Request::normalizeQueryString(
+                http_build_query($requestSwitchView->query->all(), null, '&')
+            )
+        );
+
+        return $requestSwitchView->getUri();
     }
 
     /**
@@ -107,6 +129,6 @@ class DeviceDataCollector extends DataCollector
      */
     public function getName()
     {
-        return 'mobile_detect_bundle.device.collector';
+        return 'device.collector';
     }
 }

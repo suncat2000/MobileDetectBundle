@@ -18,5 +18,9 @@
             <tag name="kernel.event_listener" event="kernel.request" method="handleRequest" priority="1"/>
             <tag name="kernel.event_listener" event="kernel.response" method="handleResponse"/>
         </service>
+        <service id="mobile_detect_bundle.device.collector" class="SunCat\MobileDetectBundle\DataCollector\DeviceDataCollector">
+            <argument type="service" id="mobile_detect.device_view" />
+            <tag name="data_collector" template="MobileDetectBundle:Collector:device" id="device.collector"/>
+        </service>
     </services>
 </container>
