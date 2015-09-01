@@ -102,7 +102,6 @@ mobile_detect:
     device_view_class: SunCat\MobileDetectBundle\Helper\DeviceView
     request_listener_class: SunCat\MobileDetectBundle\EventListener\RequestListener
     extension_class: SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension
-    data_collector_device_class: SunCat/MobileDetectBundle/DataCollector/DeviceDataCollector
 ```
 
 You can also create route specific rules for redirecting in your routing.yml.
