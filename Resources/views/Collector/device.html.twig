@@ -1,0 +1,54 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <span>
+            <img width="14" height="28" alt="Device" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABbklEQVRYR+2XMUvDQBTH37ujS5Eu7QdwVNMuFhykDQEnB2NCJwcRHISCiyDiImRzcS9OuqpIW7+AMQ20g1tSdNVP4NYi7T1JcSo1NamQInfrvXf/3/1ueYeQ8MKE82H+AZY2zGzqk3YIIRfFFgL2CaDpO/WXsL5QA0E479MzMnwEpPcoACBgQTCxi4xXunbd/ak3FKBQNg4JcNVv1fcjhX8XK6q5h4J0321UYgHkVcMKGn2nYa3XPJsB2L8BGQItcsDrj5szICGsrvOgzQxQqnmWWy2MgKatUs0bBUoAaUAakAakAWlAGvhfBhIfSKYNIZP285qh/dlENClAKW+vIGIHGV/z7PvX8ZqZAQqqeUqCcr7bOJ4EUCxupftpfpAZpC7b7bveeI2i6jojrHqt5mbMmdBcFjC0EfgJMnqL8gwkRAaBnSPShffUvIoFEDQpmlnCAR0RE9koAIywBwxuw8KD8+b/axbl1nFqEzfwBYtWrTCbYUHuAAAAAElFTkSuQmCC">
+            View: {{ collector.currentView | capitalize }}
+        </span>
+    {% endset %}
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>Device Detector</b>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <table class="sf-toolbar-device-detector-switcher">
+                <thead>
+                <tr>
+                    <th>View</th>
+                    <th>Switch to...</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for viewData in collector.views %}
+                    {% set viewLink = viewData.isCurrent ? '<em>current</em>' : '<a href="' ~ viewData.link ~ '">Use this view</a>' %}
+                    <tr>
+                        <td>{{ viewData.label }}</td>
+                        <td>{{ viewLink | raw }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endset %}
+    {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': false } %}
+
+    <style type="text/css">
+        .sf-toolbar-block .sf-toolbar-info-piece table.sf-toolbar-device-detector-switcher {
+            width: 100%;
+        }
+        .sf-toolbar-block .sf-toolbar-info-piece table.sf-toolbar-device-detector-switcher th,
+        .sf-toolbar-block .sf-toolbar-info-piece table.sf-toolbar-device-detector-switcher td {
+            border-bottom: 1px solid #ddd;
+            padding: 0 4px;
+            color: #2f2f2f;
+            background-color: #fff;
+        }
+        .sf-toolbar-block .sf-toolbar-info-piece table.sf-toolbar-device-detector-switcher th {
+            background-color: #eee;
+        }
+        .sf-toolbar-block .sf-toolbar-info-piece table.sf-toolbar-device-detector-switcher a {
+            color:#00f;
+        }
+    </style>
+{% endblock %}
