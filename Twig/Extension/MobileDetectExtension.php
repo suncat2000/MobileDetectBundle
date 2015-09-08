@@ -28,7 +28,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * The request from the current scope.
-     * 
+     *
      * @var Request
      */
     private $request;
@@ -52,16 +52,16 @@ class MobileDetectExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'is_mobile' => new \Twig_Function_Method($this, 'isMobile'),
-            'is_tablet' => new \Twig_Function_Method($this, 'isTablet'),
-            'is_device' => new \Twig_Function_Method($this, 'isDevice'),
-            'is_full_view' => new \Twig_Function_Method($this, 'isFullView'),
-            'is_mobile_view' => new \Twig_Function_Method($this, 'isMobileView'),
-            'is_tablet_view' => new \Twig_Function_Method($this, 'isTabletView'),
-            'is_not_mobile_view' => new \Twig_Function_Method($this, 'isNotMobileView'),
-            'is_ios' => new \Twig_Function_Method($this, 'isIOS'),
-            'is_android_os' => new \Twig_Function_Method($this, 'isAndroidOS'),
-            'full_view_url' => new \Twig_Function_Method($this, 'fullViewUrl', array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('is_mobile', array($this, 'isMobile')),
+            new \Twig_SimpleFunction('is_tablet', array($this, 'isTablet')),
+            new \Twig_SimpleFunction('is_device', array($this, 'isDevice')),
+            new \Twig_SimpleFunction('is_full_view', array($this, 'isFullView')),
+            new \Twig_SimpleFunction('is_mobile_view', array($this, 'isMobileView')),
+            new \Twig_SimpleFunction('is_tablet_view', array($this, 'isTabletView')),
+            new \Twig_SimpleFunction('is_not_mobile_view', array($this, 'isNotMobileView')),
+            new \Twig_SimpleFunction('is_ios', array($this, 'isIOS')),
+            new \Twig_SimpleFunction('is_android_os', array($this, 'isAndroidOS')),
+            new \Twig_SimpleFunction('full_view_url', array($this, 'fullViewUrl'), array('is_safe' => array('html'))),
         );
     }
 
