@@ -93,7 +93,7 @@ class MobileDetectExtension extends Twig_Extension
         // if fullHost ends with /, skip it since getPathInfo() also starts with /
         $result = rtrim($fullHost, '/') . $this->request->getPathInfo();
 
-        $query = Request::normalizeQueryString(http_build_query($this->request->query->all()));
+        $query = Request::normalizeQueryString(http_build_query($this->request->query->all(), null, '&'));
         if ($query) {
             $result .= '?' . $query;
         }
