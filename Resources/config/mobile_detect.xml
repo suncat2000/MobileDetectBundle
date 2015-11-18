@@ -7,6 +7,8 @@
     <parameters>
         <parameter key="mobile_detect.mobile_detector.class"/>
         <parameter key="mobile_detect.device_view.class"/>
+        <parameter key="mobile_detect.cookie_key"/>
+        <parameter key="mobile_detect.switch_param"/>
     </parameters>
 
     <services>

@@ -129,7 +129,7 @@ class RequestListener
     /**
      * Will this request listener modify the response? This flag will be set during the "handleRequest" phase.
      * Made public for testability.
-     * 
+     *
      * @return boolean True if the response needs to be modified.
      */
     public function needsResponseModification()
@@ -154,14 +154,14 @@ class RequestListener
 
     /**
      * Do we have to redirect?
-     * 
+     *
      * @param string $view For which view should be check?
-     * 
+     *
      * @return boolean
      */
     protected function mustRedirect($view)
     {
-        if (!isset($this->redirectConf[$view]) || !$this->redirectConf[$view]['is_enabled'] || 
+        if (!isset($this->redirectConf[$view]) || !$this->redirectConf[$view]['is_enabled'] ||
             ($this->getRoutingOption($view) === self::NO_REDIRECT)) {
 
             return false;
@@ -241,9 +241,9 @@ class RequestListener
 
     /**
      * Gets the RedirectResponse for the specified view.
-     * 
+     *
      * @param string $view The view for which we want the RedirectResponse.
-     * 
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function getRedirectResponse($view)
@@ -272,14 +272,14 @@ class RequestListener
                 // redirections may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
                 $queryParams = $this->container->get('request')->query->all();
-                $queryParams[DeviceView::SWITCH_PARAM] = $platform;
+                $queryParams[$this->deviceView->getSwitchParam()] = $platform;
 
                 return rtrim($this->redirectConf[$platform]['host'], '/') . $this->container->get('request')->getPathInfo() . '?' . Request::normalizeQueryString(http_build_query($queryParams));
             } elseif (self::REDIRECT_WITHOUT_PATH === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirections may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
-                return $this->redirectConf[$platform]['host'] . '?' . DeviceView::SWITCH_PARAM . '=' . $platform;
+                return $this->redirectConf[$platform]['host'] . '?' . $this->deviceView->getSwitchParam() . '=' . $platform;
             } else {
                 return null;
             }

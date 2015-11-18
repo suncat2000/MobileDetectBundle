@@ -76,6 +76,8 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('mobile_detector')->defaultValue('mobile_detect.mobile_detector.default')->cannotBeEmpty()->end()
                     ->end()
                 ->end()
+                ->scalarNode('cookie_key')->defaultValue('device_view')->cannotBeEmpty()->end()
+                ->scalarNode('switch_param')->defaultValue('device_view')->cannotBeEmpty()->end()
                 ->scalarNode('mobile_detector_class')->defaultValue('SunCat\MobileDetectBundle\DeviceDetector\MobileDetector')->cannotBeEmpty()->end()
                 ->scalarNode('device_view_class')->defaultValue('SunCat\MobileDetectBundle\Helper\DeviceView')->cannotBeEmpty()->end()
                 ->scalarNode('request_listener_class')->defaultValue('SunCat\MobileDetectBundle\EventListener\RequestListener')->cannotBeEmpty()->end()
