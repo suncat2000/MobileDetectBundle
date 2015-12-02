@@ -64,7 +64,10 @@ class RequestListenerTest extends PHPUnit_Framework_TestCase
 
         $this->mobileDetector = $this->getMockBuilder('SunCat\MobileDetectBundle\DeviceDetector\MobileDetector')->disableOriginalConstructor()->getMock();
         $this->deviceView = $this->getMockBuilder('SunCat\MobileDetectBundle\Helper\DeviceView')->disableOriginalConstructor()->getMock();
-        $this->router = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Routing\Router')->disableOriginalConstructor()->getMock();
+        $this->router = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Routing\Router')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getRouteCollection'))
+            ->getMock();
 
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
         $this->request->expects($this->any())->method('getScheme')->will($this->returnValue('http'));
