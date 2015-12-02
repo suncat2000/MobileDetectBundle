@@ -54,13 +54,11 @@ class DeviceView
      */
     public function __construct(Container $serviceContainer)
     {
-        if (false === $serviceContainer->isScopeActive('request')) {
+        if (!$this->request = $serviceContainer->get('request_stack')->getMasterRequest()) {
             $this->viewType = self::VIEW_NOT_MOBILE;
 
             return;
         }
-
-        $this->request = $serviceContainer->get('request');
 
         if ($this->request->query->has(self::SWITCH_PARAM)) {
             $this->viewType = $this->request->query->get(self::SWITCH_PARAM);
