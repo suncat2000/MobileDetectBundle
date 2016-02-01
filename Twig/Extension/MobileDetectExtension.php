@@ -15,13 +15,14 @@ use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Twig_Extension;
+use Twig_Extension_GlobalsInterface;
 
 /**
  * MobileDetectExtension
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class MobileDetectExtension extends Twig_Extension
+class MobileDetectExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface
 {
     private $mobileDetector;
     private $redirectConf;
