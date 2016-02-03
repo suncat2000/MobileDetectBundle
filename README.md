@@ -40,7 +40,7 @@ Add to `composer.json` in your project to `require` section:
 ```
 
 Run command:
-`php composer.phar install`
+`php composer.phar update`
 
 ### Add this bundle to your application's kernel
 
