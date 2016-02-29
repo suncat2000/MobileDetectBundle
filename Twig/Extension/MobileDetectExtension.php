@@ -62,6 +62,7 @@ class MobileDetectExtension extends Twig_Extension
             new \Twig_SimpleFunction('is_ios', array($this, 'isIOS')),
             new \Twig_SimpleFunction('is_android_os', array($this, 'isAndroidOS')),
             new \Twig_SimpleFunction('full_view_url', array($this, 'fullViewUrl'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('is_windows_os', array($this, 'isWindowsOS'))
         );
     }
 
@@ -184,6 +185,15 @@ class MobileDetectExtension extends Twig_Extension
     public function isAndroidOS()
     {
         return $this->mobileDetector->isAndroidOS();
+    }
+
+    /**
+     * Is Windows OS
+     * @return bool
+     */
+    public function isWindowsOS()
+    {
+        return $this->mobileDetector->isWindowsMobileOS() || $this->mobileDetector->isWindowsPhoneOS();
     }
 
     /**
