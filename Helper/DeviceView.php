@@ -62,7 +62,7 @@ class DeviceView
      */
     public function __construct(Container $serviceContainer)
     {
-        if (false === $serviceContainer->isScopeActive('request')) {
+        if (!$this->request = $serviceContainer->get('request_stack')->getMasterRequest()) {
             $this->viewType = self::VIEW_NOT_MOBILE;
 
             return;
@@ -71,13 +71,12 @@ class DeviceView
         $this->cookieKey = $serviceContainer->getParameter('mobile_detect.cookie_key');
         $this->switchParam = $serviceContainer->getParameter('mobile_detect.switch_param');
 
-        $this->request = $serviceContainer->get('request');
-
         if ($this->request->query->has($this->switchParam)) {
             $this->viewType = $this->request->query->get($this->switchParam);
         } elseif ($this->request->cookies->has($this->cookieKey)) {
             $this->viewType = $this->request->cookies->get($this->cookieKey);
         }
+
         $this->requestedViewType = $this->viewType;
     }
 
