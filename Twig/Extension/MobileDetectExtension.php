@@ -212,7 +212,7 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
      * Sets the request from the current scope.
      * @param Request $request
      */
-    public function setRequest(RequestStack $requestStack = null) {
+    public function setRequestByRequestStack(RequestStack $requestStack = null) {
         if (null !== $requestStack) {
             $this->request = $requestStack->getMasterRequest();
         }
