@@ -93,7 +93,7 @@ class DeviceDataCollector extends DataCollector
         $view
     ) {
         $requestSwitchView = $request->duplicate();
-        $requestSwitchView->query->set('device_view', $view);
+        $requestSwitchView->query->set($this->deviceView->getSwitchParam(), $view);
         $requestSwitchView->server->set(
             'QUERY_STRING',
             Request::normalizeQueryString(

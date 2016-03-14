@@ -9,13 +9,25 @@
         <parameter key="mobile_detect.device_view.class"/>
         <parameter key="mobile_detect.cookie_key"/>
         <parameter key="mobile_detect.switch_param"/>
+        <parameter key="mobile_detect.cookie_expire_datetime_modifier"/>
     </parameters>
 
     <services>
+
         <service id="mobile_detect.mobile_detector.default" class="%mobile_detect.mobile_detector.class%"/>
 
         <service id="mobile_detect.device_view" class="%mobile_detect.device_view.class%">
-            <argument type="service" id="service_container" />
+            <argument type="service" id="request_stack" on-invalid="null"/>
+            <call method="setCookieKey">
+                <argument>%mobile_detect.cookie_key%</argument>
+            </call>
+            <call method="setSwitchParam">
+                <argument>%mobile_detect.switch_param%</argument>
+            </call>
+            <call method="setCookieExpireDatetimeModifier">
+                <argument>%mobile_detect.cookie_expire_datetime_modifier%</argument>
+            </call>
         </service>
+
     </services>
 </container>

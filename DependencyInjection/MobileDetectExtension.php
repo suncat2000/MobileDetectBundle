@@ -48,12 +48,13 @@ class MobileDetectExtension extends Extension
         $container->setParameter('mobile_detect.switch_device_view.save_referer_path', $config['switch_device_view']['save_referer_path']);
 
         $container->setParameter('mobile_detect.cookie_key', $config['cookie_key']);
+        $container->setParameter('mobile_detect.cookie_expire_datetime_modifier', $config['cookie_expire_datetime_modifier']);
         $container->setParameter('mobile_detect.switch_param', $config['switch_param']);
 
         $container->setParameter('mobile_detect.mobile_detector.class', $config['mobile_detector_class']);
         $container->setParameter('mobile_detect.device_view.class', $config['device_view_class']);
-        $container->setParameter('mobile_detect.request_listener.class', $config['request_listener_class']);
-        $container->setParameter('mobile_detect.twig.extension.class', $config['extension_class']);
+        $container->setParameter('mobile_detect.request_response_listener.class', $config['request_response_listener_class']);
+        $container->setParameter('mobile_detect.twig.extension.class', $config['twig_extension_class']);
 
         $container->setAlias('mobile_detect.mobile_detector', $config['service']['mobile_detector']);
     }

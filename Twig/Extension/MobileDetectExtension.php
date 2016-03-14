@@ -14,29 +14,41 @@ namespace SunCat\MobileDetectBundle\Twig\Extension;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
-use Twig_Extension;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * MobileDetectExtension
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class MobileDetectExtension extends Twig_Extension
+class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
+    /**
+     * @var \SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
+     */
     private $mobileDetector;
+    
+    /**
+     * @var \SunCat\MobileDetectBundle\Helper\DeviceView
+     */
+    private $deviceView;
+
+    /**
+     * @var array
+     */
     private $redirectConf;
 
     /**
-     * The request from the current scope.
-     *
      * @var Request
      */
     private $request;
 
     /**
-     * Constructor
-     *
-     * @param Container $serviceContainer
+     * MobileDetectExtension constructor.
+     * 
+     * @param MobileDetector $mobileDetector
+     * @param DeviceView $deviceView
+     * @param array $redirectConf
      */
     public function __construct(MobileDetector $mobileDetector, DeviceView $deviceView, array $redirectConf)
     {
@@ -61,7 +73,7 @@ class MobileDetectExtension extends Twig_Extension
             new \Twig_SimpleFunction('is_not_mobile_view', array($this, 'isNotMobileView')),
             new \Twig_SimpleFunction('is_ios', array($this, 'isIOS')),
             new \Twig_SimpleFunction('is_android_os', array($this, 'isAndroidOS')),
-            new \Twig_SimpleFunction('full_view_url', array($this, 'fullViewUrl'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('full_view_url', array($this, 'fullViewUrl'), array('is_safe' => array('html')))
         );
     }
 
@@ -72,7 +84,7 @@ class MobileDetectExtension extends Twig_Extension
      * See: http://searchengineland.com/the-definitive-guide-to-mobile-technical-seo-166066
      * @return string
      */
-    public function fullViewUrl()
+    public function fullViewUrl($addCurrentPathAndQuery = true)
     {
         if (!isset($this->redirectConf[DeviceView::VIEW_FULL]['host'])) {
             // The host property has not been configured for the full view
@@ -89,11 +101,15 @@ class MobileDetectExtension extends Twig_Extension
         if (!$this->request) {
             return $fullHost;
         }
+        
+        if (false === $addCurrentPathAndQuery) {
+            return $fullHost;
+        }
 
         // if fullHost ends with /, skip it since getPathInfo() also starts with /
         $result = rtrim($fullHost, '/') . $this->request->getPathInfo();
 
-        $query = Request::normalizeQueryString(http_build_query($this->request->query->all()));
+        $query = Request::normalizeQueryString(http_build_query($this->request->query->all(), null, '&'));
         if ($query) {
             $result .= '?' . $query;
         }
@@ -134,6 +150,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is full view type
+     * 
      * @return boolean
      */
     public function isFullView()
@@ -143,7 +160,8 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is mobile view type
-     * @return type
+     * 
+     * @return boolean
      */
     public function isMobileView()
     {
@@ -152,7 +170,8 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is tablet view type
-     * @return type
+     * 
+     * @return boolean
      */
     public function isTabletView()
     {
@@ -161,7 +180,8 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is not mobile view type
-     * @return type
+     * 
+     * @return boolean
      */
     public function isNotMobileView()
     {
@@ -170,6 +190,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is iOS
+     * 
      * @return boolean
      */
     public function isIOS()
@@ -179,6 +200,7 @@ class MobileDetectExtension extends Twig_Extension
 
     /**
      * Is Android OS
+     * 
      * @return boolean
      */
     public function isAndroidOS()
@@ -190,8 +212,10 @@ class MobileDetectExtension extends Twig_Extension
      * Sets the request from the current scope.
      * @param Request $request
      */
-    public function setRequest($request) {
-        $this->request = $request;
+    public function setRequest(RequestStack $requestStack = null) {
+        if (null !== $requestStack) {
+            $this->request = $requestStack->getMasterRequest();
+        }
     }
 
     /**

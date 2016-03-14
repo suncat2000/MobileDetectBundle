@@ -11,9 +11,12 @@
 
 namespace SunCat\MobileDetectBundle\EventListener;
 
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,49 +24,71 @@ use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 
 /**
- * Request listener
+ * Request and response listener
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  * @author HenriVesala <henri.vesala@gmail.com>
  */
-class RequestListener
+class RequestResponseListener
 {
-    CONST REDIRECT = 'redirect';
-    CONST NO_REDIRECT = 'no_redirect';
-    CONST REDIRECT_WITHOUT_PATH = 'redirect_without_path';
+    CONST REDIRECT                  = 'redirect';
+    CONST NO_REDIRECT               = 'no_redirect';
+    CONST REDIRECT_WITHOUT_PATH     = 'redirect_without_path';
 
     CONST MOBILE    = 'mobile';
     CONST TABLET    = 'tablet';
     CONST FULL      = 'full';
 
-    protected $container;
     /**
      * @var MobileDetector
      */
     protected $mobileDetector;
+
     /**
      * @var DeviceView
      */
     protected $deviceView;
 
+    /**
+     * @var array
+     */
     protected $redirectConf;
+
+    /**
+     * @var bool
+     */
     protected $isFullPath;
 
+    /**
+     * @var bool
+     */
     protected $needModifyResponse = false;
+
+    /**
+     * @var mixed
+     */
     protected $modifyResponseClosure;
 
     /**
-     * Constructor
+     * RequestResponseListener constructor.
      *
-     * @param Container $serviceContainer Service container
-     * @param array     $redirectConf     Config redirect
-     * @param boolean   $fullPath         Full path or front page
+     * @param MobileDetector $mobileDetector
+     * @param DeviceView $deviceView
+     * @param Router $router
+     * @param array $redirectConf
+     * @param bool $fullPath
      */
-    public function __construct(Container $serviceContainer, array $redirectConf,  $fullPath = true)
+    public function __construct(
+        MobileDetector $mobileDetector,
+        DeviceView $deviceView,
+        Router $router,
+        array $redirectConf,
+        $fullPath = true
+    )
     {
-        $this->container = $serviceContainer;
-        $this->mobileDetector = $serviceContainer->get('mobile_detect.mobile_detector');
-        $this->deviceView = $serviceContainer->get('mobile_detect.device_view');
+        $this->mobileDetector = $mobileDetector;
+        $this->deviceView = $deviceView;
+        $this->router = $router;
 
         // Configs mobile & tablet
         $this->redirectConf = $redirectConf;
@@ -85,11 +110,12 @@ class RequestListener
             return;
         }
 
-        $this->mobileDetector->setUserAgent($event->getRequest()->headers->get('user-agent'));
+        $request = $event->getRequest();
+        $this->mobileDetector->setUserAgent($request->headers->get('user-agent'));
 
         // Sets the flag for the response handled by the GET switch param and the type of the view.
         if ($this->deviceView->hasSwitchParam()) {
-            $event->setResponse($this->getRedirectResponseBySwitchParam());
+            $event->setResponse($this->getRedirectResponseBySwitchParam($request));
             return;
         }
 
@@ -106,8 +132,8 @@ class RequestListener
         }
 
         // Check if we must redirect to the target view and do so if needed
-        if ($this->mustRedirect($this->deviceView->getViewType())) {
-            if (($response = $this->getRedirectResponse($this->deviceView->getViewType()))) {
+        if ($this->mustRedirect($request, $this->deviceView->getViewType())) {
+            if (($response = $this->getRedirectResponse($request, $this->deviceView->getViewType()))) {
                 $event->setResponse($response);
             }
             return;
@@ -155,19 +181,22 @@ class RequestListener
     /**
      * Do we have to redirect?
      *
+     * @param Request $request
      * @param string $view For which view should be check?
      *
      * @return boolean
      */
-    protected function mustRedirect($view)
+    protected function mustRedirect(Request $request, $view)
     {
-        if (!isset($this->redirectConf[$view]) || !$this->redirectConf[$view]['is_enabled'] ||
-            ($this->getRoutingOption($view) === self::NO_REDIRECT)) {
-
+        if (
+            !isset($this->redirectConf[$view]) ||
+            !$this->redirectConf[$view]['is_enabled'] ||
+            ($this->getRoutingOption($request->get('_route'), $view) === self::NO_REDIRECT)
+        ) {
             return false;
         }
 
-        $isHost = ($this->getCurrentHost() === $this->redirectConf[$view]['host']);
+        $isHost = ($this->getCurrentHost($request) === $this->redirectConf[$view]['host']);
 
         if (!$isHost) {
             return true;
@@ -185,54 +214,36 @@ class RequestListener
      */
     protected function prepareResponseModification($view)
     {
-        $this->modifyResponseClosure = function($deviceView, $event) use ($view) {
+        $this->modifyResponseClosure = function(DeviceView $deviceView, FilterResponseEvent $event) use ($view) {
             return $deviceView->modifyResponse($view, $event->getResponse());
         };
     }
 
     /**
-     * If a modified Response for non-mobile devices is needed.
-     *
-     * @return boolean
-     */
-    protected function needNotMobileResponseModify()
-    {
-        if ((null === $this->deviceView->getViewType() || $this->deviceView->isNotMobileView())) {
-            $this->modifyResponseClosure = function($deviceView, $event) {
-                return $deviceView->modifyNotMobileResponse($event->getResponse());
-            };
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Gets the RedirectResponse by switch param.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * 
+     * @param Request $request
+     * 
+     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
      */
-    protected function getRedirectResponseBySwitchParam()
+    protected function getRedirectResponseBySwitchParam(Request $request)
     {
-        if ($this->mustRedirect($this->deviceView->getViewType())) {
+        if ($this->mustRedirect($request, $this->deviceView->getViewType())) {
             // Avoid unnecessary redirects: if we need to redirect to another view,
             // do it in one response while setting the cookie.
-            $redirectUrl = $this->getRedirectUrl($this->deviceView->getViewType());
+            $redirectUrl = $this->getRedirectUrl($request, $this->deviceView->getViewType());
         } else {
             if (true === $this->isFullPath) {
-                /* @var $request Request */
-                $request = $this->container->get('request');
                 $redirectUrl = $request->getUriForPath($request->getPathInfo());
                 $queryParams = $request->query->all();
-                if (array_key_exists('device_view', $queryParams)) {
-                    unset($queryParams['device_view']);
+                if (array_key_exists($this->deviceView->getSwitchParam(), $queryParams)) {
+                    unset($queryParams[$this->deviceView->getSwitchParam()]);
                 }
                 if(sizeof($queryParams) > 0) {
-                    $redirectUrl .= '?'. Request::normalizeQueryString(http_build_query($queryParams));
+                    $redirectUrl .= '?'. Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
                 }
             } else {
-                $redirectUrl = $this->getCurrentHost();
+                $redirectUrl = $this->getCurrentHost($request);
             }
         }
 
@@ -242,44 +253,52 @@ class RequestListener
     /**
      * Gets the RedirectResponse for the specified view.
      *
+     * @param Request $request
      * @param string $view The view for which we want the RedirectResponse.
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function getRedirectResponse($view)
+    protected function getRedirectResponse(Request $request, $view)
     {
-        if (($host = $this->getRedirectUrl($view))) {
+        if (($host = $this->getRedirectUrl($request, $view))) {
             return $this->deviceView->getRedirectResponse(
                 $view,
                 $host,
                 $this->redirectConf[$view]['status_code']
             );
         }
+
+        return null;
     }
 
     /**
      * Gets the redirect url.
      *
+     * @param Request $request
      * @param string $platform
      *
      * @return string
      */
-    protected function getRedirectUrl($platform)
+    protected function getRedirectUrl(Request $request, $platform)
     {
-        if (($routingOption = $this->getRoutingOption($platform))) {
+        if (($routingOption = $this->getRoutingOption($request->get('_route'), $platform))) {
             if (self::REDIRECT === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
-                // redirections may occur if different device views are hosted on
+                // redirection may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
-                $queryParams = $this->container->get('request')->query->all();
+                $queryParams = $request->query->all();
                 $queryParams[$this->deviceView->getSwitchParam()] = $platform;
 
-                return rtrim($this->redirectConf[$platform]['host'], '/') . $this->container->get('request')->getPathInfo() . '?' . Request::normalizeQueryString(http_build_query($queryParams));
+                return rtrim($this->redirectConf[$platform]['host'], '/') . 
+                    $request->getPathInfo() . '?' .
+                    Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
             } elseif (self::REDIRECT_WITHOUT_PATH === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirections may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
-                return $this->redirectConf[$platform]['host'] . '?' . $this->deviceView->getSwitchParam() . '=' . $platform;
+                return $this->redirectConf[$platform]['host'] . '?' . 
+                    $this->deviceView->getSwitchParam() . '=' . 
+                    $platform;
             } else {
                 return null;
             }
@@ -291,26 +310,22 @@ class RequestListener
     /**
      * Gets named option from current route.
      *
-     * @param string $name
+     * @param string $routeName
+     * @param string $optionName
      *
      * @return string|null
      */
-    protected function getRoutingOption($name)
+    protected function getRoutingOption($routeName, $optionName)
     {
         $option = null;
-        $route = $this
-                    ->container
-                    ->get('router')
-                    ->getRouteCollection()
-                    ->get($this->container->get('request')->get('_route'))
-                ;
+        $route = $this->router->getRouteCollection()->get($routeName);
 
         if ($route instanceof Route) {
-            $option = $route->getOption($name);
+            $option = $route->getOption($optionName);
         }
 
-        if (!$option && isset($this->redirectConf[$name])) {
-            $option = $this->redirectConf[$name]['action'];
+        if (!$option && isset($this->redirectConf[$optionName])) {
+            $option = $this->redirectConf[$optionName]['action'];
         }
 
         if (in_array($option, array(self::REDIRECT, self::REDIRECT_WITHOUT_PATH, self::NO_REDIRECT))) {
@@ -323,12 +338,12 @@ class RequestListener
     /**
      * Gets the current host.
      *
+     * @param Request $request
+     * 
      * @return string
      */
-    protected function getCurrentHost()
+    protected function getCurrentHost(Request $request)
     {
-        $request = $this->container->get('request');
-
         return $request->getScheme() . '://' . $request->getHost();
     }
 

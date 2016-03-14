@@ -14,6 +14,7 @@ namespace SunCat\MobileDetectBundle\Helper;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
@@ -29,6 +30,10 @@ class DeviceView
     const VIEW_TABLET       = 'tablet';
     const VIEW_FULL         = 'full';
     const VIEW_NOT_MOBILE   = 'not_mobile';
+    
+    const COOKIE_KEY_DEFAULT                        = 'device_view';
+    const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT   = '1 month';
+    const SWITCH_PARAM_DEFAULT                      = 'device_view';
 
     /**
      * @var \Symfony\Component\HttpFoundation\Request
@@ -48,28 +53,33 @@ class DeviceView
     /**
      * @var string
      */
-    protected $cookieKey;
+    protected $cookieKey = self::COOKIE_KEY_DEFAULT;
 
     /**
      * @var string
      */
-    protected $switchParam;
+    protected $cookieExpireDatetimeModifier = self::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT;
+
+    /**
+     * @var string
+     */
+    protected $switchParam = self::SWITCH_PARAM_DEFAULT;
 
     /**
      * Constructor
      *
      * @param \Symfony\Component\DependencyInjection\Container $serviceContainer
      */
-    public function __construct(Container $serviceContainer)
+    public function __construct($cookieKey, $switchParam, RequestStack $requestStack = null)
     {
-        if (!$this->request = $serviceContainer->get('request_stack')->getMasterRequest()) {
+        if (!$requestStack || !$this->request = $requestStack->getMasterRequest()) {
             $this->viewType = self::VIEW_NOT_MOBILE;
 
             return;
         }
 
-        $this->cookieKey = $serviceContainer->getParameter('mobile_detect.cookie_key');
-        $this->switchParam = $serviceContainer->getParameter('mobile_detect.switch_param');
+        $this->cookieKey = $cookieKey;
+        $this->switchParam = $switchParam;
 
         if ($this->request->query->has($this->switchParam)) {
             $this->viewType = $this->request->query->get($this->switchParam);
@@ -200,8 +210,9 @@ class DeviceView
     public function getSwitchParamValue()
     {
         if (!$this->request) {
-            return;
+            return null;
         }
+
         return $this->request->query->get($this->switchParam, self::VIEW_FULL);
     }
 
@@ -218,26 +229,12 @@ class DeviceView
 
         switch ($this->getSwitchParamValue()) {
             case self::VIEW_MOBILE:
-                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->getCookie(self::VIEW_MOBILE));
+                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->createCookie(self::VIEW_MOBILE));
             case self::VIEW_TABLET:
-                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->getCookie(self::VIEW_TABLET));
+                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->createCookie(self::VIEW_TABLET));
             default:
-                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->getCookie(self::VIEW_FULL));
+                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->createCookie(self::VIEW_FULL));
         }
-    }
-
-    /**
-     * Modifies the Response for non-mobile devices.
-     *
-     * @param \Symfony\Component\HttpFoundation\Response $response
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function modifyNotMobileResponse(Response $response)
-    {
-        $response->headers->setCookie($this->getCookie(self::VIEW_NOT_MOBILE));
-
-        return $response;
     }
 
     /**
@@ -250,7 +247,7 @@ class DeviceView
      */
     public function modifyResponse($view, Response $response)
     {
-        $response->headers->setCookie($this->getCookie($view));
+        $response->headers->setCookie($this->createCookie($view));
 
         return $response;
     }
@@ -266,7 +263,17 @@ class DeviceView
      */
     public function getRedirectResponse($view, $host, $statusCode)
     {
-        return new RedirectResponseWithCookie($host, $statusCode, $this->getCookie($view));
+        return new RedirectResponseWithCookie($host, $statusCode, $this->createCookie($view));
+    }
+
+    /**
+     * Setter of CookieKey
+     *
+     * @return string
+     */
+    public function setCookieKey($cookieKey)
+    {
+        $this->cookieKey = $cookieKey;
     }
 
     /**
@@ -280,6 +287,16 @@ class DeviceView
     }
 
     /**
+     * Setter of SwitchParam
+     *
+     * @return string
+     */
+    public function setSwitchParam($switchParam)
+    {
+        $this->switchParam = $switchParam;
+    }
+
+    /**
      * Getter of SwitchParam
      *
      * @return string
@@ -290,16 +307,36 @@ class DeviceView
     }
 
     /**
-     * Gets the cookie.
+     * @param string $cookieExpireDatetimeModifier
+     */
+    public function setCookieExpireDatetimeModifier($cookieExpireDatetimeModifier)
+    {
+        $this->cookieExpireDatetimeModifier = $cookieExpireDatetimeModifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCookieExpireDatetimeModifier()
+    {
+        return $this->cookieExpireDatetimeModifier;
+    }
+
+    /**
+     * Create the Cookie object
      *
      * @param string $cookieValue
      *
      * @return \Symfony\Component\HttpFoundation\Cookie
      */
-    protected function getCookie($cookieValue)
+    protected function createCookie($value)
     {
-        $currentDate = new \Datetime('+1 month');
+        try {
+            $expire = new \Datetime($this->getCookieExpireDatetimeModifier());
+        } catch (\Exception $e) {
+            $expire = new \Datetime(self::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT);
+        }
 
-        return new Cookie($this->cookieKey, $cookieValue, $currentDate->format('Y-m-d'));
+        return new Cookie($this->getCookieKey(), $value, $expire);
     }
 }
