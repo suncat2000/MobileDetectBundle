@@ -108,6 +108,9 @@ someaction:
 * Change: `request_listener_class` for `request_response_listener_class`.
 * Change: `extension_class` for `twig_extension_class`.
 
+### Symfony toolbar
+![](https://raw.githubusercontent.com/suncat2000/MobileDetectBundle/master/Resources/doc/sf-toolbar.png)
+
 PHP examples
 ------------
 

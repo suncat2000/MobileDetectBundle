@@ -112,7 +112,7 @@ class MobileDetectExtensionTest extends PHPUnit_Framework_TestCase
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue'));
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
-        $extension->setRequest($this->requestStack);
+        $extension->setRequestByRequestStack($this->requestStack);
         $this->assertEquals('http://mobilehost.com?myparam=myvalue', $extension->fullViewUrl());
     }
 
@@ -126,7 +126,7 @@ class MobileDetectExtensionTest extends PHPUnit_Framework_TestCase
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue'));
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
-        $extension->setRequest($this->requestStack);
+        $extension->setRequestByRequestStack($this->requestStack);
         $this->assertEquals('http://mobilehost.com', $extension->fullViewUrl(false));
     }
 
