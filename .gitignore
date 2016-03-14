@@ -1,4 +1,6 @@
 vendor/
+tests/
+build/
 composer.phar
 composer.lock
 phpunit.xml
