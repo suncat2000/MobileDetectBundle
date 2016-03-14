@@ -297,6 +297,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
         $deviceView = new DeviceView($this->requestStack);
+        $deviceView->setSwitchParam($switchParam);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
