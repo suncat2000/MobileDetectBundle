@@ -70,16 +70,13 @@ class DeviceView
      *
      * @param \Symfony\Component\DependencyInjection\Container $serviceContainer
      */
-    public function __construct($cookieKey, $switchParam, RequestStack $requestStack = null)
+    public function __construct(RequestStack $requestStack = null)
     {
         if (!$requestStack || !$this->request = $requestStack->getMasterRequest()) {
             $this->viewType = self::VIEW_NOT_MOBILE;
 
             return;
         }
-
-        $this->cookieKey = $cookieKey;
-        $this->switchParam = $switchParam;
 
         if ($this->request->query->has($this->switchParam)) {
             $this->viewType = $this->request->query->get($this->switchParam);

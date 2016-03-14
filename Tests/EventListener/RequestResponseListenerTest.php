@@ -96,7 +96,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
     public function handleRequestHasSwitchParam()
     {
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, array());
         $event = $this->createGetResponseEvent('some content');
 
@@ -133,7 +133,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
         $event = $this->createGetResponseEvent('some content');
 
@@ -166,7 +166,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestIsFullView()
     {
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
         $this->assertFalse($deviceView->hasSwitchParam());
         $this->assertNull($deviceView->getRequestedViewType());
@@ -204,7 +204,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestIsNotMobileView()
     {
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam);
+        $deviceView = new DeviceView();
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
         $this->assertFalse($deviceView->hasSwitchParam());
         $this->assertNull($deviceView->getRequestedViewType());
@@ -246,7 +246,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         );
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -296,7 +296,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         );
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -336,7 +336,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -385,7 +385,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         );
         $this->mobileDetector->expects($this->atLeastOnce())->method('isMobile')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -432,7 +432,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         );
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -480,7 +480,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         );
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -529,7 +529,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(false));
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -577,7 +577,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(false));
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
@@ -625,7 +625,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(false));
         $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
 
-        $deviceView = new DeviceView($this->cookieKey, $this->switchParam, $this->requestStack);
+        $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
 
         $getResponseEvent = $this->createGetResponseEvent('some content');
