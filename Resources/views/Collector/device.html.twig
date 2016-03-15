@@ -22,7 +22,7 @@
                 {% set viewLink = '' %}
                 {% if viewData.isCurrent %}
                     {% set viewLink = '<span class="sf-toolbar-status sf-toolbar-status-green">current</span>' %}
-                {% elseif is not viewData.enabled %}
+                {% elseif viewData.enabled == false %}
                     {%  set viewLink = 'external' %}
                 {% else %}
                     {%  set viewLink = '<span><a href="' ~ viewData.link ~ '">Use this view</a></span>' %}
@@ -59,7 +59,7 @@
                         {% set viewLink = '' %}
                         {% if viewData.isCurrent %}
                             {% set viewLink = '<em>current</em>' %}
-                        {% elseif is not viewData.enabled %}
+                        {% elseif viewData.enabled == false %}
                             {%  set viewLink = 'external' %}
                         {% else %}
                             {%  set viewLink = '<a href="' ~ viewData.link ~ '">Use this view</a>' %}
