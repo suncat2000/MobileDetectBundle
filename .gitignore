@@ -1,5 +1,4 @@
 vendor/
-tests/
 build/
 composer.phar
 composer.lock
