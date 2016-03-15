@@ -3,6 +3,7 @@
 namespace SunCat\MobileDetectBundle\Tests\RequestListener;
 
 use PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
 use SunCat\MobileDetectBundle\Helper\DeviceView;

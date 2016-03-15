@@ -13,6 +13,10 @@
         {
             "name": "Henri Vesala",
             "email": "henri.vesala@gmail.com"
+        },
+        {
+            "name": "netmikey",
+            "homepage": "https://github.com/netmikey"
         }
     ],
     "require": {

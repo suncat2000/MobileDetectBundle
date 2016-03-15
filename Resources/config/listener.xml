@@ -24,6 +24,9 @@
 
         <service id="mobile_detect_bundle.device.collector" class="SunCat\MobileDetectBundle\DataCollector\DeviceDataCollector">
             <argument type="service" id="mobile_detect.device_view" />
+            <call method="setRedirectConfig">
+                <argument>%mobile_detect.redirect%</argument>
+            </call>
             <tag name="data_collector" template="MobileDetectBundle:Collector:device" id="device.collector"/>
         </service>
 

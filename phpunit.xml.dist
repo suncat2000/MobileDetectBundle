@@ -8,19 +8,25 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
+         stopOnError="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
          syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
     >
     <testsuites>
-        <testsuite name="MobileDetectBundle testsuite">
+        <testsuite name="MobileDetectBundle Test Suite">
             <directory>Tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
+            <directory suffix=".php">./</directory>
             <exclude>
+                <directory>./Resources</directory>
+                <directory>./Tests</directory>
                 <directory>./vendor</directory>
-                <directory>./tests</directory>
+                <file>./Tests/bootstrap.php</file>
             </exclude>
         </whitelist>
     </filter>

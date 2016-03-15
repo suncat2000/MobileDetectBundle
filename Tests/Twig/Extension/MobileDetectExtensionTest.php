@@ -3,6 +3,7 @@
 namespace SunCat\MobileDetectBundle\Tests\Helper;
 
 use PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension;
 use Symfony\Component\HttpFoundation\HeaderBag;
@@ -64,6 +65,38 @@ class MobileDetectExtensionTest extends PHPUnit_Framework_TestCase
             'full' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
             'detect_tablet_as_mobile' => false
         );
+    }
+
+    /**
+     * @test
+     */
+    public function getFunctionsArray()
+    {
+        $deviceView = new DeviceView($this->requestStack);
+        $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
+
+        $functions = $extension->getFunctions();
+        $this->assertCount(10, $functions);
+        $names = [
+            'is_mobile' => 'isMobile',
+            'is_tablet' => 'isTablet',
+            'is_device' => 'isDevice',
+            'is_full_view' => 'isFullView',
+            'is_mobile_view' => 'isMobileView',
+            'is_tablet_view' => 'isTabletView',
+            'is_not_mobile_view' => 'isNotMobileView',
+            'is_ios' => 'isIOS',
+            'is_android_os' => 'isAndroidOS',
+            'full_view_url' => 'fullViewUrl'
+        ];
+        foreach ($functions as $function) {
+            $this->assertInstanceOf('\Twig_SimpleFunction', $function);
+            $name = $function->getName();
+            $callable = $function->getCallable();
+            $this->assertArrayHasKey($name, $names);
+            $this->assertInternalType('array', $callable);
+            $this->assertEquals($names[$name], $callable[1]);
+        }
     }
 
     /**

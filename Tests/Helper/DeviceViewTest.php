@@ -3,6 +3,7 @@
 namespace SunCat\MobileDetectBundle\Tests\Helper;
 
 use PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;

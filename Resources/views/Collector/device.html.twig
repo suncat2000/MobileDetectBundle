@@ -19,7 +19,14 @@
                 <span>Switch view:</span>
             </div>
             {% for viewData in collector.views %}
-                {% set viewLink = viewData.isCurrent ? '<span class="sf-toolbar-status sf-toolbar-status-green">current</span>' : '<span><a href="' ~ viewData.link ~ '">Use this view</a></span>' %}
+                {% set viewLink = '' %}
+                {% if viewData.isCurrent %}
+                    {% set viewLink = '<span class="sf-toolbar-status sf-toolbar-status-green">current</span>' %}
+                {% elseif viewData.enabled is false %}
+                    {%  set viewLink = 'external' %}
+                {% else %}
+                    {%  set viewLink = '<span><a href="' ~ viewData.link ~ '">Use this view</a></span>' %}
+                {% endif %}
                 <div class="sf-toolbar-info-piece">
                     <b>{{ viewData.label }}</b>
                     {{ viewLink | raw }}
@@ -49,7 +56,14 @@
                     </thead>
                     <tbody>
                     {% for viewData in collector.views %}
-                        {% set viewLink = viewData.isCurrent ? '<em>current</em>' : '<a href="' ~ viewData.link ~ '">Use this view</a>' %}
+                        {% set viewLink = '' %}
+                        {% if viewData.isCurrent %}
+                            {% set viewLink = '<em>current</em>' %}
+                        {% elseif viewData.enabled is false %}
+                            {%  set viewLink = 'external' %}
+                        {% else %}
+                            {%  set viewLink = '<a href="' ~ viewData.link ~ '">Use this view</a>' %}
+                        {% endif %}
                         <tr>
                             <td>{{ viewData.label }}</td>
                             <td>{{ viewLink | raw }}</td>
