@@ -44,6 +44,11 @@ class MobileDetectExtension extends Extension
             $config['redirect']['tablet']['is_enabled'] = false;
         }
 
+        // valid full host
+        if ($config['redirect']['full']['is_enabled'] && !$this->validHost($config['redirect']['full']['host'])) {
+            $config['redirect']['full']['is_enabled'] = false;
+        }
+
         $container->setParameter('mobile_detect.redirect', $config['redirect']);
         $container->setParameter('mobile_detect.switch_device_view.save_referer_path', $config['switch_device_view']['save_referer_path']);
 
