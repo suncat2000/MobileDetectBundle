@@ -11,17 +11,14 @@
 
 namespace SunCat\MobileDetectBundle\EventListener;
 
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpKernel\Event\KernelEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\HttpFoundation\Request;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Request and response listener
@@ -65,23 +62,23 @@ class RequestResponseListener
     protected $needModifyResponse = false;
 
     /**
-     * @var mixed
+     * @var \Closure
      */
     protected $modifyResponseClosure;
 
     /**
      * RequestResponseListener constructor.
      *
-     * @param MobileDetector $mobileDetector
-     * @param DeviceView $deviceView
-     * @param Router $router
-     * @param array $redirectConf
-     * @param bool $fullPath
+     * @param MobileDetector  $mobileDetector
+     * @param DeviceView      $deviceView
+     * @param RouterInterface $router
+     * @param array           $redirectConf
+     * @param bool            $fullPath
      */
     public function __construct(
         MobileDetector $mobileDetector,
         DeviceView $deviceView,
-        Router $router,
+        RouterInterface $router,
         array $redirectConf,
         $fullPath = true
     )
@@ -221,9 +218,9 @@ class RequestResponseListener
 
     /**
      * Gets the RedirectResponse by switch param.
-     * 
+     *
      * @param Request $request
-     * 
+     *
      * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
      */
     protected function getRedirectResponseBySwitchParam(Request $request)
@@ -289,15 +286,15 @@ class RequestResponseListener
                 $queryParams = $request->query->all();
                 $queryParams[$this->deviceView->getSwitchParam()] = $platform;
 
-                return rtrim($this->redirectConf[$platform]['host'], '/') . 
+                return rtrim($this->redirectConf[$platform]['host'], '/') .
                     $request->getPathInfo() . '?' .
                     Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
             } elseif (self::REDIRECT_WITHOUT_PATH === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirections may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
-                return $this->redirectConf[$platform]['host'] . '?' . 
-                    $this->deviceView->getSwitchParam() . '=' . 
+                return $this->redirectConf[$platform]['host'] . '?' .
+                    $this->deviceView->getSwitchParam() . '=' .
                     $platform;
             } else {
                 return null;
@@ -339,7 +336,7 @@ class RequestResponseListener
      * Gets the current host.
      *
      * @param Request $request
-     * 
+     *
      * @return string
      */
     protected function getCurrentHost(Request $request)
