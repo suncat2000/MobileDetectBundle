@@ -139,7 +139,7 @@ class RequestResponseListener
         // No need to redirect
 
         // We don't need to modify _every_ response: once the cookie is set,
-        // save badwith and CPU cycles by just letting it expire someday.
+        // save bandwith and CPU cycles by just letting it expire someday.
         if ($cookieIsSet) {
             return;
         }
