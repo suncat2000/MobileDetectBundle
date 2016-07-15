@@ -11,7 +11,7 @@
 
 namespace SunCat\MobileDetectBundle\Twig\Extension;
 
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
+use SunCat\MobileDetectBundle\DeviceDetector\DeviceDetectorInterface;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -24,9 +24,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     /**
-     * @var \SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
+     * @var \SunCat\MobileDetectBundle\DeviceDetector\DeviceDetectorInterface
      */
-    private $mobileDetector;
+    private $deviceDetector;
     
     /**
      * @var \SunCat\MobileDetectBundle\Helper\DeviceView
@@ -46,13 +46,13 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
     /**
      * MobileDetectExtension constructor.
      * 
-     * @param MobileDetector $mobileDetector
+     * @param DeviceDetectorInterface $deviceDetector
      * @param DeviceView $deviceView
      * @param array $redirectConf
      */
-    public function __construct(MobileDetector $mobileDetector, DeviceView $deviceView, array $redirectConf)
+    public function __construct(DeviceDetectorInterface $deviceDetector, DeviceView $deviceView, array $redirectConf)
     {
-        $this->mobileDetector = $mobileDetector;
+        $this->deviceDetector = $deviceDetector;
         $this->deviceView = $deviceView;
         $this->redirectConf = $redirectConf;
     }
@@ -123,7 +123,7 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
      */
     public function isMobile()
     {
-        return $this->mobileDetector->isMobile();
+        return $this->deviceDetector->isMobile();
     }
 
     /**
@@ -132,20 +132,7 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
      */
     public function isTablet()
     {
-        return $this->mobileDetector->isTablet();
-    }
-
-    /**
-     * Is device
-     * @param string $deviceName is[iPhone|BlackBerry|HTC|Nexus|Dell|Motorola|Samsung|Sony|Asus|Palm|Vertu|...]
-     *
-     * @return boolean
-     */
-    public function isDevice($deviceName)
-    {
-        $magicMethodName = 'is' . strtolower((string) $deviceName);
-
-        return $this->mobileDetector->$magicMethodName();
+        return $this->deviceDetector->isTablet();
     }
 
     /**
@@ -195,7 +182,7 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
      */
     public function isIOS()
     {
-        return $this->mobileDetector->isIOS();
+        return $this->deviceDetector->isDevice('IOS');
     }
 
     /**
@@ -205,7 +192,7 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
      */
     public function isAndroidOS()
     {
-        return $this->mobileDetector->isAndroidOS();
+        return $this->deviceDetector->isDevice('AndroidOS');
     }
 
     /**

@@ -11,7 +11,6 @@
 
 namespace SunCat\MobileDetectBundle\EventListener;
 
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -19,6 +18,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
+use  SunCat\MobileDetectBundle\DeviceDetector\DeviceDetectorInterface;
 
 /**
  * Request and response listener
@@ -37,9 +37,9 @@ class RequestResponseListener
     CONST FULL      = 'full';
 
     /**
-     * @var MobileDetector
+     * @var DeviceDetectorInterface
      */
-    protected $mobileDetector;
+    protected $deviceDetector;
 
     /**
      * @var DeviceView
@@ -69,21 +69,21 @@ class RequestResponseListener
     /**
      * RequestResponseListener constructor.
      *
-     * @param MobileDetector  $mobileDetector
+     * @param DeviceDetectorInterface  $deviceDetector
      * @param DeviceView      $deviceView
      * @param RouterInterface $router
      * @param array           $redirectConf
      * @param bool            $fullPath
      */
     public function __construct(
-        MobileDetector $mobileDetector,
+        DeviceDetectorInterface $deviceDetector,
         DeviceView $deviceView,
         RouterInterface $router,
         array $redirectConf,
         $fullPath = true
     )
     {
-        $this->mobileDetector = $mobileDetector;
+        $this->deviceDetector = $deviceDetector;
         $this->deviceView = $deviceView;
         $this->router = $router;
 
@@ -108,7 +108,7 @@ class RequestResponseListener
         }
 
         $request = $event->getRequest();
-        $this->mobileDetector->setUserAgent($request->headers->get('user-agent'));
+        $this->deviceDetector->setUserAgent($request->headers->get('user-agent'));
 
         // Sets the flag for the response handled by the GET switch param and the type of the view.
         if ($this->deviceView->hasSwitchParam()) {
@@ -119,9 +119,9 @@ class RequestResponseListener
         // If neither the SwitchParam nor the cookie are set, detect the view...
         $cookieIsSet = $this->deviceView->getRequestedViewType() !== null;
         if (!$cookieIsSet) {
-            if ($this->redirectConf['detect_tablet_as_mobile'] === false && $this->mobileDetector->isTablet()) {
+            if ($this->redirectConf['detect_tablet_as_mobile'] === false && $this->deviceDetector->isTablet()) {
                 $this->deviceView->setTabletView();
-            } elseif ($this->mobileDetector->isMobile()) {
+            } elseif ($this->deviceDetector->isMobile()) {
                 $this->deviceView->setMobileView();
             } else {
                 $this->deviceView->setFullView();

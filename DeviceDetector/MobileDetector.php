@@ -19,6 +19,16 @@ use Detection\MobileDetect;
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  *
  */
-class MobileDetector extends MobileDetect
+class MobileDetector extends MobileDetect  implements  DeviceDetectorInterface
 {
+
+    /**
+     * @inheritdoc
+     */
+    public function isDevice($deviceName)
+    {
+        $magicMethodName = 'is' . strtolower((string) $deviceName);
+
+        return $this->$magicMethodName();
+    }
 }
