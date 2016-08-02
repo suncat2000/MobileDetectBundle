@@ -54,7 +54,7 @@ class DeviceView
      */
     public function __construct(Container $serviceContainer)
     {
-        if (false === $serviceContainer->isScopeActive('request')) {
+        if (!$this->request = $serviceContainer->get('request_stack')->getMasterRequest()) {
             $this->viewType = self::VIEW_NOT_MOBILE;
 
             return;
@@ -142,7 +142,7 @@ class DeviceView
 
     /**
      * Sets the view type.
-     * 
+     *
      * @param string $view
      */
     public function setView($view)
