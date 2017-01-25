@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class MobileDetectExtension extends \Twig_Extension
 {
     /**
      * @var \SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
@@ -216,13 +216,6 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
         if (null !== $requestStack) {
             $this->request = $requestStack->getMasterRequest();
         }
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function getGlobals() {
-        return [];
     }
 
     /**
