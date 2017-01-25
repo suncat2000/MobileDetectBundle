@@ -217,6 +217,13 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
             $this->request = $requestStack->getMasterRequest();
         }
     }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getGlobals() {
+        return [];
+    }
 
     /**
      * Extension name
