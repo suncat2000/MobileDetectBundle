@@ -11,7 +11,6 @@
 
 namespace SunCat\MobileDetectBundle\Twig\Extension;
 
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -21,10 +20,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
+class MobileDetectExtension extends \Twig_Extension
 {
     /**
-     * @var \SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
+     * @var mixed
      */
     private $mobileDetector;
     
@@ -46,11 +45,11 @@ class MobileDetectExtension extends \Twig_Extension implements \Twig_Extension_G
     /**
      * MobileDetectExtension constructor.
      * 
-     * @param MobileDetector $mobileDetector
+     * @param mixed $mobileDetector
      * @param DeviceView $deviceView
      * @param array $redirectConf
      */
-    public function __construct(MobileDetector $mobileDetector, DeviceView $deviceView, array $redirectConf)
+    public function __construct($mobileDetector, DeviceView $deviceView, array $redirectConf)
     {
         $this->mobileDetector = $mobileDetector;
         $this->deviceView = $deviceView;

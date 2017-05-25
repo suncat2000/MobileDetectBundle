@@ -11,7 +11,6 @@
 
 namespace SunCat\MobileDetectBundle\EventListener;
 
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -37,7 +36,7 @@ class RequestResponseListener
     CONST FULL      = 'full';
 
     /**
-     * @var MobileDetector
+     * @var mixed
      */
     protected $mobileDetector;
 
@@ -69,14 +68,14 @@ class RequestResponseListener
     /**
      * RequestResponseListener constructor.
      *
-     * @param MobileDetector  $mobileDetector
+     * @param mixed           $mobileDetector
      * @param DeviceView      $deviceView
      * @param RouterInterface $router
      * @param array           $redirectConf
      * @param bool            $fullPath
      */
     public function __construct(
-        MobileDetector $mobileDetector,
+        $mobileDetector,
         DeviceView $deviceView,
         RouterInterface $router,
         array $redirectConf,
