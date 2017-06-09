@@ -4,18 +4,13 @@ namespace SunCat\MobileDetectBundle\Tests\RequestListener;
 
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -87,7 +82,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->config = array(
             'mobile' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
             'tablet' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
-            'detect_tablet_as_mobile' => false
+            'detect_tablet_as_mobile' => false,
         );
     }
 
@@ -96,7 +91,11 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     public function handleRequestHasSwitchParam()
     {
-        $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array(
+            'myparam' => 'myvalue',
+            $this->switchParam => DeviceView::VIEW_MOBILE,
+        ));
+
         $deviceView = new DeviceView($this->requestStack);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, array());
         $event = $this->createGetResponseEvent('some content');
@@ -126,7 +125,11 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
     {
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com');
 
-        $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array(
+            'myparam' => 'myvalue',
+            $this->switchParam => DeviceView::VIEW_MOBILE,
+        ));
+
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
@@ -144,13 +147,15 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $response = $event->getResponse();
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(sprintf(
-            'http://mobilehost.com/?%s=%s&myparam=myvalue',
-            $this->switchParam,
-            DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
+        $this->assertEquals(
+            sprintf(
+                'http://mobilehost.com/?%s=%s&myparam=myvalue',
+                $this->switchParam,
+                DeviceView::VIEW_MOBILE
+            ),
+            $response->getTargetUrl()
         );
-        
+
         $cookies = $response->headers->getCookies();
         $this->assertGreaterThan(0, count($cookies));
         foreach ($cookies as $cookie) {
@@ -238,7 +243,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
     {
         $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
-        $this->request->query = new ParameterBag(array('some'=>'param'));
+        $this->request->query = new ParameterBag(array('some' => 'param'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
@@ -260,11 +265,13 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $response = $getResponseEvent->getResponse();
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(sprintf(
+        $this->assertEquals(
+            sprintf(
                 'http://testsite.com/some/parameters?%s=%s&some=param',
                 $this->switchParam,
                 DeviceView::VIEW_TABLET
-            ), $response->getTargetUrl()
+            ),
+            $response->getTargetUrl()
         );
 
         $cookies = $response->headers->getCookies();
@@ -288,7 +295,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $switchParam = 'custom_param';
 
 
-        $this->request->query = new ParameterBag(array('some'=>'param'));
+        $this->request->query = new ParameterBag(array('some' => 'param'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
@@ -311,11 +318,13 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $response = $getResponseEvent->getResponse();
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(sprintf(
+        $this->assertEquals(
+            sprintf(
                 'http://testsite.com/some/parameters?%s=%s&some=param',
                 $switchParam,
                 DeviceView::VIEW_TABLET
-            ), $response->getTargetUrl()
+            ),
+            $response->getTargetUrl()
         );
 
         $cookies = $response->headers->getCookies();
@@ -401,11 +410,13 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(sprintf(
+        $this->assertEquals(
+            sprintf(
                 'http://mobilehost.com/some/parameters?%s=%s',
                 $this->switchParam,
                 DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
+            ),
+            $response->getTargetUrl()
         );
 
         $cookies = $response->headers->getCookies();
@@ -449,11 +460,13 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('http://testsite.com?device_view=tablet', $response->getTargetUrl());
-        $this->assertEquals(sprintf(
+        $this->assertEquals(
+            sprintf(
                 'http://testsite.com?%s=%s',
                 $this->switchParam,
                 DeviceView::VIEW_TABLET
-            ), $response->getTargetUrl()
+            ),
+            $response->getTargetUrl()
         );
 
         $cookies = $response->headers->getCookies();
@@ -545,11 +558,13 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(sprintf(
+        $this->assertEquals(
+            sprintf(
                 'http://testsite.com/some/parameters?%s=%s',
                 $this->switchParam,
                 DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
+            ),
+            $response->getTargetUrl()
         );
 
         $cookies = $response->headers->getCookies();
@@ -593,11 +608,13 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->assertEquals(sprintf(
+        $this->assertEquals(
+            sprintf(
                 'http://testsite.com?%s=%s',
                 $this->switchParam,
                 DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
+            ),
+            $response->getTargetUrl()
         );
 
         $cookies = $response->headers->getCookies();
@@ -735,5 +752,4 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
 
         return $event;
     }
-
 }

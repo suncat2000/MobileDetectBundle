@@ -56,7 +56,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getViewTypeMobile()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertEquals(DeviceView::VIEW_MOBILE, $deviceView->getViewType());
         $this->assertEquals(DeviceView::VIEW_MOBILE, $deviceView->getRequestedViewType());
@@ -67,7 +67,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getViewTypeTablet()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_TABLET));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertEquals(DeviceView::VIEW_TABLET, $deviceView->getViewType());
         $this->assertEquals(DeviceView::VIEW_TABLET, $deviceView->getRequestedViewType());
@@ -78,7 +78,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getViewTypeFull()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_FULL));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_FULL));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertEquals(DeviceView::VIEW_FULL, $deviceView->getViewType());
         $this->assertEquals(DeviceView::VIEW_FULL, $deviceView->getRequestedViewType());
@@ -100,7 +100,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getViewTypeMobileFromCookie()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->cookies = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertEquals(DeviceView::VIEW_MOBILE, $deviceView->getViewType());
         $this->assertEquals(DeviceView::VIEW_MOBILE, $deviceView->getRequestedViewType());
@@ -111,7 +111,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isFullViewTrue()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_FULL));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_FULL));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertTrue($deviceView->isFullView());
     }
@@ -121,7 +121,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isFullViewFalse()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertFalse($deviceView->isFullView());
     }
@@ -131,7 +131,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isTabletViewTrue()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_TABLET));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertTrue($deviceView->isTabletView());
     }
@@ -141,7 +141,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isTabletViewFalse()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertFalse($deviceView->isTabletView());
     }
@@ -151,7 +151,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isMobileViewTrue()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertTrue($deviceView->isMobileView());
     }
@@ -161,7 +161,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isMobileViewFalse()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_TABLET));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertFalse($deviceView->isMobileView());
     }
@@ -171,7 +171,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isNotMobileViewTrue()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_NOT_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_NOT_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertTrue($deviceView->isNotMobileView());
     }
@@ -181,7 +181,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function isNotMobileViewFalse()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertFalse($deviceView->isNotMobileView());
     }
@@ -191,7 +191,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function hasSwitchParamTrue()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertTrue($deviceView->hasSwitchParam());
     }
@@ -211,7 +211,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function hasSwitchParamFalse2()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView();
         $this->assertFalse($deviceView->hasSwitchParam());
     }
@@ -301,7 +301,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getSwitchParamValueFull()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_FULL));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_FULL));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertEquals(DeviceView::VIEW_FULL, $deviceView->getSwitchParamValue());
     }
@@ -311,7 +311,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getSwitchParamValueMobile()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertEquals(DeviceView::VIEW_MOBILE, $deviceView->getSwitchParamValue());
     }
@@ -321,7 +321,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getSwitchParamValueTablet()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_TABLET));
         $deviceView = new DeviceView($this->requestStack);
         $this->assertEquals(DeviceView::VIEW_TABLET, $deviceView->getSwitchParamValue());
     }
@@ -331,7 +331,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getRedirectResponseBySwitchParamWithCookieViewMobile()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $response = $deviceView->getRedirectResponseBySwitchParam('/redirect-url');
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
@@ -343,7 +343,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function getRedirectResponseBySwitchParamWithCookieViewTablet()
     {
-        $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
+        $this->request->query = new ParameterBag(array($this->switchParam => DeviceView::VIEW_TABLET));
         $deviceView = new DeviceView($this->requestStack);
         $response = $deviceView->getRedirectResponseBySwitchParam('/redirect-url');
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
