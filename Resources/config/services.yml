@@ -1,5 +1,6 @@
 services:
-    SunCat\MobileDetectBundle\DeviceDetector\MobileDetector: ~
+    SunCat\MobileDetectBundle\DeviceDetector\MobileDetector:
+        public: false
 
     SunCat\MobileDetectBundle\Helper\DeviceView:
         arguments:
