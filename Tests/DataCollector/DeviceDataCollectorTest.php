@@ -38,12 +38,12 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
      * @var PHPUnit_Framework_MockObject_MockBuilder
      */
     private $requestStack;
-    
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $request;
-    
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -81,7 +81,7 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
             'is_enabled' => true,
             'host' => 'http://testsite.com',
             'status_code' => 302,
-            'action' => RequestResponseListener::REDIRECT
+            'action' => RequestResponseListener::REDIRECT,
         );
         $this->request->cookies = new ParameterBag(array(DeviceView::COOKIE_KEY_DEFAULT => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
@@ -91,7 +91,7 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
 
         $currentView = $deviceDataCollector->getCurrentView();
         $views = $deviceDataCollector->getViews();
-        
+
         $this->assertEquals($deviceView->getViewType(), $currentView);
         $this->assertEquals(DeviceView::VIEW_MOBILE, $currentView);
         $this->assertCount(3, $views);
@@ -118,7 +118,7 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
             'is_enabled' => true,
             'host' => 'http://testsite.com',
             'status_code' => 302,
-            'action' => RequestResponseListener::REDIRECT
+            'action' => RequestResponseListener::REDIRECT,
         );
         $this->request->query = new ParameterBag(array('param1' => 'value1'));
         $this->request->expects($this->any())->method('getHost')->will($this->returnValue('testsite.com'));
@@ -126,12 +126,12 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
         $this->request->expects($this->any())->method('getBaseUrl')->will($this->returnValue('/base-url'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/path-info'));
         $test = $this;
-        $this->request->expects($this->any())->method('getQueryString')->will($this->returnCallback(function() use ($test) {
+        $this->request->expects($this->any())->method('getQueryString')->will($this->returnCallback(function () use ($test) {
             $qs = Request::normalizeQueryString($test->request->server->get('QUERY_STRING'));
 
             return '' === $qs ? null : $qs;
         }));
-        $this->request->expects($this->any())->method('getUri')->will($this->returnCallback(function() use ($test) {
+        $this->request->expects($this->any())->method('getUri')->will($this->returnCallback(function () use ($test) {
             if (null !== $qs = $test->request->getQueryString()) {
                 $qs = '?'.$qs;
             }
@@ -146,7 +146,7 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
 
         $currentView = $deviceDataCollector->getCurrentView();
         $views = $deviceDataCollector->getViews();
-        
+
         $this->assertEquals($deviceView->getViewType(), $currentView);
         $this->assertEquals(DeviceView::VIEW_MOBILE, $currentView);
         $this->assertCount(3, $views);
@@ -169,7 +169,8 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
                         'http://testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_TABLET
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }
@@ -184,7 +185,7 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
             'is_enabled' => true,
             'host' => 'http://testsite.com',
             'status_code' => 302,
-            'action' => RequestResponseListener::REDIRECT
+            'action' => RequestResponseListener::REDIRECT,
         );
         $this->request->query = new ParameterBag(array('param1' => 'value1'));
         $this->request->expects($this->any())->method('getHost')->will($this->returnValue('testsite.com'));
@@ -192,12 +193,12 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
         $this->request->expects($this->any())->method('getBaseUrl')->will($this->returnValue('/base-url'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/path-info'));
         $test = $this;
-        $this->request->expects($this->any())->method('getQueryString')->will($this->returnCallback(function() use ($test) {
+        $this->request->expects($this->any())->method('getQueryString')->will($this->returnCallback(function () use ($test) {
             $qs = Request::normalizeQueryString($test->request->server->get('QUERY_STRING'));
 
             return '' === $qs ? null : $qs;
         }));
-        $this->request->expects($this->any())->method('getUri')->will($this->returnCallback(function() use ($test) {
+        $this->request->expects($this->any())->method('getUri')->will($this->returnCallback(function () use ($test) {
             if (null !== $qs = $test->request->getQueryString()) {
                 $qs = '?'.$qs;
             }
@@ -235,7 +236,8 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
                         'http://testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_MOBILE
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }
@@ -250,7 +252,7 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
             'is_enabled' => true,
             'host' => 'http://m.testsite.com',
             'status_code' => 302,
-            'action' => RequestResponseListener::REDIRECT
+            'action' => RequestResponseListener::REDIRECT,
         );
         $this->request->query = new ParameterBag(array('param1' => 'value1'));
         $this->request->expects($this->any())->method('getHost')->will($this->returnValue('testsite.com'));
@@ -258,12 +260,12 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
         $this->request->expects($this->any())->method('getBaseUrl')->will($this->returnValue('/base-url'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/path-info'));
         $test = $this;
-        $this->request->expects($this->any())->method('getQueryString')->will($this->returnCallback(function() use ($test) {
+        $this->request->expects($this->any())->method('getQueryString')->will($this->returnCallback(function () use ($test) {
             $qs = Request::normalizeQueryString($test->request->server->get('QUERY_STRING'));
 
             return '' === $qs ? null : $qs;
         }));
-        $this->request->expects($this->any())->method('getUri')->will($this->returnCallback(function() use ($test) {
+        $this->request->expects($this->any())->method('getUri')->will($this->returnCallback(function () use ($test) {
             if (null !== $qs = $test->request->getQueryString()) {
                 $qs = '?'.$qs;
             }
@@ -301,12 +303,16 @@ class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
                         'http://testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_MOBILE
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }
     }
 
+    /**
+     * @test
+     */
     public function getNameValue()
     {
         $deviceView = new DeviceView($this->requestStack);

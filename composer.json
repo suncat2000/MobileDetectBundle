@@ -20,10 +20,10 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
-        "symfony/framework-bundle": "~2.4|~3.0",
+        "php": ">=5.5.9",
+        "symfony/framework-bundle": "~3.3|~4.0",
         "mobiledetect/mobiledetectlib": "~2.8",
-        "twig/twig": "~1.23|~2.0"
+        "twig/twig": "~1.34|~2.4"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.1",
@@ -31,8 +31,8 @@
         "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "SunCat\\MobileDetectBundle": ""
+        "psr-4": {
+            "SunCat\\MobileDetectBundle\\": ""
         }
     },
     "target-dir": "SunCat/MobileDetectBundle"

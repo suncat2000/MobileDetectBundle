@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="SunCat\MobileDetectBundle\DeviceDetector\MobileDetector"/>
+
+        <service id="SunCat\MobileDetectBundle\Helper\DeviceView">
+            <argument type="service" id="request_stack" on-invalid="ignore"/>
+            <call method="setCookieKey">
+                <argument>%mobile_detect.cookie_key%</argument>
+            </call>
+            <call method="setSwitchParam">
+                <argument>%mobile_detect.switch_param%</argument>
+            </call>
+            <call method="setCookieExpireDatetimeModifier">
+                <argument>%mobile_detect.cookie_expire_datetime_modifier%</argument>
+            </call>
+        </service>
+
+        <service id="SunCat\MobileDetectBundle\EventListener\RequestResponseListener">
+            <tag name="kernel.event_listener" event="kernel.request" method="handleRequest" priority="1"/>
+            <tag name="kernel.event_listener" event="kernel.response" method="handleResponse"/>
+            <argument type="service" id="SunCat\MobileDetectBundle\DeviceDetector\MobileDetector"/>
+            <argument type="service" id="SunCat\MobileDetectBundle\Helper\DeviceView"/>
+            <argument type="service" id="router"/>
+            <argument>%mobile_detect.redirect%</argument>
+            <argument>%mobile_detect.switch_device_view.save_referer_path%</argument>
+        </service>
+
+        <service id="SunCat\MobileDetectBundle\DataCollector\DeviceDataCollector">
+            <tag name="data_collector" template="MobileDetectBundle:Collector:device" id="device.collector"/>
+            <call method="setRedirectConfig">
+                <argument>%mobile_detect.redirect%</argument>
+            </call>
+        </service>
+
+        <service id="SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension" public="false">
+            <tag name="twig.extension"/>
+            <argument type="service" id="SunCat\MobileDetectBundle\DeviceDetector\MobileDetector"/>
+            <argument type="service" id="SunCat\MobileDetectBundle\Helper\DeviceView"/>
+            <argument>%mobile_detect.redirect%</argument>
+            <call method="setRequestByRequestStack">
+                <argument type="service" id="request_stack" on-invalid="ignore"/>
+            </call>
+        </service>
+
+        <!-- Alias to prevent BC <3.3 -->
+        <service id="mobile_detect.mobile_detector.default" alias="SunCat\MobileDetectBundle\DeviceDetector\MobileDetector"/>
+        <service id="mobile_detect.mobile_detector" alias="SunCat\MobileDetectBundle\DeviceDetector\MobileDetector"/>
+        <service id="mobile_detect.device_view" alias="SunCat\MobileDetectBundle\Helper\DeviceView"/>
+        <service id="mobile_detect.request_listener" alias="SunCat\MobileDetectBundle\EventListener\RequestResponseListener"/>
+        <service id="mobile_detect_bundle.device.collector" alias="SunCat\MobileDetectBundle\DataCollector\DeviceDataCollector"/>
+        <service id="mobile_detect.twig.extension" alias="SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension"/>
+    </services>
+</container>

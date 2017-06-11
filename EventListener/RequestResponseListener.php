@@ -13,6 +13,7 @@ namespace SunCat\MobileDetectBundle\EventListener;
 
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
+use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -28,13 +29,13 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class RequestResponseListener
 {
-    CONST REDIRECT                  = 'redirect';
-    CONST NO_REDIRECT               = 'no_redirect';
-    CONST REDIRECT_WITHOUT_PATH     = 'redirect_without_path';
+    const REDIRECT                  = 'redirect';
+    const NO_REDIRECT               = 'no_redirect';
+    const REDIRECT_WITHOUT_PATH     = 'redirect_without_path';
 
-    CONST MOBILE    = 'mobile';
-    CONST TABLET    = 'tablet';
-    CONST FULL      = 'full';
+    const MOBILE    = 'mobile';
+    const TABLET    = 'tablet';
+    const FULL      = 'full';
 
     /**
      * @var MobileDetector
@@ -81,8 +82,7 @@ class RequestResponseListener
         RouterInterface $router,
         array $redirectConf,
         $fullPath = true
-    )
-    {
+    ) {
         $this->mobileDetector = $mobileDetector;
         $this->deviceView = $deviceView;
         $this->router = $router;
@@ -96,8 +96,6 @@ class RequestResponseListener
      * Handles the Request
      *
      * @param GetResponseEvent $event
-     *
-     * @return null
      */
     public function handleRequest(GetResponseEvent $event)
     {
@@ -113,6 +111,7 @@ class RequestResponseListener
         // Sets the flag for the response handled by the GET switch param and the type of the view.
         if ($this->deviceView->hasSwitchParam()) {
             $event->setResponse($this->getRedirectResponseBySwitchParam($request));
+
             return;
         }
 
@@ -133,6 +132,7 @@ class RequestResponseListener
             if (($response = $this->getRedirectResponse($request, $this->deviceView->getViewType()))) {
                 $event->setResponse($response);
             }
+
             return;
         }
 
@@ -185,8 +185,7 @@ class RequestResponseListener
      */
     protected function mustRedirect(Request $request, $view)
     {
-        if (
-            !isset($this->redirectConf[$view]) ||
+        if (!isset($this->redirectConf[$view]) ||
             !$this->redirectConf[$view]['is_enabled'] ||
             ($this->getRoutingOption($request->get('_route'), $view) === self::NO_REDIRECT)
         ) {
@@ -206,12 +205,10 @@ class RequestResponseListener
      * Prepares the response modification which will take place after the controller logic has been executed.
      *
      * @param string $view The view for which to prepare the response modification.
-     *
-     * @return boolean
      */
     protected function prepareResponseModification($view)
     {
-        $this->modifyResponseClosure = function(DeviceView $deviceView, FilterResponseEvent $event) use ($view) {
+        $this->modifyResponseClosure = function (DeviceView $deviceView, FilterResponseEvent $event) use ($view) {
             return $deviceView->modifyResponse($view, $event->getResponse());
         };
     }
@@ -221,7 +218,7 @@ class RequestResponseListener
      *
      * @param Request $request
      *
-     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
+     * @return RedirectResponseWithCookie
      */
     protected function getRedirectResponseBySwitchParam(Request $request)
     {
@@ -236,8 +233,8 @@ class RequestResponseListener
                 if (array_key_exists($this->deviceView->getSwitchParam(), $queryParams)) {
                     unset($queryParams[$this->deviceView->getSwitchParam()]);
                 }
-                if(sizeof($queryParams) > 0) {
-                    $redirectUrl .= '?'. Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
+                if (sizeof($queryParams) > 0) {
+                    $redirectUrl .= '?'.Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
                 }
             } else {
                 $redirectUrl = $this->getCurrentHost($request);
@@ -286,16 +283,12 @@ class RequestResponseListener
                 $queryParams = $request->query->all();
                 $queryParams[$this->deviceView->getSwitchParam()] = $platform;
 
-                return rtrim($this->redirectConf[$platform]['host'], '/') .
-                    $request->getPathInfo() . '?' .
-                    Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
+                return rtrim($this->redirectConf[$platform]['host'], '/').$request->getPathInfo().'?'.Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
             } elseif (self::REDIRECT_WITHOUT_PATH === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirections may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
-                return $this->redirectConf[$platform]['host'] . '?' .
-                    $this->deviceView->getSwitchParam() . '=' .
-                    $platform;
+                return $this->redirectConf[$platform]['host'].'?'.$this->deviceView->getSwitchParam().'='.$platform;
             } else {
                 return null;
             }
@@ -341,7 +334,6 @@ class RequestResponseListener
      */
     protected function getCurrentHost(Request $request)
     {
-        return $request->getScheme() . '://' . $request->getHost();
+        return $request->getScheme().'://'.$request->getHost();
     }
-
 }
