@@ -377,15 +377,4 @@ class MobileDetectExtensionTest extends PHPUnit_Framework_TestCase
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isAndroidOS());
     }
-
-    /**
-     * @test
-     */
-    public function getNameTwigExtension()
-    {
-        $deviceView = new DeviceView($this->requestStack);
-        $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
-        $this->assertEquals('mobile_detect.twig.extension', $extension->getName());
-    }
-
 }
