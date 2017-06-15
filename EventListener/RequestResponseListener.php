@@ -287,7 +287,7 @@ class RequestResponseListener
                 $queryParams[$this->deviceView->getSwitchParam()] = $platform;
 
                 return rtrim($this->redirectConf[$platform]['host'], '/') .
-                    $request->getPathInfo() . '?' .
+                    $request->getBaseUrl() . $request->getPathInfo() . '?' .
                     Request::normalizeQueryString(http_build_query($queryParams, null, '&'));
             } elseif (self::REDIRECT_WITHOUT_PATH === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
