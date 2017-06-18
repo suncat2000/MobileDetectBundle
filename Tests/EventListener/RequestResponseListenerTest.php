@@ -4,18 +4,13 @@ namespace SunCat\MobileDetectBundle\Tests\RequestListener;
 
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -98,6 +93,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
     {
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
+        $deviceView->setRedirectConfig([DeviceView::VIEW_MOBILE => ['status_code' => 302]]);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, array());
         $event = $this->createGetResponseEvent('some content');
 
@@ -135,6 +131,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
         );
 
         $deviceView = new DeviceView($this->requestStack);
+        $deviceView->setRedirectConfig([DeviceView::VIEW_MOBILE => ['status_code' => 302]]);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, $this->config);
         $event = $this->createGetResponseEvent('some content');
 

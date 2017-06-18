@@ -5,8 +5,6 @@ namespace SunCat\MobileDetectBundle\Tests\Helper;
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
-use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -231,7 +229,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function setViewFull()
     {
-        $deviceView = new DeviceView($this->requestStack);
+        $deviceView = new DeviceView();
         $deviceView->setView(DeviceView::VIEW_FULL);
         $this->assertTrue($deviceView->isFullView());
     }
@@ -241,7 +239,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function setFullViewAndCheckIsFullView()
     {
-        $deviceView = new DeviceView($this->requestStack);
+        $deviceView = new DeviceView();
         $deviceView->setFullView();
         $this->assertTrue($deviceView->isFullView());
     }
@@ -251,7 +249,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function setTabletViewAndCheckIsTabletView()
     {
-        $deviceView = new DeviceView($this->requestStack);
+        $deviceView = new DeviceView();
         $deviceView->setTabletView();
         $this->assertTrue($deviceView->isTabletView());
     }
@@ -261,7 +259,7 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
      */
     public function setMobileViewAndCheckIsMobileView()
     {
-        $deviceView = new DeviceView($this->requestStack);
+        $deviceView = new DeviceView();
         $deviceView->setMobileView();
         $this->assertTrue($deviceView->isMobileView());
     }
@@ -333,9 +331,10 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
     {
         $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
+        $deviceView->setRedirectConfig([DeviceView::VIEW_MOBILE => ['status_code' => 301]]);
         $response = $deviceView->getRedirectResponseBySwitchParam('/redirect-url');
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
-        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals(301, $response->getStatusCode());
     }
 
     /**
@@ -345,9 +344,10 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
     {
         $this->request->query = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
         $deviceView = new DeviceView($this->requestStack);
+        $deviceView->setRedirectConfig([DeviceView::VIEW_TABLET => ['status_code' => 301]]);
         $response = $deviceView->getRedirectResponseBySwitchParam('/redirect-url');
         $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
-        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals(301, $response->getStatusCode());
     }
 
     /**
