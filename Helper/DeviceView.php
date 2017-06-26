@@ -11,13 +11,10 @@
 
 namespace SunCat\MobileDetectBundle\Helper;
 
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie;
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 
 /**
  * DeviceView
@@ -36,7 +33,7 @@ class DeviceView
     const SWITCH_PARAM_DEFAULT                      = 'device_view';
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var Request
      */
     protected $request;
 
@@ -68,7 +65,7 @@ class DeviceView
     /**
      * Constructor
      *
-     * @param \Symfony\Component\DependencyInjection\Container $serviceContainer
+     * @param RequestStack $requestStack
      */
     public function __construct(RequestStack $requestStack = null)
     {
@@ -202,7 +199,7 @@ class DeviceView
     /**
      * Gets the switch param value from the query string (GET header).
      *
-     * @return string
+     * @return string|null
      */
     public function getSwitchParamValue()
     {
@@ -218,7 +215,7 @@ class DeviceView
      *
      * @param string $redirectUrl
      *
-     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
+     * @return RedirectResponseWithCookie
      */
     public function getRedirectResponseBySwitchParam($redirectUrl)
     {
@@ -237,10 +234,10 @@ class DeviceView
     /**
      * Modifies the Response for the specified device view.
      *
-     * @param string $view The device view for which the response should be modified.
-     * @param \Symfony\Component\HttpFoundation\Response $response
+     * @param string   $view     The device view for which the response should be modified.
+     * @param Response $response
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function modifyResponse($view, Response $response)
     {
@@ -256,7 +253,7 @@ class DeviceView
      * @param string $host       Uri host
      * @param int    $statusCode Status code
      *
-     * @return \SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie
+     * @return RedirectResponseWithCookie
      */
     public function getRedirectResponse($view, $host, $statusCode)
     {
@@ -266,7 +263,7 @@ class DeviceView
     /**
      * Setter of CookieKey
      *
-     * @return string
+     * @param string $cookieKey
      */
     public function setCookieKey($cookieKey)
     {
@@ -286,7 +283,7 @@ class DeviceView
     /**
      * Setter of SwitchParam
      *
-     * @return string
+     * @param string $switchParam
      */
     public function setSwitchParam($switchParam)
     {
@@ -322,9 +319,9 @@ class DeviceView
     /**
      * Create the Cookie object
      *
-     * @param string $cookieValue
+     * @param string $value
      *
-     * @return \Symfony\Component\HttpFoundation\Cookie
+     * @return Cookie
      */
     protected function createCookie($value)
     {

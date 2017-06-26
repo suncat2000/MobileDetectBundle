@@ -24,12 +24,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class MobileDetectExtension extends \Twig_Extension
 {
     /**
-     * @var \SunCat\MobileDetectBundle\DeviceDetector\MobileDetector
+     * @var MobileDetector
      */
     private $mobileDetector;
 
     /**
-     * @var \SunCat\MobileDetectBundle\Helper\DeviceView
+     * @var DeviceView
      */
     private $deviceView;
 
