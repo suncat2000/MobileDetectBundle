@@ -27,6 +27,9 @@
             <call method="setCookieExpireDatetimeModifier">
                 <argument>%mobile_detect.cookie_expire_datetime_modifier%</argument>
             </call>
+            <call method="setRedirectConfig">
+                <argument>%mobile_detect.redirect%</argument>
+            </call>
         </service>
 
     </services>

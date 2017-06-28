@@ -27,7 +27,7 @@ class DeviceView
     const VIEW_TABLET       = 'tablet';
     const VIEW_FULL         = 'full';
     const VIEW_NOT_MOBILE   = 'not_mobile';
-    
+
     const COOKIE_KEY_DEFAULT                        = 'device_view';
     const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT   = '1 month';
     const SWITCH_PARAM_DEFAULT                      = 'device_view';
@@ -61,6 +61,11 @@ class DeviceView
      * @var string
      */
     protected $switchParam = self::SWITCH_PARAM_DEFAULT;
+
+    /**
+     * @var array
+     */
+    protected $redirectConfig;
 
     /**
      * Constructor
@@ -211,6 +216,26 @@ class DeviceView
     }
 
     /**
+     * Getter of RedirectConfig.
+     *
+     * @return array
+     */
+    public function getRedirectConfig()
+    {
+        return $this->redirectConfig;
+    }
+
+    /**
+     * Setter of RedirectConfig.
+     *
+     * @param array $redirectConfig
+     */
+    public function setRedirectConfig($redirectConfig)
+    {
+        $this->redirectConfig = $redirectConfig;
+    }
+
+    /**
      * Gets the RedirectResponse by switch param value.
      *
      * @param string $redirectUrl
@@ -219,16 +244,22 @@ class DeviceView
      */
     public function getRedirectResponseBySwitchParam($redirectUrl)
     {
-        $statusCode = 302;
-
         switch ($this->getSwitchParamValue()) {
             case self::VIEW_MOBILE:
-                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->createCookie(self::VIEW_MOBILE));
+                $viewType = self::VIEW_MOBILE;
+                break;
             case self::VIEW_TABLET:
-                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->createCookie(self::VIEW_TABLET));
+                $viewType = self::VIEW_TABLET;
+
+                if (isset($this->redirectConfig['detect_tablet_as_mobile']) && $this->redirectConfig['detect_tablet_as_mobile'] === true) {
+                    $viewType = self::VIEW_MOBILE;
+                }
+                break;
             default:
-                return new RedirectResponseWithCookie($redirectUrl, $statusCode, $this->createCookie(self::VIEW_FULL));
+                $viewType = self::VIEW_FULL;
         }
+
+        return new RedirectResponseWithCookie($redirectUrl, $this->getStatusCode($viewType), $this->createCookie($viewType));
     }
 
     /**
@@ -332,5 +363,19 @@ class DeviceView
         }
 
         return new Cookie($this->getCookieKey(), $value, $expire);
+    }
+
+    /**
+     * @param string $view
+     *
+     * @return integer
+     */
+    protected function getStatusCode($view)
+    {
+        if (isset($this->redirectConfig[$view]['status_code'])) {
+            return $this->redirectConfig[$view]['status_code'];
+        }
+
+        return 302;
     }
 }
