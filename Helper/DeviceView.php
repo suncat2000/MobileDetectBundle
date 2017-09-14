@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * DeviceView.
+ * DeviceView
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
@@ -316,7 +316,7 @@ class DeviceView
     }
 
     /**
-     * Setter of CookieKey.
+     * Setter of CookieKey
      *
      * @param string $cookieKey
      */
@@ -326,7 +326,7 @@ class DeviceView
     }
 
     /**
-     * Getter of CookieKey.
+     * Getter of CookieKey
      *
      * @return string
      */
@@ -452,7 +452,7 @@ class DeviceView
     }
 
     /**
-     * Create the Cookie object.
+     * Create the Cookie object
      *
      * @param string $value
      *
