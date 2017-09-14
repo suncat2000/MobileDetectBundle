@@ -76,7 +76,7 @@ class MobileDetectExtensionTest extends PHPUnit_Framework_TestCase
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
 
         $functions = $extension->getFunctions();
-        $this->assertCount(10, $functions);
+        $this->assertCount(11, $functions);
         $names = [
             'is_mobile' => 'isMobile',
             'is_tablet' => 'isTablet',
@@ -87,7 +87,8 @@ class MobileDetectExtensionTest extends PHPUnit_Framework_TestCase
             'is_not_mobile_view' => 'isNotMobileView',
             'is_ios' => 'isIOS',
             'is_android_os' => 'isAndroidOS',
-            'full_view_url' => 'fullViewUrl'
+            'full_view_url' => 'fullViewUrl',
+            'device_version' => 'deviceVersion'
         ];
         foreach ($functions as $function) {
             $this->assertInstanceOf('\Twig_SimpleFunction', $function);

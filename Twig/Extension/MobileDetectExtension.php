@@ -75,7 +75,26 @@ class MobileDetectExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_ios', array($this, 'isIOS')),
             new \Twig_SimpleFunction('is_android_os', array($this, 'isAndroidOS')),
             new \Twig_SimpleFunction('full_view_url', array($this, 'fullViewUrl'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('device_version', array($this, 'deviceVersion')),
         );
+    }
+
+    /**
+     * Check the version of the given property in the User-Agent.
+     * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31)
+     *
+     * @param string $propertyName The name of the property. See self::getProperties() array
+     *                             keys for all possible properties.
+     * @param string $type         Either self::VERSION_TYPE_STRING to get a string value or
+     *                             self::VERSION_TYPE_FLOAT indicating a float value. This parameter
+     *                             is optional and defaults to self::VERSION_TYPE_STRING. Passing an
+     *                             invalid parameter will default to the this type as well.
+     *
+     * @return string|float The version of the property we are trying to extract.
+     */
+    public function deviceVersion($propertyName, $type = \Mobile_Detect::VERSION_TYPE_STRING)
+    {
+        return $this->mobileDetector->version($propertyName, $type);
     }
 
     /**
