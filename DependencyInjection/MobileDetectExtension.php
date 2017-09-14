@@ -53,6 +53,10 @@ class MobileDetectExtension extends Extension
         $container->setParameter('mobile_detect.switch_device_view.save_referer_path', $config['switch_device_view']['save_referer_path']);
 
         $container->setParameter('mobile_detect.cookie_key', $config['cookie_key']);
+        $container->setParameter('mobile_detect.cookie_path', $config['cookie_path']);
+        $container->setParameter('mobile_detect.cookie_domain', $config['cookie_domain']);
+        $container->setParameter('mobile_detect.cookie_secure', $config['cookie_secure']);
+        $container->setParameter('mobile_detect.cookie_httponly', $config['cookie_httponly']);
         $container->setParameter('mobile_detect.cookie_expire_datetime_modifier', $config['cookie_expire_datetime_modifier']);
         $container->setParameter('mobile_detect.switch_param', $config['switch_param']);
 

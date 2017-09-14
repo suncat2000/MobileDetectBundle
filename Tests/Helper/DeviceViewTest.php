@@ -5,6 +5,7 @@ namespace SunCat\MobileDetectBundle\Tests\Helper;
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -403,6 +404,31 @@ class DeviceViewTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals(DeviceView::VIEW_MOBILE, $cookie->getValue());
             }
         }
+    }
+
+    /**
+     * @test
+     */
+    public function getRedirectResponseAndCheckCookieSettings()
+    {
+        $this->request->query = new ParameterBag();
+        $deviceView = new DeviceView($this->requestStack);
+        $deviceView->setCookiePath('/test');
+        $deviceView->setCookieDomain('example.com');
+        $deviceView->setCookieSecure(true);
+        $deviceView->setCookieHttpOnly(false);
+
+        $response = $deviceView->getRedirectResponse(DeviceView::VIEW_MOBILE, 'http://mobilesite.com', 302);
+        $this->assertInstanceOf('SunCat\MobileDetectBundle\Helper\RedirectResponseWithCookie', $response);
+        $this->assertEquals(302, $response->getStatusCode());
+
+        /** @var Cookie[] $cookies */
+        $cookies = $response->headers->getCookies();
+        $this->assertEquals(1, count($cookies));
+        $this->assertEquals('/test', $cookies[0]->getPath());
+        $this->assertEquals('example.com', $cookies[0]->getDomain());
+        $this->assertTrue($cookies[0]->isSecure());
+        $this->assertFalse($cookies[0]->isHttpOnly());
     }
 
     /**

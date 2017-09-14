@@ -21,6 +21,18 @@
             <call method="setCookieKey">
                 <argument>%mobile_detect.cookie_key%</argument>
             </call>
+            <call method="setCookiePath">
+                <argument>%mobile_detect.cookie_path%</argument>
+            </call>
+            <call method="setCookieDomain">
+                <argument>%mobile_detect.cookie_domain%</argument>
+            </call>
+            <call method="setCookieSecure">
+                <argument>%mobile_detect.cookie_secure%</argument>
+            </call>
+            <call method="setCookieHttpOnly">
+                <argument>%mobile_detect.cookie_httponly%</argument>
+            </call>
             <call method="setSwitchParam">
                 <argument>%mobile_detect.switch_param%</argument>
             </call>
