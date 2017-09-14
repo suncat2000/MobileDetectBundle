@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * DeviceView
+ * DeviceView.
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
@@ -28,9 +28,13 @@ class DeviceView
     const VIEW_FULL         = 'full';
     const VIEW_NOT_MOBILE   = 'not_mobile';
 
-    const COOKIE_KEY_DEFAULT                        = 'device_view';
-    const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT   = '1 month';
-    const SWITCH_PARAM_DEFAULT                      = 'device_view';
+    const COOKIE_KEY_DEFAULT                      = 'device_view';
+    const COOKIE_PATH_DEFAULT                     = '/';
+    const COOKIE_DOMAIN_DEFAULT                   = '';
+    const COOKIE_SECURE_DEFAULT                   = false;
+    const COOKIE_HTTP_ONLY_DEFAULT                = true;
+    const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT = '1 month';
+    const SWITCH_PARAM_DEFAULT                    = 'device_view';
 
     /**
      * @var Request
@@ -51,6 +55,26 @@ class DeviceView
      * @var string
      */
     protected $cookieKey = self::COOKIE_KEY_DEFAULT;
+
+    /**
+     * @var string
+     */
+    protected $cookiePath = self::COOKIE_PATH_DEFAULT;
+
+    /**
+     * @var string
+     */
+    protected $cookieDomain = self::COOKIE_DOMAIN_DEFAULT;
+
+    /**
+     * @var bool
+     */
+    protected $cookieSecure = self::COOKIE_SECURE_DEFAULT;
+
+    /**
+     * @var bool
+     */
+    protected $cookieHttpOnly = self::COOKIE_HTTP_ONLY_DEFAULT;
 
     /**
      * @var string
@@ -292,7 +316,7 @@ class DeviceView
     }
 
     /**
-     * Setter of CookieKey
+     * Setter of CookieKey.
      *
      * @param string $cookieKey
      */
@@ -302,7 +326,7 @@ class DeviceView
     }
 
     /**
-     * Getter of CookieKey
+     * Getter of CookieKey.
      *
      * @return string
      */
@@ -312,7 +336,87 @@ class DeviceView
     }
 
     /**
-     * Setter of SwitchParam
+     * Getter of CookiePath.
+     *
+     * @return string
+     */
+    public function getCookiePath()
+    {
+        return $this->cookiePath;
+    }
+
+    /**
+     * Setter of CookiePath.
+     *
+     * @param string $cookiePath
+     */
+    public function setCookiePath($cookiePath)
+    {
+        $this->cookiePath = $cookiePath;
+    }
+
+    /**
+     * Getter of CookieDomain.
+     *
+     * @return string
+     */
+    public function getCookieDomain()
+    {
+        return $this->cookieDomain;
+    }
+
+    /**
+     * Setter of CookieDomain.
+     *
+     * @param string $cookieDomain
+     */
+    public function setCookieDomain($cookieDomain)
+    {
+        $this->cookieDomain = $cookieDomain;
+    }
+
+    /**
+     * Is the cookie secure.
+     *
+     * @return bool
+     */
+    public function isCookieSecure()
+    {
+        return $this->cookieSecure;
+    }
+
+    /**
+     * Setter of CookieSecure.
+     *
+     * @param bool $cookieSecure
+     */
+    public function setCookieSecure($cookieSecure)
+    {
+        $this->cookieSecure = $cookieSecure;
+    }
+
+    /**
+     * Is the cookie http only.
+     *
+     * @return bool
+     */
+    public function isCookieHttpOnly()
+    {
+        return $this->cookieHttpOnly;
+    }
+
+    /**
+     * Setter of CookieHttpOnly.
+     *
+     * @param bool $cookieHttpOnly
+     */
+    public function setCookieHttpOnly($cookieHttpOnly)
+    {
+        $this->cookieHttpOnly = $cookieHttpOnly;
+    }
+
+    /**
+     * Setter of SwitchParam.
      *
      * @param string $switchParam
      */
@@ -348,7 +452,7 @@ class DeviceView
     }
 
     /**
-     * Create the Cookie object
+     * Create the Cookie object.
      *
      * @param string $value
      *
@@ -362,7 +466,15 @@ class DeviceView
             $expire = new \Datetime(self::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT);
         }
 
-        return new Cookie($this->getCookieKey(), $value, $expire);
+        return new Cookie(
+            $this->getCookieKey(),
+            $value,
+            $expire,
+            $this->getCookiePath(),
+            $this->getCookieDomain(),
+            $this->isCookieSecure(),
+            $this->isCookieHttpOnly()
+        );
     }
 
     /**
