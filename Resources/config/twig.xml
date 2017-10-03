@@ -14,7 +14,7 @@
             <argument type="service" id="mobile_detect.device_view" />
             <argument>%mobile_detect.redirect%</argument>
             <call method="setRequestByRequestStack">
-                <argument type="service" id="request_stack" on-invalid="null" strict="false" />
+                <argument type="service" id="request_stack" on-invalid="null" />
             </call>
             <tag name="twig.extension"/>
         </service>
