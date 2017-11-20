@@ -2,7 +2,7 @@
 
 namespace SunCat\MobileDetectBundle\Tests\RequestListener;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 /**
  * Request and Response Listener Test
  */
-class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
+class RequestResponseListenerTest extends TestCase
 {
 
     /**
@@ -683,7 +683,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
     {
         $route = $this->getMockBuilder('Symfony\Component\Routing\Route')->disableOriginalConstructor()->getMock();
         $route->expects($this->exactly($times))->method('getOption')->will($this->returnValue($returnValue));
-        $routeCollection = $this->getMock('Symfony\Component\Routing\RouteCollection');
+        $routeCollection = $this->createMock('Symfony\Component\Routing\RouteCollection');
         $routeCollection->expects($this->exactly($times))->method('get')->will($this->returnValue($route));
 
         return $routeCollection;
@@ -701,7 +701,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
     private function createGetResponseEvent($content, $method = 'GET', $headers = array())
     {
         $event = new GetResponseForControllerResultEvent(
-            $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
+            $this->createMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
             $this->request,
             HttpKernelInterface::MASTER_REQUEST,
             $content
@@ -723,7 +723,7 @@ class RequestResponseListenerTest extends PHPUnit_Framework_TestCase
     private function createFilterResponseEvent($response, $method = 'GET', $headers = array())
     {
         $event = new FilterResponseEvent(
-            $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
+            $this->createMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
             $this->request,
             HttpKernelInterface::MASTER_REQUEST,
             $response

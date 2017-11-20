@@ -11,8 +11,8 @@
 
 namespace SunCat\MobileDetectBundle\Tests\DependencyInjection;
 
-use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
+use PHPUnit\Framework\TestCase;
 use SunCat\MobileDetectBundle\DependencyInjection\MobileDetectExtension;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class MobileDetectExtensionTest extends PHPUnit_Framework_TestCase
+class MobileDetectExtensionTest extends TestCase
 {
     /**
      * @var ContainerBuilder
