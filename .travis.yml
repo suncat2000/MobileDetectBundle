@@ -11,6 +11,7 @@ php:
   - 5.6
   - hhvm
   - 7.0
+  - 7.2
 
 dist: trusty
 
@@ -35,7 +36,7 @@ matrix:
       env: SYMFONY_VERSION='3.2.*'
     - php: 7.0
       env: SYMFONY_VERSION='3.3.*'
-    - php: 7.0
+    - php: 7.2
       env: SYMFONY_VERSION='4.0.*'
 
 
