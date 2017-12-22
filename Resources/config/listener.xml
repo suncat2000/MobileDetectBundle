@@ -27,7 +27,7 @@
             <call method="setRedirectConfig">
                 <argument>%mobile_detect.redirect%</argument>
             </call>
-            <tag name="data_collector" template="MobileDetectBundle:Collector:device" id="device.collector"/>
+            <tag name="data_collector" template="@MobileDetect/Collector/device.html.twig" id="device.collector"/>
         </service>
 
     </services>
