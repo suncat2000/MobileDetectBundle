@@ -11,7 +11,7 @@
 
 namespace SunCat\MobileDetectBundle\Tests\DataCollector;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\DataCollector\DeviceDataCollector;
 use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\ServerBag;
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class DeviceDataCollectorTest extends PHPUnit_Framework_TestCase
+class DeviceDataCollectorTest extends TestCase
 {
     /**
      * @var PHPUnit_Framework_MockObject_MockBuilder

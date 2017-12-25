@@ -2,7 +2,7 @@
 
 namespace SunCat\MobileDetectBundle\Tests\Helper;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 /**
  * DeviceView Test
  */
-class DeviceViewTest extends PHPUnit_Framework_TestCase
+class DeviceViewTest extends TestCase
 {
 
     /**
