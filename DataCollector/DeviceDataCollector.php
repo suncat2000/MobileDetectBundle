@@ -194,6 +194,9 @@ class DeviceDataCollector extends DataCollector
         return $requestSwitchView->getUri();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function reset()
     {
         $this->data = [];
