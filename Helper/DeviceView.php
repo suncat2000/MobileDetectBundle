@@ -33,6 +33,8 @@ class DeviceView
     const COOKIE_DOMAIN_DEFAULT                   = '';
     const COOKIE_SECURE_DEFAULT                   = false;
     const COOKIE_HTTP_ONLY_DEFAULT                = true;
+    const COOKIE_RAW_DEFAULT                      = false;
+    const COOKIE_SAMESITE_DEFAULT                 = null;
     const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT = '1 month';
     const SWITCH_PARAM_DEFAULT                    = 'device_view';
 
@@ -75,6 +77,16 @@ class DeviceView
      * @var bool
      */
     protected $cookieHttpOnly = self::COOKIE_HTTP_ONLY_DEFAULT;
+    
+    /**
+     * @var bool
+     */
+    protected $cookieRaw = self::COOKIE_RAW_DEFAULT;
+
+    /**
+     * @var string|null
+     */
+    protected $cookieSameSite = self::COOKIE_SAMESITE_DEFAULT;
 
     /**
      * @var string
@@ -416,6 +428,46 @@ class DeviceView
     }
 
     /**
+     * Is the cookie raw.
+     *
+     * @return bool
+     */
+    public function isCookieRaw()
+    {
+        return $this->cookieRaw;
+    }
+
+    /**
+     * Setter of CookieRaw.
+     *
+     * @param bool $cookieRaw
+     */
+    public function setCookieRaw($cookieRaw)
+    {
+        $this->cookieRaw = $cookieRaw;
+    }
+
+    /**
+     * Getter of CookieSamesite.
+     *
+     * @return string|null
+     */
+    public function getCookieSamesite()
+    {
+        return $this->cookieSamesite;
+    }
+
+    /**
+     * Setter of CookieSamesite.
+     *
+     * @param string|null $cookieSamesite
+     */
+    public function setCookieSamesite($cookieSamesite)
+    {
+        $this->cookieSamesite = $cookieSamesite;
+    }
+
+    /**
      * Setter of SwitchParam.
      *
      * @param string $switchParam
@@ -473,7 +525,9 @@ class DeviceView
             $this->getCookiePath(),
             $this->getCookieDomain(),
             $this->isCookieSecure(),
-            $this->isCookieHttpOnly()
+            $this->isCookieHttpOnly(),
+            $this->isCookieRaw(),
+            $this->getCookieSamesite()
         );
     }
 
