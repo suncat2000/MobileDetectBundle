@@ -86,7 +86,7 @@ class DeviceView
     /**
      * @var string|null
      */
-    protected $cookieSameSite = self::COOKIE_SAMESITE_DEFAULT;
+    protected $cookieSamesite = self::COOKIE_SAMESITE_DEFAULT;
 
     /**
      * @var string
