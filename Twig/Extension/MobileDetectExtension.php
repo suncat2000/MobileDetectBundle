@@ -16,6 +16,7 @@ use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * MobileDetectExtension
@@ -66,17 +67,17 @@ class MobileDetectExtension extends AbstractExtension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('is_mobile', array($this, 'isMobile')),
-            new \Twig_SimpleFunction('is_tablet', array($this, 'isTablet')),
-            new \Twig_SimpleFunction('is_device', array($this, 'isDevice')),
-            new \Twig_SimpleFunction('is_full_view', array($this, 'isFullView')),
-            new \Twig_SimpleFunction('is_mobile_view', array($this, 'isMobileView')),
-            new \Twig_SimpleFunction('is_tablet_view', array($this, 'isTabletView')),
-            new \Twig_SimpleFunction('is_not_mobile_view', array($this, 'isNotMobileView')),
-            new \Twig_SimpleFunction('is_ios', array($this, 'isIOS')),
-            new \Twig_SimpleFunction('is_android_os', array($this, 'isAndroidOS')),
-            new \Twig_SimpleFunction('full_view_url', array($this, 'fullViewUrl'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('device_version', array($this, 'deviceVersion')),
+            new TwigFunction('is_mobile', array($this, 'isMobile')),
+            new TwigFunction('is_tablet', array($this, 'isTablet')),
+            new TwigFunction('is_device', array($this, 'isDevice')),
+            new TwigFunction('is_full_view', array($this, 'isFullView')),
+            new TwigFunction('is_mobile_view', array($this, 'isMobileView')),
+            new TwigFunction('is_tablet_view', array($this, 'isTabletView')),
+            new TwigFunction('is_not_mobile_view', array($this, 'isNotMobileView')),
+            new TwigFunction('is_ios', array($this, 'isIOS')),
+            new TwigFunction('is_android_os', array($this, 'isAndroidOS')),
+            new TwigFunction('full_view_url', array($this, 'fullViewUrl'), array('is_safe' => array('html'))),
+            new TwigFunction('device_version', array($this, 'deviceVersion')),
         );
     }
 
