@@ -15,13 +15,14 @@ use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Twig\Extension\AbstractExtension;
 
 /**
  * MobileDetectExtension
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class MobileDetectExtension extends \Twig_Extension
+class MobileDetectExtension extends AbstractExtension
 {
     /**
      * @var MobileDetector
