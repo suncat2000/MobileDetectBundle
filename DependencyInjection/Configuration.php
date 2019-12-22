@@ -21,6 +21,7 @@ use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  * @author HenriVesala <email@gmail.com>
+ * @revision Liketomove <gipi.scioni@live.it>
  */
 class Configuration implements ConfigurationInterface
 {
@@ -29,10 +30,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mobile_detect');
+        $treeBuilder = new TreeBuilder('mobile_detect');
 
-        $rootNode
+        $treeBuilder
             ->children()
                 ->arrayNode('redirect')
                     ->addDefaultsIfNotSet()
