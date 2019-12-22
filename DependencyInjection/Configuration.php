@@ -22,6 +22,7 @@ use Symfony\Component\HttpKernel\Kernel;
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  * @author HenriVesala <email@gmail.com>
+ * @revision Liketomove <gipi.scioni@live.it>
  */
 class Configuration implements ConfigurationInterface
 {
