@@ -15,6 +15,7 @@ use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Bundle configuration
@@ -29,9 +30,13 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mobile_detect');
-
+        if (Kernel::VERSION_ID >= 40200) {
+            $treeBuilder = new TreeBuilder('mobile_detect');
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('mobile_detect');
+        }
         $rootNode
             ->children()
                 ->arrayNode('redirect')
