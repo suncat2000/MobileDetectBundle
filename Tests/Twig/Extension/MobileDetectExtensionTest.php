@@ -91,7 +91,7 @@ class MobileDetectExtensionTest extends TestCase
             'device_version' => 'deviceVersion'
         ];
         foreach ($functions as $function) {
-            $this->assertInstanceOf('\Twig_SimpleFunction', $function);
+            $this->assertInstanceOf('TwigFunction', $function);
             $name = $function->getName();
             $callable = $function->getCallable();
             $this->assertArrayHasKey($name, $names);
