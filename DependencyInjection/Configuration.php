@@ -30,7 +30,13 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('mobile_detect');
+        if (method_exists($treeBuilder, 'getRootNode')) {
+
         $rootNode = $treeBuilder->getRootNode();
+    } else {
+        // symfony < 4.2 support
+        $rootNode = $treeBuilder->root('mobile_detect');
+    }
 
         $rootNode
             ->children()
