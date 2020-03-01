@@ -9,19 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace SunCat\MobileDetectBundle\DataCollector;
+declare(strict_types=1);
 
-use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
-use SunCat\MobileDetectBundle\Helper\DeviceView;
+namespace MobileDetectBundle\DataCollector;
+
+use MobileDetectBundle\EventListener\RequestResponseListener;
+use MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
 /**
- * DeviceDataCollector class
- *
  * @author Jonas HAOUZI <haouzijonas@gmail.com>
- *
  */
 class DeviceDataCollector extends DataCollector
 {
@@ -35,11 +34,6 @@ class DeviceDataCollector extends DataCollector
      */
     protected $redirectConfig;
 
-    /**
-     * DeviceDataCollector constructor.
-     *
-     * @param DeviceView $deviceView Device View Detector
-     */
     public function __construct(DeviceView $deviceView)
     {
         $this->deviceView = $deviceView;
@@ -48,11 +42,9 @@ class DeviceDataCollector extends DataCollector
     /**
      * Collects data for the given Request and Response.
      *
-     * @param Request    $request   A Request instance
-     * @param Response   $response  A Response instance
-     * @param \Exception $exception An Exception instance
-     *
-     * @api
+     * @param Request         $request   A Request instance
+     * @param Response        $response  A Response instance
+     * @param \Throwable|null $exception An Exception instance
      */
     public function collect(
         Request $request,
@@ -60,8 +52,8 @@ class DeviceDataCollector extends DataCollector
         ?\Throwable $exception = null
     ) {
         $this->data['currentView'] = $this->deviceView->getViewType();
-        $this->data['views'] = array(
-            array(
+        $this->data['views'] = [
+            [
                 'type' => DeviceView::VIEW_FULL,
                 'label' => 'Full',
                 'link' => $this->generateSwitchLink(
@@ -70,8 +62,8 @@ class DeviceDataCollector extends DataCollector
                 ),
                 'isCurrent' => $this->deviceView->isFullView(),
                 'enabled' => $this->canUseView(DeviceView::VIEW_FULL, $request->getSchemeAndHttpHost()),
-            ),
-            array(
+            ],
+            [
                 'type' => DeviceView::VIEW_TABLET,
                 'label' => 'Tablet',
                 'link' => $this->generateSwitchLink(
@@ -80,8 +72,8 @@ class DeviceDataCollector extends DataCollector
                 ),
                 'isCurrent' => $this->deviceView->isTabletView(),
                 'enabled' => $this->canUseView(DeviceView::VIEW_TABLET, $request->getSchemeAndHttpHost()),
-            ),
-            array(
+            ],
+            [
                 'type' => DeviceView::VIEW_MOBILE,
                 'label' => 'Mobile',
                 'link' => $this->generateSwitchLink(
@@ -90,44 +82,33 @@ class DeviceDataCollector extends DataCollector
                 ),
                 'isCurrent' => $this->deviceView->isMobileView(),
                 'enabled' => $this->canUseView(DeviceView::VIEW_MOBILE, $request->getSchemeAndHttpHost()),
-            ),
-        );
+            ],
+        ];
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentView()
+    public function getCurrentView(): string
     {
         return $this->data['currentView'];
     }
 
-    /**
-     * @return array
-     */
-    public function getViews()
+    public function getViews(): array
     {
         return $this->data['views'];
     }
 
-    /**
-     * @param array $redirectConfig
-     */
-    public function setRedirectConfig(array $redirectConfig)
+    public function setRedirectConfig(array $redirectConfig): void
     {
         $this->redirectConfig = $redirectConfig;
     }
 
-    /**
-     * Returns the name of the collector.
-     *
-     * @return string The collector name
-     *
-     * @api
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'device.collector';
+    }
+
+    public function reset()
+    {
+        $this->data = [];
     }
 
     /**
@@ -138,7 +119,7 @@ class DeviceDataCollector extends DataCollector
      */
     protected function canUseView($view, $host)
     {
-        if (!is_array($this->redirectConfig)) {
+        if (!\is_array($this->redirectConfig)) {
             return true;
         }
 
@@ -153,10 +134,10 @@ class DeviceDataCollector extends DataCollector
         }
 
         if (true === $this->redirectConfig[$view]['is_enabled'] &&
-            isset($this->redirectConfig[$view]['host']) &&
-            isset($this->redirectConfig[$view]['action']) &&
+            isset($this->redirectConfig[$view]['host'], $this->redirectConfig[$view]['action'])
+             &&
             !empty($this->redirectConfig[$view]['host']) &&
-            in_array($this->redirectConfig[$view]['action'], [RequestResponseListener::REDIRECT, RequestResponseListener::REDIRECT_WITHOUT_PATH])
+            \in_array($this->redirectConfig[$view]['action'], [RequestResponseListener::REDIRECT, RequestResponseListener::REDIRECT_WITHOUT_PATH], true)
         ) {
             $parseHost = parse_url($this->redirectConfig[$view]['host']);
             $redirectHost = $parseHost['scheme'].'://'.$parseHost['host'];
@@ -173,8 +154,7 @@ class DeviceDataCollector extends DataCollector
     }
 
     /**
-     * @param Request $request
-     * @param         $view
+     * @param $view
      *
      * @return string
      */
@@ -187,15 +167,10 @@ class DeviceDataCollector extends DataCollector
         $requestSwitchView->server->set(
             'QUERY_STRING',
             Request::normalizeQueryString(
-                http_build_query($requestSwitchView->query->all(), null, '&')
+                http_build_query($requestSwitchView->query->all(), '', '&')
             )
         );
 
         return $requestSwitchView->getUri();
-    }
-
-    public function reset()
-    {
-        $this->data = [];
     }
 }

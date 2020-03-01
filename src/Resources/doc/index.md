@@ -44,7 +44,7 @@ public function registerBundles()
 {
     return array(
          // ...
-        new SunCat\MobileDetectBundle\MobileDetectBundle(),
+        new MobileDetectBundle\MobileDetectBundle(),
         // ...
     );
 }
@@ -87,9 +87,9 @@ mobile_detect:
     cookie_key: "device_view"                     # default
     cookie_expire_datetime_modifier: "+1 month"   # default
     switch_param: "device_view"                   # default
-    device_view_class: "SunCat\MobileDetectBundle\Helper\DeviceView"
-    request_response_listener_class: "SunCat\MobileDetectBundle\EventListener\RequestResponseListener"
-    twig_extension_class: "SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension"
+    device_view_class: "MobileDetectBundle\Helper\DeviceView"
+    request_response_listener_class: "MobileDetectBundle\EventListener\RequestResponseListener"
+    twig_extension_class: "MobileDetectBundle\Twig\Extension\MobileDetectExtension"
 ```
 
 You can also create route specific rules for redirecting in your routing.yml.

@@ -1,29 +1,23 @@
 <?php
 
-namespace SunCat\MobileDetectBundle\Tests\Helper;
+declare(strict_types=1);
 
+namespace MobileDetectBundle\Tests\Twig\Extension;
+
+use MobileDetectBundle\Helper\DeviceView;
+use MobileDetectBundle\Twig\Extension\MobileDetectExtension;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockBuilder;
-use SunCat\MobileDetectBundle\Helper\DeviceView;
-use SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension;
-use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Twig\TwigFunction;
 
 /**
- * DeviceView Test
+ * @internal
+ * @coversNothing
  */
 class MobileDetectExtensionTest extends TestCase
 {
-    /**
-     * @var PHPUnit_Framework_MockObject_MockBuilder
-     */
     private $mobileDetector;
 
-    /**
-     * @var PHPUnit_Framework_MockObject_MockBuilder
-     */
     private $requestStack;
 
     /**
@@ -31,40 +25,37 @@ class MobileDetectExtensionTest extends TestCase
      */
     private $config;
 
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
     private $request;
 
     private $cookieKey = DeviceView::COOKIE_KEY_DEFAULT;
     private $switchParam = DeviceView::SWITCH_PARAM_DEFAULT;
 
     /**
-     * Set up
+     * Set up.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->mobileDetector = $this->getMockBuilder('SunCat\MobileDetectBundle\DeviceDetector\MobileDetector')->disableOriginalConstructor()->getMock();
+        $this->mobileDetector = $this->getMockBuilder('MobileDetectBundle\DeviceDetector\MobileDetector')->disableOriginalConstructor()->getMock();
         $this->requestStack = $this->getMockBuilder('Symfony\Component\HttpFoundation\RequestStack')->disableOriginalConstructor()->getMock();
 
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
-        $this->request->expects($this->any())->method('getScheme')->will($this->returnValue('http'));
-        $this->request->expects($this->any())->method('getHost')->will($this->returnValue('testhost.com'));
-        $this->request->expects($this->any())->method('getUriForPath')->will($this->returnValue('/'));
+        $this->request->expects($this->any())->method('getScheme')->willReturn('http');
+        $this->request->expects($this->any())->method('getHost')->willReturn('testhost.com');
+        $this->request->expects($this->any())->method('getUriForPath')->willReturn('/');
         $this->request->query = new ParameterBag();
         $this->request->cookies = new ParameterBag();
 
         $this->requestStack->expects($this->any())
             ->method('getMasterRequest')
-            ->will($this->returnValue($this->request))
+            ->willReturn($this->request)
         ;
 
-        $this->config = array(
-            'full' => array('is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'),
-            'detect_tablet_as_mobile' => false
-        );
+        $this->config = [
+            'full' => ['is_enabled' => false, 'host' => null, 'status_code' => 302, 'action' => 'redirect'],
+            'detect_tablet_as_mobile' => false,
+        ];
     }
 
     /**
@@ -88,14 +79,14 @@ class MobileDetectExtensionTest extends TestCase
             'is_ios' => 'isIOS',
             'is_android_os' => 'isAndroidOS',
             'full_view_url' => 'fullViewUrl',
-            'device_version' => 'deviceVersion'
+            'device_version' => 'deviceVersion',
         ];
         foreach ($functions as $function) {
-            $this->assertInstanceOf('\Twig_SimpleFunction', $function);
+            $this->assertInstanceOf(TwigFunction::class, $function);
             $name = $function->getName();
             $callable = $function->getCallable();
             $this->assertArrayHasKey($name, $names);
-            $this->assertInternalType('array', $callable);
+            $this->assertIsArray($callable);
             $this->assertEquals($names[$name], $callable[1]);
         }
     }
@@ -105,7 +96,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function fullViewUrlHostNull()
     {
-        $this->config['full'] = array('is_enabled' => true, 'host' => null);
+        $this->config['full'] = ['is_enabled' => true, 'host' => null];
 
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
@@ -117,7 +108,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function fullViewUrlHostEmpty()
     {
-        $this->config['full'] = array('is_enabled' => true, 'host' => '');
+        $this->config['full'] = ['is_enabled' => true, 'host' => ''];
 
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
@@ -129,7 +120,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function fullViewUrlNotSetRequest()
     {
-        $this->config['full'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com');
+        $this->config['full'] = ['is_enabled' => true, 'host' => 'http://mobilehost.com'];
 
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
@@ -141,9 +132,9 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function fullViewUrlWithRequestQuery()
     {
-        $this->config['full'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com');
+        $this->config['full'] = ['is_enabled' => true, 'host' => 'http://mobilehost.com'];
 
-        $this->request->query = new ParameterBag(array('myparam'=>'myvalue'));
+        $this->request->query = new ParameterBag(['myparam' => 'myvalue']);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $extension->setRequestByRequestStack($this->requestStack);
@@ -155,9 +146,9 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function fullViewUrlWithRequestOnlyHost()
     {
-        $this->config['full'] = array('is_enabled' => true, 'host' => 'http://mobilehost.com');
+        $this->config['full'] = ['is_enabled' => true, 'host' => 'http://mobilehost.com'];
 
-        $this->request->query = new ParameterBag(array('myparam'=>'myvalue'));
+        $this->request->query = new ParameterBag(['myparam' => 'myvalue']);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $extension->setRequestByRequestStack($this->requestStack);
@@ -169,7 +160,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isMobileTrue()
     {
-        $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(true));
+        $this->mobileDetector->expects($this->once())->method('isMobile')->willReturn(true);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isMobile());
@@ -180,7 +171,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isMobileFalse()
     {
-        $this->mobileDetector->expects($this->once())->method('isMobile')->will($this->returnValue(false));
+        $this->mobileDetector->expects($this->once())->method('isMobile')->willReturn(false);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isMobile());
@@ -191,7 +182,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isTabletTrue()
     {
-        $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(true));
+        $this->mobileDetector->expects($this->once())->method('isTablet')->willReturn(true);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isTablet());
@@ -202,7 +193,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isTabletFalse()
     {
-        $this->mobileDetector->expects($this->once())->method('isTablet')->will($this->returnValue(false));
+        $this->mobileDetector->expects($this->once())->method('isTablet')->willReturn(false);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isTablet());
@@ -216,7 +207,8 @@ class MobileDetectExtensionTest extends TestCase
         $this->mobileDetector->expects($this->once())
             ->method('__call')
             ->with($this->equalTo('isiphone'))
-            ->will($this->returnValue(true));
+            ->willReturn(true)
+        ;
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isDevice('iphone'));
@@ -230,7 +222,8 @@ class MobileDetectExtensionTest extends TestCase
         $this->mobileDetector->expects($this->once())
             ->method('__call')
             ->with($this->equalTo('isandroid'))
-            ->will($this->returnValue(true));
+            ->willReturn(true)
+        ;
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isDevice('android'));
@@ -241,7 +234,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isFullViewTrue()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_FULL));
+        $this->request->cookies = new ParameterBag([$this->switchParam => DeviceView::VIEW_FULL]);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isFullView());
@@ -262,7 +255,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isMobileViewTrue()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->cookies = new ParameterBag([$this->switchParam => DeviceView::VIEW_MOBILE]);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isMobileView());
@@ -273,7 +266,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isMobileViewFalse()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
+        $this->request->cookies = new ParameterBag([$this->switchParam => DeviceView::VIEW_TABLET]);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isMobileView());
@@ -284,7 +277,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isTabletViewTrue()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_TABLET));
+        $this->request->cookies = new ParameterBag([$this->switchParam => DeviceView::VIEW_TABLET]);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isTabletView());
@@ -295,7 +288,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isTabletViewFalse()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_MOBILE));
+        $this->request->cookies = new ParameterBag([$this->switchParam => DeviceView::VIEW_MOBILE]);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isTabletView());
@@ -306,7 +299,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isNotMobileViewTrue()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_NOT_MOBILE));
+        $this->request->cookies = new ParameterBag([$this->switchParam => DeviceView::VIEW_NOT_MOBILE]);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isNotMobileView());
@@ -317,7 +310,7 @@ class MobileDetectExtensionTest extends TestCase
      */
     public function isNotMobileViewFalse()
     {
-        $this->request->cookies = new ParameterBag(array($this->switchParam=>DeviceView::VIEW_FULL));
+        $this->request->cookies = new ParameterBag([$this->switchParam => DeviceView::VIEW_FULL]);
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isNotMobileView());
@@ -331,7 +324,8 @@ class MobileDetectExtensionTest extends TestCase
         $this->mobileDetector->expects($this->once())
             ->method('__call')
             ->with($this->equalTo('isIOS'))
-            ->will($this->returnValue(true));
+            ->willReturn(true)
+        ;
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isIOS());
@@ -345,7 +339,8 @@ class MobileDetectExtensionTest extends TestCase
         $this->mobileDetector->expects($this->once())
             ->method('__call')
             ->with($this->equalTo('isIOS'))
-            ->will($this->returnValue(false));
+            ->willReturn(false)
+        ;
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isIOS());
@@ -359,7 +354,8 @@ class MobileDetectExtensionTest extends TestCase
         $this->mobileDetector->expects($this->once())
             ->method('__call')
             ->with($this->equalTo('isAndroidOS'))
-            ->will($this->returnValue(true));
+            ->willReturn(true)
+        ;
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertTrue($extension->isAndroidOS());
@@ -373,7 +369,8 @@ class MobileDetectExtensionTest extends TestCase
         $this->mobileDetector->expects($this->once())
             ->method('__call')
             ->with($this->equalTo('isAndroidOS'))
-            ->will($this->returnValue(false));
+            ->willReturn(false)
+        ;
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->mobileDetector, $deviceView, $this->config);
         $this->assertFalse($extension->isAndroidOS());

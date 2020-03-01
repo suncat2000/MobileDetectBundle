@@ -9,20 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace SunCat\MobileDetectBundle\DependencyInjection;
+declare(strict_types=1);
+
+namespace MobileDetectBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-/**
- * DI extension
- */
 class MobileDetectExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -68,15 +67,9 @@ class MobileDetectExtension extends Extension
         $container->setAlias('mobile_detect.mobile_detector', $config['service']['mobile_detector']);
     }
 
-    /**
-     * Validate host
-     * @param string $url
-     *
-     * @return boolean
-     */
-    protected function validHost($url)
+    protected function validHost(string $url): bool
     {
-        $pattern = "/^(?:(http|https):\/\/)([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i";
+        $pattern = '/^(?:(http|https):\\/\\/)([A-Z0-9][A-Z0-9_-]*(?:\\.[A-Z0-9][A-Z0-9_-]*)+):?(\\d+)?\\/?/i';
 
         return (bool) preg_match($pattern, $url);
     }

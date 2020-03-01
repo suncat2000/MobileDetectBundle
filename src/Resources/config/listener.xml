@@ -22,7 +22,7 @@
             <tag name="kernel.event_listener" event="kernel.response" method="handleResponse"/>
         </service>
 
-        <service id="mobile_detect_bundle.device.collector" class="SunCat\MobileDetectBundle\DataCollector\DeviceDataCollector">
+        <service id="mobile_detect_bundle.device.collector" class="MobileDetectBundle\DataCollector\DeviceDataCollector">
             <argument type="service" id="mobile_detect.device_view" />
             <call method="setRedirectConfig">
                 <argument>%mobile_detect.redirect%</argument>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the MobileDetectBundle.
  *
@@ -9,16 +11,15 @@
  * file that was distributed with this source code.
  */
 
-namespace SunCat\MobileDetectBundle\DeviceDetector;
+namespace MobileDetectBundle;
 
-use Detection\MobileDetect;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * MobileDetector class
+ * MobileDetectBundle.
  *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
- *
  */
-class MobileDetector extends MobileDetect
+class MobileDetectBundle extends Bundle
 {
 }

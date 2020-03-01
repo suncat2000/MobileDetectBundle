@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace SunCat\MobileDetectBundle\Helper;
+declare(strict_types=1);
+
+namespace MobileDetectBundle\Helper;
 
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,26 +19,24 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * DeviceView
- *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
 class DeviceView
 {
-    const VIEW_MOBILE       = 'mobile';
-    const VIEW_TABLET       = 'tablet';
-    const VIEW_FULL         = 'full';
-    const VIEW_NOT_MOBILE   = 'not_mobile';
+    const VIEW_MOBILE = 'mobile';
+    const VIEW_TABLET = 'tablet';
+    const VIEW_FULL = 'full';
+    const VIEW_NOT_MOBILE = 'not_mobile';
 
-    const COOKIE_KEY_DEFAULT                      = 'device_view';
-    const COOKIE_PATH_DEFAULT                     = '/';
-    const COOKIE_DOMAIN_DEFAULT                   = '';
-    const COOKIE_SECURE_DEFAULT                   = false;
-    const COOKIE_HTTP_ONLY_DEFAULT                = true;
-    const COOKIE_RAW_DEFAULT                      = false;
-    const COOKIE_SAMESITE_DEFAULT                 = null;
+    const COOKIE_KEY_DEFAULT = 'device_view';
+    const COOKIE_PATH_DEFAULT = '/';
+    const COOKIE_DOMAIN_DEFAULT = '';
+    const COOKIE_SECURE_DEFAULT = false;
+    const COOKIE_HTTP_ONLY_DEFAULT = true;
+    const COOKIE_RAW_DEFAULT = false;
+    const COOKIE_SAMESITE_DEFAULT = null;
     const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT = '1 month';
-    const SWITCH_PARAM_DEFAULT                    = 'device_view';
+    const SWITCH_PARAM_DEFAULT = 'device_view';
 
     /**
      * @var Request
@@ -77,7 +77,7 @@ class DeviceView
      * @var bool
      */
     protected $cookieHttpOnly = self::COOKIE_HTTP_ONLY_DEFAULT;
-    
+
     /**
      * @var bool
      */
@@ -103,11 +103,6 @@ class DeviceView
      */
     protected $redirectConfig;
 
-    /**
-     * Constructor
-     *
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack = null)
     {
         if (!$requestStack || !$this->request = $requestStack->getMasterRequest()) {
@@ -127,10 +122,8 @@ class DeviceView
 
     /**
      * Gets the view type for a device.
-     *
-     * @return string
      */
-    public function getViewType()
+    public function getViewType(): string
     {
         return $this->viewType;
     }
@@ -138,69 +131,54 @@ class DeviceView
     /**
      * Gets the view type that has explicitly been requested either by switch param, or by cookie.
      *
-     * @return string The requested view type or null if no view type has been explicitly requested.
+     * @return string the requested view type or null if no view type has been explicitly requested
      */
-    public function getRequestedViewType()
+    public function getRequestedViewType(): ?string
     {
         return $this->requestedViewType;
     }
 
     /**
      * Is the device in full view.
-     *
-     * @return boolean
      */
-    public function isFullView()
+    public function isFullView(): bool
     {
-        return $this->viewType === self::VIEW_FULL;
+        return self::VIEW_FULL === $this->viewType;
     }
 
     /**
      * Is the device a tablet view type.
-     *
-     * @return boolean
      */
-    public function isTabletView()
+    public function isTabletView(): bool
     {
-        return $this->viewType === self::VIEW_TABLET;
+        return self::VIEW_TABLET === $this->viewType;
     }
 
     /**
      * Is the device a mobile view type.
-     *
-     * @return boolean
      */
-    public function isMobileView()
+    public function isMobileView(): bool
     {
-        return $this->viewType === self::VIEW_MOBILE;
+        return self::VIEW_MOBILE === $this->viewType;
     }
 
     /**
      * Is not the device a mobile view type (PC, Mac, etc.).
-     *
-     * @return boolean
      */
-    public function isNotMobileView()
+    public function isNotMobileView(): bool
     {
-        return $this->viewType === self::VIEW_NOT_MOBILE;
+        return self::VIEW_NOT_MOBILE === $this->viewType;
     }
 
     /**
      * Has the Request the switch param in the query string (GET header).
-     *
-     * @return boolean
      */
-    public function hasSwitchParam()
+    public function hasSwitchParam(): bool
     {
         return $this->request && $this->request->query->has($this->switchParam);
     }
 
-    /**
-     * Sets the view type.
-     *
-     * @param string $view
-     */
-    public function setView($view)
+    public function setView(string $view): void
     {
         $this->viewType = $view;
     }
@@ -208,7 +186,7 @@ class DeviceView
     /**
      * Sets the full (desktop) view type.
      */
-    public function setFullView()
+    public function setFullView(): void
     {
         $this->viewType = self::VIEW_FULL;
     }
@@ -216,7 +194,7 @@ class DeviceView
     /**
      * Sets the tablet view type.
      */
-    public function setTabletView()
+    public function setTabletView(): void
     {
         $this->viewType = self::VIEW_TABLET;
     }
@@ -224,7 +202,7 @@ class DeviceView
     /**
      * Sets the mobile view type.
      */
-    public function setMobileView()
+    public function setMobileView(): void
     {
         $this->viewType = self::VIEW_MOBILE;
     }
@@ -232,17 +210,15 @@ class DeviceView
     /**
      * Sets the not mobile view type.
      */
-    public function setNotMobileView()
+    public function setNotMobileView(): void
     {
         $this->viewType = self::VIEW_NOT_MOBILE;
     }
 
     /**
      * Gets the switch param value from the query string (GET header).
-     *
-     * @return string|null
      */
-    public function getSwitchParamValue()
+    public function getSwitchParamValue(): ?string
     {
         if (!$this->request) {
             return null;
@@ -253,32 +229,24 @@ class DeviceView
 
     /**
      * Getter of RedirectConfig.
-     *
-     * @return array
      */
-    public function getRedirectConfig()
+    public function getRedirectConfig(): array
     {
         return $this->redirectConfig;
     }
 
     /**
      * Setter of RedirectConfig.
-     *
-     * @param array $redirectConfig
      */
-    public function setRedirectConfig($redirectConfig)
+    public function setRedirectConfig(array $redirectConfig): void
     {
         $this->redirectConfig = $redirectConfig;
     }
 
     /**
      * Gets the RedirectResponse by switch param value.
-     *
-     * @param string $redirectUrl
-     *
-     * @return RedirectResponseWithCookie
      */
-    public function getRedirectResponseBySwitchParam($redirectUrl)
+    public function getRedirectResponseBySwitchParam(string $redirectUrl): RedirectResponseWithCookie
     {
         switch ($this->getSwitchParamValue()) {
             case self::VIEW_MOBILE:
@@ -287,7 +255,7 @@ class DeviceView
             case self::VIEW_TABLET:
                 $viewType = self::VIEW_TABLET;
 
-                if (isset($this->redirectConfig['detect_tablet_as_mobile']) && $this->redirectConfig['detect_tablet_as_mobile'] === true) {
+                if (isset($this->redirectConfig['detect_tablet_as_mobile']) && true === $this->redirectConfig['detect_tablet_as_mobile']) {
                     $viewType = self::VIEW_MOBILE;
                 }
                 break;
@@ -301,12 +269,9 @@ class DeviceView
     /**
      * Modifies the Response for the specified device view.
      *
-     * @param string   $view     The device view for which the response should be modified.
-     * @param Response $response
-     *
-     * @return Response
+     * @param string $view the device view for which the response should be modified
      */
-    public function modifyResponse($view, Response $response)
+    public function modifyResponse(string $view, Response $response): Response
     {
         $response->headers->setCookie($this->createCookie($view));
 
@@ -316,201 +281,157 @@ class DeviceView
     /**
      * Gets the RedirectResponse for the specified device view.
      *
-     * @param string $view       The device view for which we want the RedirectResponse.
+     * @param string $view       the device view for which we want the RedirectResponse
      * @param string $host       Uri host
      * @param int    $statusCode Status code
-     *
-     * @return RedirectResponseWithCookie
      */
-    public function getRedirectResponse($view, $host, $statusCode)
+    public function getRedirectResponse(string $view, string $host, int $statusCode): RedirectResponseWithCookie
     {
         return new RedirectResponseWithCookie($host, $statusCode, $this->createCookie($view));
     }
 
     /**
-     * Setter of CookieKey
-     *
-     * @param string $cookieKey
+     * Setter of CookieKey.
      */
-    public function setCookieKey($cookieKey)
+    public function setCookieKey(string $cookieKey): void
     {
         $this->cookieKey = $cookieKey;
     }
 
     /**
-     * Getter of CookieKey
-     *
-     * @return string
+     * Getter of CookieKey.
      */
-    public function getCookieKey()
+    public function getCookieKey(): string
     {
         return $this->cookieKey;
     }
 
     /**
      * Getter of CookiePath.
-     *
-     * @return string
      */
-    public function getCookiePath()
+    public function getCookiePath(): string
     {
         return $this->cookiePath;
     }
 
     /**
      * Setter of CookiePath.
-     *
-     * @param string $cookiePath
      */
-    public function setCookiePath($cookiePath)
+    public function setCookiePath(string $cookiePath): void
     {
         $this->cookiePath = $cookiePath;
     }
 
     /**
      * Getter of CookieDomain.
-     *
-     * @return string
      */
-    public function getCookieDomain()
+    public function getCookieDomain(): string
     {
         return $this->cookieDomain;
     }
 
     /**
      * Setter of CookieDomain.
-     *
-     * @param string $cookieDomain
      */
-    public function setCookieDomain($cookieDomain)
+    public function setCookieDomain(string $cookieDomain): void
     {
         $this->cookieDomain = $cookieDomain;
     }
 
     /**
      * Is the cookie secure.
-     *
-     * @return bool
      */
-    public function isCookieSecure()
+    public function isCookieSecure(): bool
     {
         return $this->cookieSecure;
     }
 
     /**
      * Setter of CookieSecure.
-     *
-     * @param bool $cookieSecure
      */
-    public function setCookieSecure($cookieSecure)
+    public function setCookieSecure(bool $cookieSecure)
     {
         $this->cookieSecure = $cookieSecure;
     }
 
     /**
      * Is the cookie http only.
-     *
-     * @return bool
      */
-    public function isCookieHttpOnly()
+    public function isCookieHttpOnly(): bool
     {
         return $this->cookieHttpOnly;
     }
 
     /**
      * Setter of CookieHttpOnly.
-     *
-     * @param bool $cookieHttpOnly
      */
-    public function setCookieHttpOnly($cookieHttpOnly)
+    public function setCookieHttpOnly(bool $cookieHttpOnly): void
     {
         $this->cookieHttpOnly = $cookieHttpOnly;
     }
 
     /**
      * Is the cookie raw.
-     *
-     * @return bool
      */
-    public function isCookieRaw()
+    public function isCookieRaw(): bool
     {
         return $this->cookieRaw;
     }
 
     /**
      * Setter of CookieRaw.
-     *
-     * @param bool $cookieRaw
      */
-    public function setCookieRaw($cookieRaw)
+    public function setCookieRaw(bool $cookieRaw): void
     {
         $this->cookieRaw = $cookieRaw;
     }
 
     /**
      * Getter of CookieSamesite.
-     *
-     * @return string|null
      */
-    public function getCookieSamesite()
+    public function getCookieSamesite(): ?string
     {
         return $this->cookieSamesite;
     }
 
     /**
      * Setter of CookieSamesite.
-     *
-     * @param string|null $cookieSamesite
      */
-    public function setCookieSamesite($cookieSamesite)
+    public function setCookieSamesite(?string $cookieSamesite): void
     {
         $this->cookieSamesite = $cookieSamesite;
     }
 
     /**
      * Setter of SwitchParam.
-     *
-     * @param string $switchParam
      */
-    public function setSwitchParam($switchParam)
+    public function setSwitchParam(string $switchParam): void
     {
         $this->switchParam = $switchParam;
     }
 
     /**
-     * Getter of SwitchParam
-     *
-     * @return string
+     * Getter of SwitchParam.
      */
-    public function getSwitchParam()
+    public function getSwitchParam(): string
     {
         return $this->switchParam;
     }
 
-    /**
-     * @param string $cookieExpireDatetimeModifier
-     */
-    public function setCookieExpireDatetimeModifier($cookieExpireDatetimeModifier)
+    public function setCookieExpireDatetimeModifier(string $cookieExpireDatetimeModifier): void
     {
         $this->cookieExpireDatetimeModifier = $cookieExpireDatetimeModifier;
     }
 
-    /**
-     * @return string
-     */
-    public function getCookieExpireDatetimeModifier()
+    public function getCookieExpireDatetimeModifier(): string
     {
         return $this->cookieExpireDatetimeModifier;
     }
 
     /**
-     * Create the Cookie object
-     *
-     * @param string $value
-     *
-     * @return Cookie
+     * Create the Cookie object.
      */
-    protected function createCookie($value)
+    protected function createCookie(string $value): Cookie
     {
         try {
             $expire = new \Datetime($this->getCookieExpireDatetimeModifier());
@@ -531,17 +452,12 @@ class DeviceView
         );
     }
 
-    /**
-     * @param string $view
-     *
-     * @return integer
-     */
-    protected function getStatusCode($view)
+    protected function getStatusCode(string $view): int
     {
         if (isset($this->redirectConfig[$view]['status_code'])) {
             return $this->redirectConfig[$view]['status_code'];
         }
 
-        return 302;
+        return Response::HTTP_FOUND;
     }
 }
