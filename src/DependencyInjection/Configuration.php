@@ -13,10 +13,13 @@ declare(strict_types=1);
 
 namespace MobileDetectBundle\DependencyInjection;
 
+use MobileDetectBundle\DeviceDetector\MobileDetector;
 use MobileDetectBundle\EventListener\RequestResponseListener;
 use MobileDetectBundle\Helper\DeviceView;
+use MobileDetectBundle\Twig\Extension\MobileDetectExtension;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
@@ -42,7 +45,7 @@ class Configuration implements ConfigurationInterface
             ->children()
             ->booleanNode('is_enabled')->defaultFalse()->end()
             ->scalarNode('host')->defaultNull()->end()
-            ->scalarNode('status_code')->defaultValue(302)->cannotBeEmpty()->end()
+            ->scalarNode('status_code')->defaultValue(Response::HTTP_FOUND)->cannotBeEmpty()->end()
             ->scalarNode('action')->defaultValue(RequestResponseListener::REDIRECT)->cannotBeEmpty()->end()
             ->end()
             ->end()
@@ -51,7 +54,7 @@ class Configuration implements ConfigurationInterface
             ->children()
             ->booleanNode('is_enabled')->defaultFalse()->end()
             ->scalarNode('host')->defaultNull()->end()
-            ->scalarNode('status_code')->defaultValue(302)->cannotBeEmpty()->end()
+            ->scalarNode('status_code')->defaultValue(Response::HTTP_FOUND)->cannotBeEmpty()->end()
             ->scalarNode('action')->defaultValue(RequestResponseListener::REDIRECT)->cannotBeEmpty()->end()
             ->end()
             ->end()
@@ -60,7 +63,7 @@ class Configuration implements ConfigurationInterface
             ->children()
             ->booleanNode('is_enabled')->defaultFalse()->end()
             ->scalarNode('host')->defaultNull()->end()
-            ->scalarNode('status_code')->defaultValue(302)->cannotBeEmpty()->end()
+            ->scalarNode('status_code')->defaultValue(Response::HTTP_FOUND)->cannotBeEmpty()->end()
             ->scalarNode('action')->defaultValue(RequestResponseListener::REDIRECT)->cannotBeEmpty()->end()
             ->end()
             ->end()
@@ -86,10 +89,10 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('cookie_httponly')->defaultValue(DeviceView::COOKIE_HTTP_ONLY_DEFAULT)->end()
             ->scalarNode('cookie_expire_datetime_modifier')->defaultValue(DeviceView::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT)->cannotBeEmpty()->end()
             ->scalarNode('switch_param')->defaultValue(DeviceView::SWITCH_PARAM_DEFAULT)->cannotBeEmpty()->end()
-            ->scalarNode('mobile_detector_class')->defaultValue('SunCat\MobileDetectBundle\DeviceDetector\MobileDetector')->cannotBeEmpty()->end()
-            ->scalarNode('device_view_class')->defaultValue('SunCat\MobileDetectBundle\Helper\DeviceView')->cannotBeEmpty()->end()
-            ->scalarNode('request_response_listener_class')->defaultValue('SunCat\MobileDetectBundle\EventListener\RequestResponseListener')->cannotBeEmpty()->end()
-            ->scalarNode('twig_extension_class')->defaultValue('SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension')->cannotBeEmpty()->end()
+            ->scalarNode('mobile_detector_class')->defaultValue(MobileDetector::class)->cannotBeEmpty()->end()
+            ->scalarNode('device_view_class')->defaultValue(DeviceView::class)->cannotBeEmpty()->end()
+            ->scalarNode('request_response_listener_class')->defaultValue(RequestResponseListener::class)->cannotBeEmpty()->end()
+            ->scalarNode('twig_extension_class')->defaultValue(MobileDetectExtension::class)->cannotBeEmpty()->end()
             ->end()
         ;
 
