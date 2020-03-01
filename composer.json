@@ -26,10 +26,9 @@
     "require": {
         "php": ">=7.1",
         "mobiledetect/mobiledetectlib": "^2.8",
-        "symfony/dependency-injection": "^4.0 || ^5.0",
-        "symfony/event-dispatcher": "^4.0 || ^5.0",
-        "symfony/flex": "^1.6",
-        "symfony/framework-bundle": "^4.0 || ^5.0",
+        "symfony/dependency-injection": "^3.4 || ^4.0 || ^5.0",
+        "symfony/event-dispatcher": "^^3.4 || 4.0 || ^5.0",
+        "symfony/framework-bundle": "^3.4 || ^4.0 || ^5.0",
         "symfony/phpunit-bridge": "^5.0",
         "twig/twig": "~1.26 || ~2.0 || ^3.0"
     },
