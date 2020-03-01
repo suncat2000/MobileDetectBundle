@@ -41,7 +41,7 @@
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^7.5 || ^8.3 || ^9.0",
         "squizlabs/php_codesniffer": "^3.5",
-        "symfony/dotenv": "^5.0"
+        "symfony/dotenv": "^3.4 || ^4.0 || ^5.0"
     },
     "config": {
         "sort-packages": true
