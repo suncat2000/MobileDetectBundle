@@ -1,7 +1,7 @@
 MobileDetectBundle
 =============
 
-Symfony 2.4.x-4.0.x bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
+Symfony 4.4.x-5.0.x bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
 
 [![Build Status](https://travis-ci.org/suncat2000/MobileDetectBundle.png?branch=master)](https://travis-ci.org/suncat2000/MobileDetectBundle) [![Latest Stable Version](https://poser.pugx.org/suncat/mobile-detect-bundle/v/stable.png)](https://packagist.org/packages/suncat/mobile-detect-bundle) [![Total Downloads](https://poser.pugx.org/suncat/mobile-detect-bundle/downloads.png)](https://packagist.org/packages/suncat/mobile-detect-bundle) [![Coverage Status](https://coveralls.io/repos/github/suncat2000/MobileDetectBundle/badge.svg?branch=master)](https://coveralls.io/github/suncat2000/MobileDetectBundle?branch=master)
 

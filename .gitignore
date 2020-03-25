@@ -1,5 +1,14 @@
-vendor/
-build/
-composer.phar
+.phpstan/
+.phpunit
+.phpunit.result.cache
+/.php_cs
+/.php_cs.cache
+/.phpcs-cache
+/build
+/phpcs.xml
+/phpunit.xml
 composer.lock
+composer.phar
 phpunit.xml
+
+/vendor/
