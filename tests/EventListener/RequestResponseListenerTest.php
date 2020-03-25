@@ -8,6 +8,7 @@ use MobileDetectBundle\DeviceDetector\MobileDetector;
 use MobileDetectBundle\EventListener\RequestResponseListener;
 use MobileDetectBundle\Helper\DeviceView;
 use MobileDetectBundle\Helper\RedirectResponseWithCookie;
+use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -48,11 +49,19 @@ class RequestResponseListenerTest extends TestCase
 
         $this->mobileDetector = $this->getMockBuilder(MobileDetector::class)->disableOriginalConstructor()->getMock();
         $this->deviceView = $this->getMockBuilder(DeviceView::class)->disableOriginalConstructor()->getMock();
-        $this->router = $this->getMockBuilder(Router::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['getRouteCollection'])
-            ->getMock()
-        ;
+        if (method_exists(MockBuilder::class, 'onlyMethods')) {
+            $this->router = $this->getMockBuilder(Router::class)
+                ->disableOriginalConstructor()
+                ->onlyMethods(['getRouteCollection'])
+                ->getMock()
+            ;
+        } else {
+            $this->router = $this->getMockBuilder(Router::class)
+                ->disableOriginalConstructor()
+                ->setMethods(['getRouteCollection'])
+                ->getMock()
+            ;
+        }
 
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
         $this->request->expects($this->any())->method('getScheme')->willReturn('http');
