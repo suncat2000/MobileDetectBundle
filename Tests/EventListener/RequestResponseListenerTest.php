@@ -8,8 +8,8 @@ use SunCat\MobileDetectBundle\EventListener\RequestResponseListener;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -92,6 +92,8 @@ class RequestResponseListenerTest extends TestCase
     public function handleRequestHasSwitchParam()
     {
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
+        $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
+
         $deviceView = new DeviceView($this->requestStack);
         $deviceView->setRedirectConfig([DeviceView::VIEW_MOBILE => ['status_code' => 302]]);
         $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, array());
@@ -124,6 +126,8 @@ class RequestResponseListenerTest extends TestCase
 
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -178,7 +182,7 @@ class RequestResponseListenerTest extends TestCase
         $this->assertNull($requestEventResponse);
 
         $responseEventResponse = new Response('Full view', 200);
-        $filterResponseEvent = $this->createFilterResponseEvent($responseEventResponse);
+        $filterResponseEvent = $this->createResponseEvent($responseEventResponse);
         $listener->handleResponse($filterResponseEvent);
         $modifiedResponse = $filterResponseEvent->getResponse();
 
@@ -216,7 +220,7 @@ class RequestResponseListenerTest extends TestCase
         $this->assertNull($requestEventResponse);
 
         $responseEventResponse = new Response('Not mobile view', 200);
-        $filterResponseEvent = $this->createFilterResponseEvent($responseEventResponse);
+        $filterResponseEvent = $this->createResponseEvent($responseEventResponse);
         $listener->handleResponse($filterResponseEvent);
         $modifiedResponse = $filterResponseEvent->getResponse();
 
@@ -237,6 +241,8 @@ class RequestResponseListenerTest extends TestCase
 
         $this->request->query = new ParameterBag(array('some'=>'param'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -287,6 +293,8 @@ class RequestResponseListenerTest extends TestCase
 
         $this->request->query = new ParameterBag(array('some'=>'param'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -349,7 +357,7 @@ class RequestResponseListenerTest extends TestCase
         $this->assertNull($requestEventResponse);
 
         $responseEventResponse = new Response('Tablet view', 200);
-        $filterResponseEvent = $this->createFilterResponseEvent($responseEventResponse);
+        $filterResponseEvent = $this->createResponseEvent($responseEventResponse);
         $listener->handleResponse($filterResponseEvent);
         $modifiedResponse = $filterResponseEvent->getResponse();
 
@@ -377,6 +385,8 @@ class RequestResponseListenerTest extends TestCase
         $this->config['detect_tablet_as_mobile'] = true;
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -424,6 +434,8 @@ class RequestResponseListenerTest extends TestCase
         $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
@@ -472,6 +484,8 @@ class RequestResponseListenerTest extends TestCase
         $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
@@ -493,7 +507,7 @@ class RequestResponseListenerTest extends TestCase
         $this->assertNull($requestEventResponse);
 
         $responseEventResponse = new Response('Tablet view no redirect', 200);
-        $filterResponseEvent = $this->createFilterResponseEvent($responseEventResponse);
+        $filterResponseEvent = $this->createResponseEvent($responseEventResponse);
         $listener->handleResponse($filterResponseEvent);
         $modifiedResponse = $filterResponseEvent->getResponse();
 
@@ -520,6 +534,8 @@ class RequestResponseListenerTest extends TestCase
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -568,6 +584,8 @@ class RequestResponseListenerTest extends TestCase
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
@@ -616,6 +634,8 @@ class RequestResponseListenerTest extends TestCase
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->will($this->returnValue('routeName'));
+
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollecitonWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
@@ -638,7 +658,7 @@ class RequestResponseListenerTest extends TestCase
         $this->assertNull($requestEventResponse);
 
         $responseEventResponse = new Response('Mobile view no redirect', 200);
-        $filterResponseEvent = $this->createFilterResponseEvent($responseEventResponse);
+        $filterResponseEvent = $this->createResponseEvent($responseEventResponse);
         $listener->handleResponse($filterResponseEvent);
         $modifiedResponse = $filterResponseEvent->getResponse();
 
@@ -696,11 +716,11 @@ class RequestResponseListenerTest extends TestCase
      * @param string $method  Method
      * @param array  $headers Headers
      *
-     * @return \Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent
+     * @return \Symfony\Component\HttpKernel\Event\ViewEvent
      */
     private function createGetResponseEvent($content, $method = 'GET', $headers = array())
     {
-        $event = new GetResponseForControllerResultEvent(
+        $event = new ViewEvent(
             $this->createMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
             $this->request,
             HttpKernelInterface::MASTER_REQUEST,
@@ -712,17 +732,17 @@ class RequestResponseListenerTest extends TestCase
     }
 
     /**
-     * createFilterResponseEvent
+     * createResponseEvent
      *
      * @param Response  $response
      * @param string $method   Method
      * @param array  $headers  Headers
      *
-     * @return \Symfony\Component\HttpKernel\Event\FilterResponseEvent
+     * @return \Symfony\Component\HttpKernel\Event\ResponseEvent
      */
-    private function createFilterResponseEvent($response, $method = 'GET', $headers = array())
+    private function createResponseEvent($response, $method = 'GET', $headers = array())
     {
-        $event = new FilterResponseEvent(
+        $event = new ResponseEvent(
             $this->createMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
             $this->request,
             HttpKernelInterface::MASTER_REQUEST,
