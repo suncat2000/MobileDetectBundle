@@ -123,7 +123,7 @@ class DeviceView
     /**
      * Gets the view type for a device.
      */
-    public function getViewType(): string
+    public function getViewType(): ?string
     {
         return $this->viewType;
     }
