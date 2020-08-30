@@ -23,7 +23,7 @@
         "php": ">=5.5.9",
         "symfony/framework-bundle": "~2.7|~3.3|~4.0|~5.0",
         "mobiledetect/mobiledetectlib": "~2.8",
-        "twig/twig": "~1.26|~2.0||^3.0"
+        "twig/twig": "~1.26|~2.0|^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8.35|^5.4.3|^6.0",
