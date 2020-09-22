@@ -11,10 +11,8 @@
 
 namespace SunCat\MobileDetectBundle\DeviceDetector;
 
-use Detection\MobileDetect;
-
 /**
- * MobileDetector class
+ * MobileDetectorInterface interface
  *
  * @author pierrickmartos <pierrick.martos@gmail.com>
  *
