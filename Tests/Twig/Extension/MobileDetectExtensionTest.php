@@ -1,6 +1,6 @@
 <?php
 
-namespace SunCat\MobileDetectBundle\Tests\Helper;
+namespace SunCat\MobileDetectBundle\Tests\Twig\Extension;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockBuilder;
