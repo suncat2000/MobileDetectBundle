@@ -93,7 +93,7 @@ class RequestResponseListener
     {
         // only handle master request, do not handle sub request like esi includes
         // If the device view is "not the mobile view" (e.g. we're not in the request context)
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType() || $this->deviceView->isNotMobileView()) {
+        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType() || $this->deviceView->isNotMobileView()) {
             return;
         }
 
@@ -119,9 +119,10 @@ class RequestResponseListener
             }
         }
 
+        $viewType = $this->deviceView->getViewType();
         // Check if we must redirect to the target view and do so if needed
-        if ($this->mustRedirect($request, $this->deviceView->getViewType())) {
-            if (($response = $this->getRedirectResponse($request, $this->deviceView->getViewType()))) {
+        if ($viewType && $this->mustRedirect($request, $viewType)) {
+            if ($response = $this->getRedirectResponse($request, $viewType)) {
                 $event->setResponse($response);
             }
 
