@@ -73,7 +73,7 @@ class RequestResponseListenerTest extends TestCase
 
         $this->requestStack = $this->getMockBuilder('Symfony\Component\HttpFoundation\RequestStack')->disableOriginalConstructor()->getMock();
         $this->requestStack->expects($this->any())
-            ->method('getMasterRequest')
+            ->method('getMainRequest')
             ->willReturn($this->request)
         ;
 
@@ -624,7 +624,7 @@ class RequestResponseListenerTest extends TestCase
         $event = new ViewEvent(
             $this->createMock(HttpKernelInterface::class),
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST,
+            HttpKernelInterface::MAIN_REQUEST,
             $content
         );
         $event->getRequest()->headers = new HeaderBag($headers);
@@ -646,7 +646,7 @@ class RequestResponseListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock(HttpKernelInterface::class),
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST,
+            HttpKernelInterface::MAIN_REQUEST,
             $response
         );
         $event->getRequest()->headers = new HeaderBag($headers);
