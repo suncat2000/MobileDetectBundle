@@ -59,11 +59,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install PHP with XDebug and PCOV
+      - name: Install PHP with PCOV
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          coverage: xdebug, pcov
+          coverage: pcov
           ini-values: zend.assertions=1
 
       - name: Globally install symfony/flex
