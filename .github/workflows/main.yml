@@ -59,11 +59,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install PHP with PCOV
+      - name: Install PHP with XDebug and PCOV
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          coverage: pcov
+          coverage: xdebug, pcov
           ini-values: zend.assertions=1
 
       - name: Globally install symfony/flex
@@ -87,13 +87,13 @@ jobs:
         run: vendor/bin/phpstan analyse
 
       - name: Unit and Feature tests via PHPUnit
-        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+        run: vendor/bin/phpunit
 
       - name: Upload coverage file
         uses: actions/upload-artifact@v3
         with:
           name: phpunit-${{ matrix.php }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
-          path: coverage.xml
+          path: build/
 
   upload_coverage:
     name: Upload coverage to Codecov
