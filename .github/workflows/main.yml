@@ -95,7 +95,22 @@ jobs:
           name: phpunit-${{ matrix.php }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
           path: coverage.xml
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
+  upload_coverage:
+    name: Upload coverage to Codecov
+    runs-on: ubuntu-latest
+    needs:
+      - phpunit
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download coverage files
+        uses: actions/download-artifact@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: reports
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          directory: reports
