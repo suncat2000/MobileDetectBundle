@@ -87,10 +87,16 @@ jobs:
         run: vendor/bin/phpstan analyse
 
       - name: Unit and Feature tests via PHPUnit
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
       - name: Upload coverage file
         uses: actions/upload-artifact@v3
         with:
           name: phpunit-${{ matrix.php }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
           path: coverage.xml
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coverage.xml
