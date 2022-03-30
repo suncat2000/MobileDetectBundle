@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  *
  * @internal
- * @coversNothing
+ * @coversDefaultClass
  */
 final class MobileDetectExtensionTest extends TestCase
 {

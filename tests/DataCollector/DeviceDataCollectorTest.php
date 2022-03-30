@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\ServerBag;
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  *
  * @internal
- * @coversNothing
+ * @coversDefaultClass
  */
 final class DeviceDataCollectorTest extends TestCase
 {

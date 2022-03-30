@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @internal
- * @coversNothing
+ * @coversDefaultClass
  */
 final class DeviceViewTest extends TestCase
 {

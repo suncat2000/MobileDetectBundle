@@ -24,7 +24,7 @@ use Symfony\Component\Routing\RouteCollection;
 
 /**
  * @internal
- * @coversNothing
+ * @coversDefaultClass
  */
 final class RequestResponseListenerTest extends TestCase
 {

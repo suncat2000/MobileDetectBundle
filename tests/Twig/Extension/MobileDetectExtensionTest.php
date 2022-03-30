@@ -16,7 +16,7 @@ use Twig\TwigFunction;
 
 /**
  * @internal
- * @coversNothing
+ * @coversDefaultClass
  */
 final class MobileDetectExtensionTest extends TestCase
 {
