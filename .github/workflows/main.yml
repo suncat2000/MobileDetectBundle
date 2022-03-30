@@ -93,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: phpunit-${{ matrix.php }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
-          path: build/
+          path: build/coverage.xml
 
   upload_coverage:
     name: Upload coverage to Codecov
