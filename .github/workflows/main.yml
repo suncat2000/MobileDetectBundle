@@ -92,7 +92,7 @@ jobs:
       - name: Upload coverage file
         uses: actions/upload-artifact@v3
         with:
-          name: phpunit-${{ matrix.php }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
+          name: phpunit-${{ matrix.php }}-${{ matrix.symfony-require }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
           path: coverage.xml
 
   upload_coverage:
