@@ -3,7 +3,7 @@ MobileDetectBundle
 
 Symfony 3.4.x-6.0.x bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
 
-![Github Actions Status](https://github.com/tattali/MobileDetectBundle/actions/workflows/main.yml/badge.svg?branch=master) [![Total Downloads](https://poser.pugx.org/suncat/mobile-detect-bundle/downloads.png)](https://packagist.org/packages/suncat/mobile-detect-bundle) [![Coverage Status](https://coveralls.io/repos/github/suncat2000/MobileDetectBundle/badge.svg?branch=master)](https://coveralls.io/github/suncat2000/MobileDetectBundle?branch=master)
+[![Github Actions Status](https://github.com/tattali/MobileDetectBundle/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/tattali/MobileDetectBundle/actions/workflows/main.yml?query=branch%3Amaster) [![Total Downloads](http://poser.pugx.org/tattali/mobile-detect-bundle/downloads)](https://packagist.org/packages/tattali/mobile-detect-bundle) [![Coverage Status](https://coveralls.io/repos/github/suncat2000/MobileDetectBundle/badge.svg?branch=master)](https://coveralls.io/github/suncat2000/MobileDetectBundle?branch=master) [![Latest Stable Version](http://poser.pugx.org/tattali/mobile-detect-bundle/v)](https://packagist.org/packages/tattali/mobile-detect-bundle)
 
 Introduction
 ------------
