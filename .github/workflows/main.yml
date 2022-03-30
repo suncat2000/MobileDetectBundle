@@ -1,0 +1,96 @@
+# Symfony minmal version:
+# - 3: 7.0.8
+# - 4: 7.1.3
+# - 5: 7.2.5
+# - 6: 8.0.2
+
+name: Symfony Bundle CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+  workflow_dispatch:
+
+jobs:
+  phpunit:
+    name: Test on PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony-require }}
+    runs-on: ubuntu-latest
+    env:
+      SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - 8.0
+          - 8.1
+        dependencies:
+          - highest
+        stability:
+          - stable
+        symfony-require:
+          # Test latest LTS
+          - 5.4.*
+          # Test last supported version
+          - 6.0.*
+          - 6.*
+        include:
+          # Tests the lowest set of dependencies
+          - symfony-require: 5.1.*
+            dependencies: lowest
+            stability: stable
+            php: 7.2
+
+          # Bleeding edge
+          - symfony-require: 6.*
+            php: 8.1
+            dependencies: highest
+            stability: dev
+
+    steps:
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install PHP with XDebug and PCOV
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug, pcov
+          ini-values: zend.assertions=1
+
+      - name: Globally install symfony/flex
+        run: composer global require --no-progress --no-scripts --no-plugins symfony/flex
+
+      - name: Configure minimum stability of dependencies
+        run: composer config minimum-stability ${{ matrix.stability }}
+
+      - name: Install dependencies with Composer
+        uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+          composer-options: --prefer-dist
+
+      - name: Lint via PHP Coding Standards Fixer and PHP_CodeSniffer
+        run: |
+          vendor/bin/php-cs-fixer fix --dry-run --diff --ansi
+          vendor/bin/phpcs --report=code
+
+      - name: Static Analysis via PHPStan
+        run: vendor/bin/phpstan analyse
+
+      - name: Unit and Feature tests via PHPUnit
+        run: vendor/bin/phpunit
+
+      - name: Upload coverage file
+        uses: actions/upload-artifact@v3
+        with:
+          name: phpunit-${{ matrix.php }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
+          path: coverage.xml

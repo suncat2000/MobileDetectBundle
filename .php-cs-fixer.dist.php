@@ -1,21 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/src')
-    ->in(__DIR__ . '/tests')
+    ->in(__DIR__.'/src')
+    ->in(__DIR__.'/tests')
 ;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PhpCsFixer' => true,
         '@DoctrineAnnotation' => true,
-        '@PHP71Migration:risky' => true,
-        '@PHP71Migration' => true,
-        '@PHPUnit75Migration:risky' => true,
+        '@PhpCsFixer:risky' => true,
+        '@PhpCsFixer' => true,
+        '@PHPUnit84Migration:risky' => true,
+        '@PSR1' => true,
+        '@PSR12:risky' => true,
+        '@PSR12' => true,
         '@PSR2' => true,
-        '@Symfony' => true,
         '@Symfony:risky' => true,
+        '@Symfony' => true,
         'array_indentation' => true,
         'array_syntax' => [
             'syntax' => 'short',
@@ -53,12 +57,12 @@ return PhpCsFixer\Config::create()
         'no_useless_return' => true,
         'ordered_class_elements' => true,
         'ordered_imports' => [
-            'importsOrder' => [
+            'imports_order' => [
                 'class',
                 'function',
                 'const',
             ],
-            'sortAlgorithm' => 'alpha',
+            'sort_algorithm' => 'alpha',
         ],
         'php_unit_method_casing' => [
             'case' => 'camel_case',

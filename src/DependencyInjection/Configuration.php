@@ -28,9 +28,9 @@ use Symfony\Component\HttpFoundation\Response;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritdoc}
+     * Generates the configuration tree builder.
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('mobile_detect');
         $rootNode = $treeBuilder->getRootNode();

@@ -23,20 +23,20 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DeviceView
 {
-    const VIEW_MOBILE = 'mobile';
-    const VIEW_TABLET = 'tablet';
-    const VIEW_FULL = 'full';
-    const VIEW_NOT_MOBILE = 'not_mobile';
+    public const VIEW_MOBILE = 'mobile';
+    public const VIEW_TABLET = 'tablet';
+    public const VIEW_FULL = 'full';
+    public const VIEW_NOT_MOBILE = 'not_mobile';
 
-    const COOKIE_KEY_DEFAULT = 'device_view';
-    const COOKIE_PATH_DEFAULT = '/';
-    const COOKIE_DOMAIN_DEFAULT = '';
-    const COOKIE_SECURE_DEFAULT = false;
-    const COOKIE_HTTP_ONLY_DEFAULT = true;
-    const COOKIE_RAW_DEFAULT = false;
-    const COOKIE_SAMESITE_DEFAULT = null;
-    const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT = '1 month';
-    const SWITCH_PARAM_DEFAULT = 'device_view';
+    public const COOKIE_KEY_DEFAULT = 'device_view';
+    public const COOKIE_PATH_DEFAULT = '/';
+    public const COOKIE_DOMAIN_DEFAULT = '';
+    public const COOKIE_SECURE_DEFAULT = false;
+    public const COOKIE_HTTP_ONLY_DEFAULT = true;
+    public const COOKIE_RAW_DEFAULT = false;
+    public const COOKIE_SAMESITE_DEFAULT = null;
+    public const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT = '1 month';
+    public const SWITCH_PARAM_DEFAULT = 'device_view';
 
     /**
      * @var Request
@@ -105,7 +105,8 @@ class DeviceView
 
     public function __construct(RequestStack $requestStack = null)
     {
-        if (!$requestStack || !$this->request = $requestStack->getMainRequest()) {
+        $methodName = method_exists(RequestStack::class, 'getMainRequest') ? 'getMainRequest' : 'getMasterRequest';
+        if (!$requestStack || !$this->request = $requestStack->{$methodName}()) {
             $this->viewType = self::VIEW_NOT_MOBILE;
 
             return;
@@ -434,9 +435,9 @@ class DeviceView
     protected function createCookie(string $value): Cookie
     {
         try {
-            $expire = new \Datetime($this->getCookieExpireDatetimeModifier());
+            $expire = new \DateTime($this->getCookieExpireDatetimeModifier());
         } catch (\Exception $e) {
-            $expire = new \Datetime(self::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT);
+            $expire = new \DateTime(self::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT);
         }
 
         return new Cookie(

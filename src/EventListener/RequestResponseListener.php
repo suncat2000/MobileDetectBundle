@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -30,13 +29,13 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class RequestResponseListener
 {
-    const REDIRECT = 'redirect';
-    const NO_REDIRECT = 'no_redirect';
-    const REDIRECT_WITHOUT_PATH = 'redirect_without_path';
+    public const REDIRECT = 'redirect';
+    public const NO_REDIRECT = 'no_redirect';
+    public const REDIRECT_WITHOUT_PATH = 'redirect_without_path';
 
-    const MOBILE = 'mobile';
-    const TABLET = 'tablet';
-    const FULL = 'full';
+    public const MOBILE = 'mobile';
+    public const TABLET = 'tablet';
+    public const FULL = 'full';
 
     /**
      * @var RouterInterface
@@ -93,7 +92,7 @@ class RequestResponseListener
     {
         // only handle master request, do not handle sub request like esi includes
         // If the device view is "not the mobile view" (e.g. we're not in the request context)
-        if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType() || $this->deviceView->isNotMobileView()) {
+        if ((\defined('Symfony\Component\HttpKernel\HttpKernelInterface::MAIN_REQUEST') ? \constant('Symfony\Component\HttpKernel\HttpKernelInterface::MAIN_REQUEST') : \constant('Symfony\Component\HttpKernel\HttpKernelInterface::MASTER_REQUEST')) !== $event->getRequestType() || $this->deviceView->isNotMobileView()) {
             return;
         }
 
@@ -170,9 +169,9 @@ class RequestResponseListener
      */
     protected function mustRedirect(Request $request, string $view): bool
     {
-        if (!isset($this->redirectConf[$view]) ||
-            !$this->redirectConf[$view]['is_enabled'] ||
-            (self::NO_REDIRECT === $this->getRoutingOption($request->get('_route'), $view))
+        if (!isset($this->redirectConf[$view])
+            || !$this->redirectConf[$view]['is_enabled']
+            || (self::NO_REDIRECT === $this->getRoutingOption($request->get('_route'), $view))
         ) {
             return false;
         }

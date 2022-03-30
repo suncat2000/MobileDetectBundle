@@ -237,7 +237,7 @@ class MobileDetectExtension extends AbstractExtension
     public function setRequestByRequestStack(RequestStack $requestStack = null)
     {
         if (null !== $requestStack) {
-            $this->request = $requestStack->getMainRequest();
+            $this->request = method_exists(RequestStack::class, 'getMainRequest') ? $requestStack->getMainRequest() : $requestStack->getMasterRequest();
         }
     }
 }

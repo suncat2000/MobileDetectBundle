@@ -1,7 +1,7 @@
 MobileDetectBundle
 =============
 
-Symfony 2.4.x-3.0.x bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
+Symfony 2.4.x-6.0.x bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
 
 
 Switch device view
@@ -18,36 +18,30 @@ Installation
 
 ### Composer
 
-#### For Symfony >= 2.4
+#### For Symfony ^5.0 || ^6.0
 
 Run command:
-`composer require "suncat/mobile-detect-bundle:1.0.*"`
+```sh
+composer require tattali/mobile-detect-bundle
+```
+
+#### For Symfony >= 3.4 || <= 4.4
+
+Run command:
+```sh
+composer require "tattali/mobile-detect-bundle:2.1.*"
+```
 
 Or add to `composer.json` in your project to `require` section:
-
 ```json
 {
-    "suncat/mobile-detect-bundle": "1.0.*"
+    "tattali/mobile-detect-bundle": "2.1.*"
 }
 ```
+
 and run command:
-`php composer.phar update`
-
-> For Symfony < 2.4 use `0.10.x` version of this bundle
-
-
-### Add this bundle to your application's kernel
-
-```php
-//app/AppKernel.php
-public function registerBundles()
-{
-    return array(
-         // ...
-        new MobileDetectBundle\MobileDetectBundle(),
-        // ...
-    );
-}
+```sh
+composer update tattali/mobile-detect-bundle
 ```
 
 ### Full configuration

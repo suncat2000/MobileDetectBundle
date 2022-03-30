@@ -41,15 +41,11 @@ class DeviceDataCollector extends DataCollector
 
     /**
      * Collects data for the given Request and Response.
-     *
-     * @param Request                    $request   A Request instance
-     * @param Response                   $response  A Response instance
-     * @param \Throwable|\Exception|null $exception An Exception instance
      */
     public function collect(
         Request $request,
         Response $response,
-        $exception = null
+        \Throwable $exception = null
     ) {
         $this->data['currentView'] = $this->deviceView->getViewType();
         $this->data['views'] = [
@@ -111,13 +107,7 @@ class DeviceDataCollector extends DataCollector
         $this->data = [];
     }
 
-    /**
-     * @param $view
-     * @param $host
-     *
-     * @return bool
-     */
-    protected function canUseView($view, $host)
+    protected function canUseView(string $view, ?string $host): bool
     {
         if (!\is_array($this->redirectConfig)) {
             return true;
@@ -127,17 +117,16 @@ class DeviceDataCollector extends DataCollector
             return true;
         }
 
-        if (!isset($this->redirectConfig[$view]['is_enabled']) ||
-            false === $this->redirectConfig[$view]['is_enabled']
+        if (!isset($this->redirectConfig[$view]['is_enabled'])
+            || false === $this->redirectConfig[$view]['is_enabled']
         ) {
             return true;
         }
 
-        if (true === $this->redirectConfig[$view]['is_enabled'] &&
-            isset($this->redirectConfig[$view]['host'], $this->redirectConfig[$view]['action'])
-             &&
-            !empty($this->redirectConfig[$view]['host']) &&
-            \in_array($this->redirectConfig[$view]['action'], [RequestResponseListener::REDIRECT, RequestResponseListener::REDIRECT_WITHOUT_PATH], true)
+        if (true === $this->redirectConfig[$view]['is_enabled']
+            && isset($this->redirectConfig[$view]['host'], $this->redirectConfig[$view]['action'])
+            && !empty($this->redirectConfig[$view]['host'])
+            && \in_array($this->redirectConfig[$view]['action'], [RequestResponseListener::REDIRECT, RequestResponseListener::REDIRECT_WITHOUT_PATH], true)
         ) {
             $parseHost = parse_url($this->redirectConfig[$view]['host']);
             $redirectHost = $parseHost['scheme'].'://'.$parseHost['host'];
@@ -153,15 +142,10 @@ class DeviceDataCollector extends DataCollector
         return true;
     }
 
-    /**
-     * @param $view
-     *
-     * @return string
-     */
     private function generateSwitchLink(
         Request $request,
-        $view
-    ) {
+        string $view
+    ): ?string {
         $requestSwitchView = $request->duplicate();
         $requestSwitchView->query->set($this->deviceView->getSwitchParam(), $view);
         $requestSwitchView->server->set(
