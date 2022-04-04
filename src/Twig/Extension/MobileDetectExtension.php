@@ -78,13 +78,13 @@ class MobileDetectExtension extends AbstractExtension
 
     public function getRules(): array
     {
-        return [
-            ...$this->mobileDetector->getPhoneDevices(),
-            ...$this->mobileDetector->getTabletDevices(),
-            ...$this->mobileDetector->getOperatingSystems(),
-            ...$this->mobileDetector->getBrowsers(),
-            ...$this->mobileDetector->getUtilities(),
-        ];
+        return array_merge(
+            $this->mobileDetector->getPhoneDevices(),
+            $this->mobileDetector->getTabletDevices(),
+            $this->mobileDetector->getOperatingSystems(),
+            $this->mobileDetector->getBrowsers(),
+            $this->mobileDetector->getUtilities()
+        );
     }
 
     /**
