@@ -1,7 +1,15 @@
 {
     "name": "tattali/mobile-detect-bundle",
     "description": "Symfony5/6 bundle for detect mobile devices, managing mobile view types, redirect to mobile version.",
-    "keywords": ["mobile", "mobile detect", "symfony mobile", "mobile view managing", "mobile redirect"],
+    "keywords": [
+        "mobile detect",
+        "mobile redirect",
+        "mobile view managing",
+        "mobile",
+        "mobiledetect",
+        "mobiledetectbundle",
+        "symfony mobile"
+    ],
     "homepage": "https://github.com/tattali/MobileDetectBundle",
     "type": "symfony-bundle",
     "license": "MIT",

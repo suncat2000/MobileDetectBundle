@@ -201,18 +201,6 @@ class DeviceView
         $this->viewType = self::VIEW_NOT_MOBILE;
     }
 
-    /**
-     * Gets the switch param value from the query string (GET header).
-     */
-    public function getSwitchParamValue(): ?string
-    {
-        if (!$this->request) {
-            return null;
-        }
-
-        return $this->request->query->get($this->switchParam, self::VIEW_FULL);
-    }
-
     public function getRedirectConfig(): array
     {
         return $this->redirectConfig;
@@ -248,37 +236,35 @@ class DeviceView
     }
 
     /**
-     * Modifies the Response for the specified device view.
-     *
-     * @param string $view the device view for which the response should be modified
+     * Gets the switch param value from the query string (GET header).
      */
-    public function modifyResponse(string $view, Response $response): Response
+    public function getSwitchParamValue(): ?string
     {
-        $response->headers->setCookie($this->createCookie($view));
+        if (!$this->request) {
+            return null;
+        }
 
-        return $response;
+        return $this->request->query->get($this->switchParam, self::VIEW_FULL);
     }
 
-    /**
-     * Gets the RedirectResponse for the specified device view.
-     *
-     * @param string $view       The device view for which we want the RedirectResponse
-     * @param string $host       Uri host
-     * @param int    $statusCode Status code
-     */
-    public function getRedirectResponse(string $view, string $host, int $statusCode): RedirectResponseWithCookie
+    public function getCookieExpireDatetimeModifier(): string
     {
-        return new RedirectResponseWithCookie($host, $statusCode, $this->createCookie($view));
+        return $this->cookieExpireDatetimeModifier;
     }
 
-    public function setCookieKey(string $cookieKey): void
+    public function setCookieExpireDatetimeModifier(string $cookieExpireDatetimeModifier): void
     {
-        $this->cookieKey = $cookieKey;
+        $this->cookieExpireDatetimeModifier = $cookieExpireDatetimeModifier;
     }
 
     public function getCookieKey(): string
     {
         return $this->cookieKey;
+    }
+
+    public function setCookieKey(string $cookieKey): void
+    {
+        $this->cookieKey = $cookieKey;
     }
 
     public function getCookiePath(): string
@@ -342,29 +328,46 @@ class DeviceView
     }
 
     /**
-     * Setter of SwitchParam.
+     * Modifies the Response for the specified device view.
+     *
+     * @param string $view the device view for which the response should be modified
      */
-    public function setSwitchParam(string $switchParam): void
+    public function modifyResponse(string $view, Response $response): Response
     {
-        $this->switchParam = $switchParam;
+        $response->headers->setCookie($this->createCookie($view));
+
+        return $response;
     }
 
     /**
-     * Getter of SwitchParam.
+     * Gets the RedirectResponse for the specified device view.
+     *
+     * @param string $view       The device view for which we want the RedirectResponse
+     * @param string $host       Uri host
+     * @param int    $statusCode Status code
      */
+    public function getRedirectResponse(string $view, string $host, int $statusCode): RedirectResponseWithCookie
+    {
+        return new RedirectResponseWithCookie($host, $statusCode, $this->createCookie($view));
+    }
+
     public function getSwitchParam(): string
     {
         return $this->switchParam;
     }
 
-    public function setCookieExpireDatetimeModifier(string $cookieExpireDatetimeModifier): void
+    public function setSwitchParam(string $switchParam): void
     {
-        $this->cookieExpireDatetimeModifier = $cookieExpireDatetimeModifier;
+        $this->switchParam = $switchParam;
     }
 
-    public function getCookieExpireDatetimeModifier(): string
+    protected function getStatusCode(string $view): int
     {
-        return $this->cookieExpireDatetimeModifier;
+        if (isset($this->redirectConfig[$view]['status_code'])) {
+            return $this->redirectConfig[$view]['status_code'];
+        }
+
+        return Response::HTTP_FOUND;
     }
 
     /**
@@ -389,14 +392,5 @@ class DeviceView
             $this->isCookieRaw(),
             $this->getCookieSameSite()
         );
-    }
-
-    protected function getStatusCode(string $view): int
-    {
-        if (isset($this->redirectConfig[$view]['status_code'])) {
-            return $this->redirectConfig[$view]['status_code'];
-        }
-
-        return Response::HTTP_FOUND;
     }
 }

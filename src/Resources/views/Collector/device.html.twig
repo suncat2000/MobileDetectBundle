@@ -2,10 +2,11 @@
 
 {% block toolbar %}
   {% set icon %}
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100" enable-background="new 0 0 24 24" xml:space="preserve">
-      <path fill="#AAAAAA"
-        d="m33.975 95h32.05c5.565 0 10.08-4.279 10.08-9.569v-70.855c0-5.285-4.513-9.576-10.07-9.576h-32.05c-5.564 0-10.08 4.291-10.08 9.576v70.854c0 5.288 4.513 9.57 10.08 9.57m16.03-3.257c-2.493 0-4.506-2.02-4.506-4.498 0-2.489 2.01-4.502 4.506-4.502 2.487 0 4.494 2.01 4.494 4.502 0 2.481-2.01 4.498-4.494 4.498m-6.868-80.911h13.727c.556 0 1.01.383 1.01.852 0 .471-.452.854-1.01.854h-13.727c-.55 0-1.01-.383-1.01-.854-.0001-.469.454-.852 1.01-.852m-15.289 10.798c0-.794.675-1.438 1.508-1.438h41.29c.835 0 1.507.641 1.507 1.438v56.49c0 .791-.672 1.433-1.507 1.433h-41.29c-.833 0-1.508-.642-1.508-1.433v-56.49"/>
-    </svg>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100"
+       enable-background="new 0 0 24 24" xml:space="preserve">
+    <path fill="#AAAAAA"
+      d="m33.975 95h32.05c5.565 0 10.08-4.279 10.08-9.569v-70.855c0-5.285-4.513-9.576-10.07-9.576h-32.05c-5.564 0-10.08 4.291-10.08 9.576v70.854c0 5.288 4.513 9.57 10.08 9.57m16.03-3.257c-2.493 0-4.506-2.02-4.506-4.498 0-2.489 2.01-4.502 4.506-4.502 2.487 0 4.494 2.01 4.494 4.502 0 2.481-2.01 4.498-4.494 4.498m-6.868-80.911h13.727c.556 0 1.01.383 1.01.852 0 .471-.452.854-1.01.854h-13.727c-.55 0-1.01-.383-1.01-.854-.0001-.469.454-.852 1.01-.852m-15.289 10.798c0-.794.675-1.438 1.508-1.438h41.29c.835 0 1.507.641 1.507 1.438v56.49c0 .791-.672 1.433-1.507 1.433h-41.29c-.833 0-1.508-.642-1.508-1.433v-56.49"/>
+  </svg>
     <span class="sf-toolbar-value">View: {{ collector.currentView | capitalize }}</span>
   {% endset %}
   {% set text %}
@@ -20,9 +21,9 @@
       {% if viewData.isCurrent %}
         {% set viewLink = '<span class="sf-toolbar-status sf-toolbar-status-green">current</span>' %}
       {% elseif viewData.enabled == false %}
-        {%  set viewLink = 'External' %}
+        {% set viewLink = 'External' %}
       {% else %}
-        {%  set viewLink = '<span><a href="' ~ viewData.link ~ '">Use this view</a></span>' %}
+        {% set viewLink = '<span><a href="' ~ viewData.link ~ '">Use this view</a></span>' %}
       {% endif %}
       <div class="sf-toolbar-info-piece">
         <b>{{ viewData.label }}</b>

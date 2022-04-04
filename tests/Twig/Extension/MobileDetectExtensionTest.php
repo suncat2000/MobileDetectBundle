@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MobileDetectBundle\Tests\Twig\Extension;
 
 use MobileDetectBundle\DeviceDetector\MobileDetector;
+use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 use MobileDetectBundle\Helper\DeviceView;
 use MobileDetectBundle\Twig\Extension\MobileDetectExtension;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -47,7 +48,7 @@ final class MobileDetectExtensionTest extends TestCase
     {
         parent::setUp();
 
-        $this->mobileDetector = $this->getMockBuilder(MobileDetector::class)->disableOriginalConstructor()->getMock();
+        $this->mobileDetector = $this->createMock(MobileDetectorInterface::class);
         $this->requestStack = $this->getMockBuilder(RequestStack::class)->disableOriginalConstructor()->getMock();
 
         $this->request = $this->getMockBuilder(Request::class)->getMock();

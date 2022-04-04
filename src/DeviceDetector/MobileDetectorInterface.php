@@ -214,7 +214,7 @@ interface MobileDetectorInterface
      * @param string $name
      * @param array  $arguments
      *
-     * @throws BadMethodCallException when the method doesn't exist and doesn't start with 'is'
+     * @throws \BadMethodCallException when the method doesn't exist and doesn't start with 'is'
      */
     public function __call($name, $arguments);
 
@@ -224,15 +224,6 @@ interface MobileDetectorInterface
      * @return array list of browsers / user agents
      */
     public static function getBrowsers();
-
-    /**
-     * Method gets the mobile detection rules. This method is used for the magic methods $detect->is*().
-     *
-     * @deprecated since version 2.6.9
-     *
-     * @return array all the rules (but not extended)
-     */
-    public static function getMobileDetectionRules();
 
     /**
      * Retrieve the list of mobile operating systems.
@@ -250,6 +241,8 @@ interface MobileDetectorInterface
 
     /**
      * Get the properties array.
+     *
+     * @return array
      */
     public static function getProperties();
 
@@ -288,11 +281,15 @@ interface MobileDetectorInterface
      * Check the HTTP headers for signs of mobile.
      * This is the fastest mobile check possible; it's used
      * inside isMobile() method.
+     *
+     * @return bool
      */
     public function checkHttpHeadersForMobile();
 
     /**
      * Retrieves the cloudfront headers.
+     *
+     * @return array
      */
     public function getCfHeaders();
 
@@ -320,6 +317,8 @@ interface MobileDetectorInterface
 
     /**
      * Retrieves the HTTP headers.
+     *
+     * @return array
      */
     public function getHttpHeaders();
 
@@ -335,16 +334,7 @@ interface MobileDetectorInterface
 
     public function getMatchingRegex();
 
-    public function getMobileDetectionRulesExtended();
-
     public function getMobileHeaders();
-
-    /**
-     * Retrieve the current set of rules.
-     *
-     * @deprecated since version 2.6.9
-     */
-    public function getRules();
 
     /**
      * Get all possible HTTP headers that
@@ -374,33 +364,27 @@ interface MobileDetectorInterface
      * This method checks for a certain property in the
      * userAgent.
      *
-     * @todo: The httpHeaders part is not yet used.
-     *
      * @param string $key
-     * @param string $userAgent   deprecated
-     * @param string $httpHeaders deprecated
      *
      * @return bool|int|null
      */
-    public function is($key, $userAgent = null, $httpHeaders = null);
+    public function is($key);
 
     /**
      * Check if the device is mobile.
      * Returns true if any type of mobile device detected, including special ones.
      *
-     * @param null $userAgent   deprecated
-     * @param null $httpHeaders deprecated
+     * @return bool
      */
-    public function isMobile($userAgent = null, $httpHeaders = null);
+    public function isMobile();
 
     /**
      * Check if the device is a tablet.
      * Return true if any type of tablet device is detected.
      *
-     * @param string $userAgent   deprecated
-     * @param array  $httpHeaders deprecated
+     * @return bool
      */
-    public function isTablet($userAgent = null, $httpHeaders = null);
+    public function isTablet();
 
     /**
      * Some detection rules are relative (not standard),
@@ -411,41 +395,21 @@ interface MobileDetectorInterface
      * This method will be used to check custom regexes against
      * the User-Agent string.
      *
-     * @todo: search in the HTTP headers too.
-     *
      * @param $regex
      * @param string $userAgent
+     *
+     * @return bool
      */
     public function match($regex, $userAgent = null);
 
     /**
-     * Retrieve the mobile grading, using self::MOBILE_GRADE_* constants.
-     *
-     * @deprecated this is no longer being maintained, it was an experiment at the time
-     *
-     * @return string one of the self::MOBILE_GRADE_* constants
-     */
-    public function mobileGrade();
-
-    /**
      * Prepare the version number.
      *
-     * @todo Remove the error supression from str_replace() call.
-     *
      * @param string $ver The string version, like "2.6.21.2152";
+     *
+     * @return float
      */
     public function prepareVersionNo($ver);
-
-    /**
-     * Set the detection type. Must be one of self::DETECTION_TYPE_MOBILE or
-     * self::DETECTION_TYPE_EXTENDED. Otherwise, nothing is set.
-     *
-     * @deprecated since version 2.6.9
-     *
-     * @param string $type The type. Must be a self::DETECTION_TYPE_* constant. The default
-     *                     parameter is null which will default to self::DETECTION_TYPE_MOBILE.
-     */
-    public function setDetectionType($type = null);
 
     /**
      * Check the version of the given property in the User-Agent.

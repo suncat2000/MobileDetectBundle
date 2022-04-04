@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 
-<container xmlns="http://symfony.com/schema/dic/services"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
         <parameter key="mobile_detect.twig.extension.class"/>
@@ -10,9 +10,9 @@
 
     <services>
         <service id="mobile_detect.twig.extension" class="%mobile_detect.twig.extension.class%">
-            <argument type="service" id="request_stack" />
-            <argument type="service" id="mobile_detect.mobile_detector.default" />
-            <argument type="service" id="mobile_detect.device_view" />
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="mobile_detect.mobile_detector.default"/>
+            <argument type="service" id="mobile_detect.device_view"/>
             <argument>%mobile_detect.redirect%</argument>
             <tag name="twig.extension"/>
         </service>

@@ -160,41 +160,6 @@ class RequestResponseListener
         }
     }
 
-    /**
-     * Do we have to redirect?
-     *
-     * @param string $view For which view should be check?
-     */
-    protected function mustRedirect(Request $request, string $view): bool
-    {
-        if (!isset($this->redirectConf[$view])
-            || !$this->redirectConf[$view]['is_enabled']
-            || (self::NO_REDIRECT === $this->getRoutingOption($request->get('_route'), $view))
-        ) {
-            return false;
-        }
-
-        $isHost = ($this->getCurrentHost($request) === $this->redirectConf[$view]['host']);
-
-        if (!$isHost) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Prepares the response modification which will take place after the controller logic has been executed.
-     *
-     * @param string $view the view for which to prepare the response modification
-     */
-    protected function prepareResponseModification(string $view): void
-    {
-        $this->modifyResponseClosure = function (DeviceView $deviceView, ResponseEvent $event) use ($view) {
-            return $deviceView->modifyResponse($view, $event->getResponse());
-        };
-    }
-
     protected function getRedirectResponseBySwitchParam(Request $request): RedirectResponseWithCookie
     {
         if ($this->mustRedirect($request, $this->deviceView->getViewType())) {
@@ -221,21 +186,51 @@ class RequestResponseListener
     }
 
     /**
-     * Gets the RedirectResponse for the specified view.
+     * Do we have to redirect?
      *
-     * @param string $view the view for which we want the RedirectResponse
+     * @param string $view For which view should be check?
      */
-    protected function getRedirectResponse(Request $request, string $view): ?RedirectResponse
+    protected function mustRedirect(Request $request, string $view): bool
     {
-        if (($host = $this->getRedirectUrl($request, $view))) {
-            return $this->deviceView->getRedirectResponse(
-                $view,
-                $host,
-                $this->redirectConf[$view]['status_code']
-            );
+        if (!isset($this->redirectConf[$view])
+            || !$this->redirectConf[$view]['is_enabled']
+            || (self::NO_REDIRECT === $this->getRoutingOption($request->get('_route'), $view))
+        ) {
+            return false;
+        }
+
+        $isHost = ($this->getCurrentHost($request) === $this->redirectConf[$view]['host']);
+
+        if (!$isHost) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function getRoutingOption(string $routeName, string $optionName): ?string
+    {
+        $option = null;
+        $route = $this->router->getRouteCollection()->get($routeName);
+
+        if ($route instanceof Route) {
+            $option = $route->getOption($optionName);
+        }
+
+        if (!$option && isset($this->redirectConf[$optionName])) {
+            $option = $this->redirectConf[$optionName]['action'];
+        }
+
+        if (\in_array($option, [self::REDIRECT, self::REDIRECT_WITHOUT_PATH, self::NO_REDIRECT], true)) {
+            return $option;
         }
 
         return null;
+    }
+
+    protected function getCurrentHost(Request $request): string
+    {
+        return $request->getScheme().'://'.$request->getHost();
     }
 
     protected function getRedirectUrl(Request $request, string $platform): ?string
@@ -263,28 +258,33 @@ class RequestResponseListener
         return null;
     }
 
-    protected function getRoutingOption(string $routeName, string $optionName): ?string
+    /**
+     * Gets the RedirectResponse for the specified view.
+     *
+     * @param string $view the view for which we want the RedirectResponse
+     */
+    protected function getRedirectResponse(Request $request, string $view): ?RedirectResponse
     {
-        $option = null;
-        $route = $this->router->getRouteCollection()->get($routeName);
-
-        if ($route instanceof Route) {
-            $option = $route->getOption($optionName);
-        }
-
-        if (!$option && isset($this->redirectConf[$optionName])) {
-            $option = $this->redirectConf[$optionName]['action'];
-        }
-
-        if (\in_array($option, [self::REDIRECT, self::REDIRECT_WITHOUT_PATH, self::NO_REDIRECT], true)) {
-            return $option;
+        if (($host = $this->getRedirectUrl($request, $view))) {
+            return $this->deviceView->getRedirectResponse(
+                $view,
+                $host,
+                $this->redirectConf[$view]['status_code']
+            );
         }
 
         return null;
     }
 
-    protected function getCurrentHost(Request $request): string
+    /**
+     * Prepares the response modification which will take place after the controller logic has been executed.
+     *
+     * @param string $view the view for which to prepare the response modification
+     */
+    protected function prepareResponseModification(string $view): void
     {
-        return $request->getScheme().'://'.$request->getHost();
+        $this->modifyResponseClosure = function (DeviceView $deviceView, ResponseEvent $event) use ($view) {
+            return $deviceView->modifyResponse($view, $event->getResponse());
+        };
     }
 }

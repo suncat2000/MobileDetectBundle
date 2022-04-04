@@ -120,7 +120,7 @@ final class RequestResponseListenerTest extends TestCase
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/');
         $this->request->expects(static::any())->method('get')->willReturn('value');
         $this->router->expects(static::exactly(2))->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
         );
 
         $deviceView = new DeviceView($this->requestStack);
@@ -138,8 +138,7 @@ final class RequestResponseListenerTest extends TestCase
             'http://mobilehost.com/?%s=%s&myparam=myvalue',
             $this->switchParam,
             DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
-        );
+        ), $response->getTargetUrl());
 
         $cookies = $response->headers->getCookies();
         static::assertGreaterThan(0, \count($cookies));
@@ -221,7 +220,7 @@ final class RequestResponseListenerTest extends TestCase
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->request->expects(static::any())->method('get')->willReturn('value');
         $this->router->expects(static::exactly(2))->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
         );
         $this->mobileDetector->expects(static::once())->method('isTablet')->willReturn(true);
 
@@ -239,11 +238,10 @@ final class RequestResponseListenerTest extends TestCase
         static::assertInstanceOf(RedirectResponseWithCookie::class, $response);
         static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         static::assertSame(sprintf(
-                'http://testsite.com/some/parameters?%s=%s&some=param',
-                $this->switchParam,
-                DeviceView::VIEW_TABLET
-            ), $response->getTargetUrl()
-        );
+            'http://testsite.com/some/parameters?%s=%s&some=param',
+            $this->switchParam,
+            DeviceView::VIEW_TABLET
+        ), $response->getTargetUrl());
 
         $cookies = $response->headers->getCookies();
         static::assertGreaterThan(0, \count($cookies));
@@ -264,7 +262,7 @@ final class RequestResponseListenerTest extends TestCase
         $this->request->query = new ParameterBag(['some' => 'param']);
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->router->expects(static::exactly(2))->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
         );
         $this->mobileDetector->expects(static::once())->method('isTablet')->willReturn(true);
 
@@ -283,11 +281,10 @@ final class RequestResponseListenerTest extends TestCase
         static::assertInstanceOf(RedirectResponseWithCookie::class, $response);
         static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         static::assertSame(sprintf(
-                'http://testsite.com/some/parameters?%s=%s&some=param',
-                $switchParam,
-                DeviceView::VIEW_TABLET
-            ), $response->getTargetUrl()
-        );
+            'http://testsite.com/some/parameters?%s=%s&some=param',
+            $switchParam,
+            DeviceView::VIEW_TABLET
+        ), $response->getTargetUrl());
 
         $cookies = $response->headers->getCookies();
         static::assertGreaterThan(0, \count($cookies));
@@ -344,7 +341,7 @@ final class RequestResponseListenerTest extends TestCase
 
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->router->expects(static::atLeastOnce())->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
         );
         $this->mobileDetector->expects(static::atLeastOnce())->method('isMobile')->willReturn(true);
 
@@ -363,11 +360,10 @@ final class RequestResponseListenerTest extends TestCase
         static::assertInstanceOf(RedirectResponseWithCookie::class, $response);
         static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         static::assertSame(sprintf(
-                'http://mobilehost.com/some/parameters?%s=%s',
-                $this->switchParam,
-                DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
-        );
+            'http://mobilehost.com/some/parameters?%s=%s',
+            $this->switchParam,
+            DeviceView::VIEW_MOBILE
+        ), $response->getTargetUrl());
 
         $cookies = $response->headers->getCookies();
         static::assertGreaterThan(0, \count($cookies));
@@ -385,7 +381,7 @@ final class RequestResponseListenerTest extends TestCase
 
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->router->expects(static::atLeastOnce())->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
         );
         $this->mobileDetector->expects(static::once())->method('isTablet')->willReturn(true);
 
@@ -405,11 +401,10 @@ final class RequestResponseListenerTest extends TestCase
         static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         static::assertSame('http://testsite.com?device_view=tablet', $response->getTargetUrl());
         static::assertSame(sprintf(
-                'http://testsite.com?%s=%s',
-                $this->switchParam,
-                DeviceView::VIEW_TABLET
-            ), $response->getTargetUrl()
-        );
+            'http://testsite.com?%s=%s',
+            $this->switchParam,
+            DeviceView::VIEW_TABLET
+        ), $response->getTargetUrl());
 
         $cookies = $response->headers->getCookies();
         static::assertGreaterThan(0, \count($cookies));
@@ -427,7 +422,7 @@ final class RequestResponseListenerTest extends TestCase
 
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->router->expects(static::atLeastOnce())->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
         );
         $this->mobileDetector->expects(static::once())->method('isTablet')->willReturn(true);
 
@@ -469,7 +464,7 @@ final class RequestResponseListenerTest extends TestCase
 
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->router->expects(static::atLeastOnce())->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
         );
         $this->mobileDetector->expects(static::once())->method('isTablet')->willReturn(false);
         $this->mobileDetector->expects(static::once())->method('isMobile')->willReturn(true);
@@ -489,11 +484,10 @@ final class RequestResponseListenerTest extends TestCase
         static::assertInstanceOf(RedirectResponseWithCookie::class, $response);
         static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         static::assertSame(sprintf(
-                'http://testsite.com/some/parameters?%s=%s',
-                $this->switchParam,
-                DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
-        );
+            'http://testsite.com/some/parameters?%s=%s',
+            $this->switchParam,
+            DeviceView::VIEW_MOBILE
+        ), $response->getTargetUrl());
 
         $cookies = $response->headers->getCookies();
         static::assertGreaterThan(0, \count($cookies));
@@ -511,7 +505,7 @@ final class RequestResponseListenerTest extends TestCase
 
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->router->expects(static::atLeastOnce())->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
         );
         $this->mobileDetector->expects(static::once())->method('isTablet')->willReturn(false);
         $this->mobileDetector->expects(static::once())->method('isMobile')->willReturn(true);
@@ -531,11 +525,10 @@ final class RequestResponseListenerTest extends TestCase
         static::assertInstanceOf(RedirectResponseWithCookie::class, $response);
         static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         static::assertSame(sprintf(
-                'http://testsite.com?%s=%s',
-                $this->switchParam,
-                DeviceView::VIEW_MOBILE
-            ), $response->getTargetUrl()
-        );
+            'http://testsite.com?%s=%s',
+            $this->switchParam,
+            DeviceView::VIEW_MOBILE
+        ), $response->getTargetUrl());
 
         $cookies = $response->headers->getCookies();
         static::assertGreaterThan(0, \count($cookies));
@@ -553,7 +546,7 @@ final class RequestResponseListenerTest extends TestCase
 
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
         $this->router->expects(static::atLeastOnce())->method('getRouteCollection')->willReturn(
-                $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
+            $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
         );
         $this->mobileDetector->expects(static::once())->method('isTablet')->willReturn(false);
         $this->mobileDetector->expects(static::once())->method('isMobile')->willReturn(true);
@@ -602,19 +595,6 @@ final class RequestResponseListenerTest extends TestCase
         $listener->handleRequest($event);
     }
 
-    private function createRouteCollectionWithRouteAndRoutingOption(string $returnValue, int $times): RouteCollection
-    {
-        $route = $this->getMockBuilder(Route::class)->disableOriginalConstructor()->getMock();
-        $route->expects(static::exactly($times))->method('getOption')->willReturn($returnValue);
-        /**
-         * @var MockObject|RouteCollection
-         */
-        $routeCollection = $this->createMock(RouteCollection::class);
-        $routeCollection->expects(static::exactly($times))->method('get')->willReturn($route);
-
-        return $routeCollection;
-    }
-
     private function createGetResponseEvent(string $content, array $headers = []): ViewEvent
     {
         $event = new ViewEvent(
@@ -626,6 +606,19 @@ final class RequestResponseListenerTest extends TestCase
         $event->getRequest()->headers = new HeaderBag($headers);
 
         return $event;
+    }
+
+    private function createRouteCollectionWithRouteAndRoutingOption(string $returnValue, int $times): RouteCollection
+    {
+        $route = $this->getMockBuilder(Route::class)->disableOriginalConstructor()->getMock();
+        $route->expects(static::exactly($times))->method('getOption')->willReturn($returnValue);
+        /**
+         * @var MockObject|RouteCollection
+         */
+        $routeCollection = $this->createMock(RouteCollection::class);
+        $routeCollection->expects(static::exactly($times))->method('get')->willReturn($route);
+
+        return $routeCollection;
     }
 
     private function createResponseEvent(Response $response, array $headers = []): ResponseEvent
