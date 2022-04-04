@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace MobileDetectBundle\Tests\DependencyInjection;
 
 use MobileDetectBundle\DependencyInjection\MobileDetectExtension;
-use MobileDetectBundle\DeviceDetector\MobileDetector;
+use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 use MobileDetectBundle\EventListener\RequestResponseListener;
 use MobileDetectBundle\Helper\DeviceView;
 use MobileDetectBundle\Twig\Extension\MobileDetectExtension as TwigMobileDetectExtension;
@@ -71,7 +71,7 @@ final class MobileDetectExtensionTest extends TestCase
             $this->container->getParameter('mobile_detect.switch_param')
         );
         static::assertSame(
-            MobileDetector::class,
+            MobileDetectorInterface::class,
             $this->container->getParameter('mobile_detect.mobile_detector.class')
         );
         static::assertSame(

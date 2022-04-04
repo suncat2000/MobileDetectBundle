@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MobileDetectBundle\Tests\Twig\Extension;
 
-use MobileDetectBundle\DeviceDetector\MobileDetector;
 use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 use MobileDetectBundle\Helper\DeviceView;
 use MobileDetectBundle\Twig\Extension\MobileDetectExtension;
@@ -23,7 +22,7 @@ use Twig\TwigFunction;
 final class MobileDetectExtensionTest extends TestCase
 {
     /**
-     * @var MockObject|MobileDetector
+     * @var MockObject|MobileDetectorInterface
      */
     private $mobileDetector;
 
