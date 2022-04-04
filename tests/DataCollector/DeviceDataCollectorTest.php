@@ -16,6 +16,7 @@ namespace MobileDetectBundle\Tests\DataCollector;
 use MobileDetectBundle\DataCollector\DeviceDataCollector;
 use MobileDetectBundle\EventListener\RequestResponseListener;
 use MobileDetectBundle\Helper\DeviceView;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +25,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ServerBag;
 
 /**
- * DeviceDataCollectorTest.
- *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  *
  * @internal
@@ -33,10 +32,19 @@ use Symfony\Component\HttpFoundation\ServerBag;
  */
 final class DeviceDataCollectorTest extends TestCase
 {
+    /**
+     * @var MockObject|RequestStack
+     */
     private $requestStack;
 
+    /**
+     * @var MockObject|Request
+     */
     private $request;
 
+    /**
+     * @var MockObject|Response
+     */
     private $response;
 
     protected function setUp(): void
@@ -58,7 +66,7 @@ final class DeviceDataCollectorTest extends TestCase
         $this->response = $this->getMockBuilder(Response::class)->getMock();
     }
 
-    public function testCollectCurrentViewMobileIsCurrent()
+    public function testCollectCurrentViewMobileIsCurrent(): void
     {
         $redirectConfig['tablet'] = [
             'is_enabled' => true,
@@ -92,7 +100,7 @@ final class DeviceDataCollectorTest extends TestCase
         }
     }
 
-    public function testCollectCurrentViewMobileCanUseTablet()
+    public function testCollectCurrentViewMobileCanUseTablet(): void
     {
         $redirectConfig['tablet'] = [
             'is_enabled' => true,
@@ -155,7 +163,7 @@ final class DeviceDataCollectorTest extends TestCase
         }
     }
 
-    public function testCollectCurrentViewFullCanUseMobile()
+    public function testCollectCurrentViewFullCanUseMobile(): void
     {
         $redirectConfig['tablet'] = [
             'is_enabled' => true,
@@ -218,7 +226,7 @@ final class DeviceDataCollectorTest extends TestCase
         }
     }
 
-    public function testCollectCurrentViewFullCantUseMobile()
+    public function testCollectCurrentViewFullCantUseMobile(): void
     {
         $redirectConfig['mobile'] = [
             'is_enabled' => true,
@@ -281,7 +289,7 @@ final class DeviceDataCollectorTest extends TestCase
         }
     }
 
-    public function getNameValue()
+    public function testGetNameValue(): void
     {
         $deviceView = new DeviceView($this->requestStack);
         $deviceDataCollector = new DeviceDataCollector($deviceView);

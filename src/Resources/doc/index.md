@@ -1,82 +1,3 @@
-MobileDetectBundle
-=============
-
-Symfony 3.4.x-6.0.x bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
-
-Installation
-------------
-
-### Composer
-
-#### For Symfony ^5.0 || ^6.0
-
-Run command:
-```sh
-composer require tattali/mobile-detect-bundle
-```
-
-#### For Symfony >= 3.4 || <= 4.4
-
-Run command:
-```sh
-composer require "tattali/mobile-detect-bundle:2.1.*"
-```
-
-Or add to `composer.json` in your project to `require` section:
-```json
-{
-    "tattali/mobile-detect-bundle": "2.1.*"
-}
-```
-
-and run command:
-```sh
-composer update tattali/mobile-detect-bundle
-```
-
-### Full reference
-
-You can change default behaviour of your redirects with action parameter:
-
-- `redirect`: redirects to appropriate host with your current path
-- `no_redirect`: no redirection (default behaviour)
-- `redirect_without_path`: redirects to appropriate host index page
-
-```yaml
-# conﬁg/packages/mobile_detect.yaml
-mobile_detect:
-  redirect:
-    full:
-      action: redirect            # redirect, no_redirect, redirect_without_path
-      host: http://site.com       # with scheme (http|https), default null, url validate
-      is_enabled: true            # default false
-      status_code: 301            # default 302
-    mobile:
-      action: redirect            # redirect, no_redirect, redirect_without_path
-      host: http://m.site.com     # with scheme (http|https), default null, url validate
-      is_enabled: true            # default false
-      status_code: 301            # default 302
-    tablet:
-      action: redirect            # redirect, no_redirect, redirect_without_path
-      host: http://t.site.com     # with scheme (http|https), default null, url validate
-      is_enabled: true            # default false
-      status_code: 301            # default 302
-    detect_tablet_as_mobile: true # default false
-
-  service:
-    mobile_detector: mobile_detect.mobile_detector.default
-
-  switch_device_view:
-    save_referer_path: false                  # default true
-                                              # true  redirectUrl = http://site.com/current/path?currentQuery=string
-                                              # false redirectUrl = http://site.com
-  cookie_expire_datetime_modifier: "+1 month" # default
-  cookie_key: "device_view"                   # default
-  switch_param: "device_view"                 # default
-  device_view_class: "MobileDetectBundle\Helper\DeviceView"
-  request_response_listener_class: "MobileDetectBundle\EventListener\RequestResponseListener"
-  twig_extension_class: "MobileDetectBundle\Twig\Extension\MobileDetectExtension"
-```
 
 You can also create route specific rules for redirecting in your routing.yml.
 Just add appropriate platform(s) to the options field and add a redirect rule.
@@ -89,60 +10,6 @@ someaction:
   options: { mobile: redirect, tablet: no_redirect, full: redirect_without_path } # redirect, no_redirect, redirect_without_path
 ```
 
-### Switch device view
-
-For switch device view, use `device_view` GET parameter:
-
-````
-http://site.com?device_view={full/mobile/tablet}
-````
-### Symfony toolbar
-![](https://raw.githubusercontent.com/suncat2000/MobileDetectBundle/master/Resources/doc/sf-toolbar.png)
-
-PHP examples
-------------
-
-### Check type device
-```php
-$mobileDetector = $this->get('mobile_detect.mobile_detector');
-$mobileDetector->isMobile();
-$mobileDetector->isTablet()
-```
-
-### Check phone
-**is[iPhone|HTC|Nexus|Dell|Motorola|Samsung|Sony|Asus|Palm|Vertu|GenericPhone]**
-
-```php
-$mobileDetector->isIphone();
-$mobileDetector->isHTC();
-etc.
-```
-
-### Check tablet
-**is[BlackBerryTablet|iPad|Kindle|SamsungTablet|HTCtablet|MotorolaTablet|AsusTablet|NookTablet|AcerTablet|
-YarvikTablet|GenericTablet]**
-
-```php
-$mobileDetector->isIpad();
-$mobileDetector->isMotorolaTablet();
-etc.
-```
-
-### Check mobile OS
-**is[AndroidOS|BlackBerryOS|PalmOS|SymbianOS|WindowsMobileOS|iOS|badaOS]**
-
-```php
-$mobileDetector->isAndroidOS();
-$mobileDetector->isIOS();
-```
-### Check mobile browser User-Agent
-**is[Chrome|Dolfin|Opera|Skyfire|IE|Firefox|Bolt|TeaShark|Blazer|Safari|Midori|GenericBrowser]**
-
-```php
-$mobileDetector->isChrome();
-$mobileDetector->isSafari();
-```
-
 Twig Helper
 -----------
 
@@ -152,6 +19,7 @@ Twig Helper
 {% if is_device('iphone') %} # magic methods is[...]
 {% if is_ios() %}
 {% if is_android_os() %}
+{% if is_windows_os() %}
 ```
 
 ```twig
@@ -167,34 +35,6 @@ Twig Helper
 <a href="{{ full_view_url() }}" title="Full view">Full view</a>
 ```
 
-Twig examples
--------------
-
-```twig
-{% extends is_mobile() ? "MyBundle:Layout:mobile.html.twig" : "MyBundle:Layout:full.html.twig" %}
-```
-
-```twig
-{% if is_mobile_view() %}
-  {% extends "MyBundle:Layout:mobile.html.twig" %}
-{% else if is_tablet_view() %}
-  {% extends "MyBundle:Layout:tablet.html.twig" %}
-{% else if is_full_view() or is_not_mobile_view() %}
-  {% extends "MyBundle:Layout:full.html.twig" %}
-{% endif %}
-```
-
-```twig
-{% if is_device('iphone') %}
-  <link rel="stylesheet" href="{{ asset('css/iphone.css') }}" type="text/css" />
-{% endif %}
-```
-
-```twig
-{% if is_mobile_view() %}
-  <link rel="canonical" href="{{ full_view_url() }}" />
-{% endif %}
-```
 
 Usage Example:
 --------------
@@ -246,7 +86,7 @@ should be redirected to the full version at http://site.com.
   ```yaml
   framework:
     router:
-      resource: "%kernel.root_dir%/config/routing_mobile.yml"
+      resource: '%kernel.root_dir%/config/routing_mobile.yml'
 
   mobile_detect:
     redirect:

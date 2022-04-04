@@ -34,7 +34,7 @@ class DeviceView
     public const COOKIE_SECURE_DEFAULT = false;
     public const COOKIE_HTTP_ONLY_DEFAULT = true;
     public const COOKIE_RAW_DEFAULT = false;
-    public const COOKIE_SAMESITE_DEFAULT = null;
+    public const COOKIE_SAMESITE_DEFAULT = Cookie::SAMESITE_LAX;
     public const COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT = '1 month';
     public const SWITCH_PARAM_DEFAULT = 'device_view';
 
@@ -86,7 +86,7 @@ class DeviceView
     /**
      * @var string|null
      */
-    protected $cookieSamesite = self::COOKIE_SAMESITE_DEFAULT;
+    protected $cookieSameSite = self::COOKIE_SAMESITE_DEFAULT;
 
     /**
      * @var string
@@ -147,17 +147,11 @@ class DeviceView
         return self::VIEW_FULL === $this->viewType;
     }
 
-    /**
-     * Is the device a tablet view type.
-     */
     public function isTabletView(): bool
     {
         return self::VIEW_TABLET === $this->viewType;
     }
 
-    /**
-     * Is the device a mobile view type.
-     */
     public function isMobileView(): bool
     {
         return self::VIEW_MOBILE === $this->viewType;
@@ -192,25 +186,16 @@ class DeviceView
         $this->viewType = self::VIEW_FULL;
     }
 
-    /**
-     * Sets the tablet view type.
-     */
     public function setTabletView(): void
     {
         $this->viewType = self::VIEW_TABLET;
     }
 
-    /**
-     * Sets the mobile view type.
-     */
     public function setMobileView(): void
     {
         $this->viewType = self::VIEW_MOBILE;
     }
 
-    /**
-     * Sets the not mobile view type.
-     */
     public function setNotMobileView(): void
     {
         $this->viewType = self::VIEW_NOT_MOBILE;
@@ -228,25 +213,16 @@ class DeviceView
         return $this->request->query->get($this->switchParam, self::VIEW_FULL);
     }
 
-    /**
-     * Getter of RedirectConfig.
-     */
     public function getRedirectConfig(): array
     {
         return $this->redirectConfig;
     }
 
-    /**
-     * Setter of RedirectConfig.
-     */
     public function setRedirectConfig(array $redirectConfig): void
     {
         $this->redirectConfig = $redirectConfig;
     }
 
-    /**
-     * Gets the RedirectResponse by switch param value.
-     */
     public function getRedirectResponseBySwitchParam(string $redirectUrl): RedirectResponseWithCookie
     {
         switch ($this->getSwitchParamValue()) {
@@ -264,7 +240,11 @@ class DeviceView
                 $viewType = self::VIEW_FULL;
         }
 
-        return new RedirectResponseWithCookie($redirectUrl, $this->getStatusCode($viewType), $this->createCookie($viewType));
+        return new RedirectResponseWithCookie(
+            $redirectUrl,
+            $this->getStatusCode($viewType),
+            $this->createCookie($viewType)
+        );
     }
 
     /**
@@ -282,7 +262,7 @@ class DeviceView
     /**
      * Gets the RedirectResponse for the specified device view.
      *
-     * @param string $view       the device view for which we want the RedirectResponse
+     * @param string $view       The device view for which we want the RedirectResponse
      * @param string $host       Uri host
      * @param int    $statusCode Status code
      */
@@ -291,116 +271,74 @@ class DeviceView
         return new RedirectResponseWithCookie($host, $statusCode, $this->createCookie($view));
     }
 
-    /**
-     * Setter of CookieKey.
-     */
     public function setCookieKey(string $cookieKey): void
     {
         $this->cookieKey = $cookieKey;
     }
 
-    /**
-     * Getter of CookieKey.
-     */
     public function getCookieKey(): string
     {
         return $this->cookieKey;
     }
 
-    /**
-     * Getter of CookiePath.
-     */
     public function getCookiePath(): string
     {
         return $this->cookiePath;
     }
 
-    /**
-     * Setter of CookiePath.
-     */
     public function setCookiePath(string $cookiePath): void
     {
         $this->cookiePath = $cookiePath;
     }
 
-    /**
-     * Getter of CookieDomain.
-     */
     public function getCookieDomain(): string
     {
         return $this->cookieDomain;
     }
 
-    /**
-     * Setter of CookieDomain.
-     */
     public function setCookieDomain(string $cookieDomain): void
     {
         $this->cookieDomain = $cookieDomain;
     }
 
-    /**
-     * Is the cookie secure.
-     */
     public function isCookieSecure(): bool
     {
         return $this->cookieSecure;
     }
 
-    /**
-     * Setter of CookieSecure.
-     */
-    public function setCookieSecure(bool $cookieSecure)
+    public function setCookieSecure(bool $cookieSecure): void
     {
         $this->cookieSecure = $cookieSecure;
     }
 
-    /**
-     * Is the cookie http only.
-     */
     public function isCookieHttpOnly(): bool
     {
         return $this->cookieHttpOnly;
     }
 
-    /**
-     * Setter of CookieHttpOnly.
-     */
     public function setCookieHttpOnly(bool $cookieHttpOnly): void
     {
         $this->cookieHttpOnly = $cookieHttpOnly;
     }
 
-    /**
-     * Is the cookie raw.
-     */
     public function isCookieRaw(): bool
     {
         return $this->cookieRaw;
     }
 
-    /**
-     * Setter of CookieRaw.
-     */
-    public function setCookieRaw(bool $cookieRaw): void
+    public function setCookieRaw(bool $cookieRaw = false): void
     {
         $this->cookieRaw = $cookieRaw;
     }
 
-    /**
-     * Getter of CookieSamesite.
-     */
-    public function getCookieSamesite(): ?string
+    public function getCookieSameSite(): ?string
     {
-        return $this->cookieSamesite;
+        return $this->cookieSameSite;
     }
 
-    /**
-     * Setter of CookieSamesite.
-     */
-    public function setCookieSamesite(?string $cookieSamesite): void
+    public function setCookieSameSite(?string $cookieSameSite = Cookie::SAMESITE_LAX): void
     {
-        $this->cookieSamesite = $cookieSamesite;
+        $this->cookieSameSite = $cookieSameSite;
     }
 
     /**
@@ -440,7 +378,7 @@ class DeviceView
             $expire = new \DateTime(self::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT);
         }
 
-        return new Cookie(
+        return Cookie::create(
             $this->getCookieKey(),
             $value,
             $expire,
@@ -449,7 +387,7 @@ class DeviceView
             $this->isCookieSecure(),
             $this->isCookieHttpOnly(),
             $this->isCookieRaw(),
-            $this->getCookieSamesite()
+            $this->getCookieSameSite()
         );
     }
 

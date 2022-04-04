@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace MobileDetectBundle\Twig\Extension;
 
 use MobileDetectBundle\DeviceDetector\MobileDetector;
+use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 use MobileDetectBundle\Helper\DeviceView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -26,7 +27,7 @@ use Twig\TwigFunction;
 class MobileDetectExtension extends AbstractExtension
 {
     /**
-     * @var MobileDetector
+     * @var MobileDetectorInterface
      */
     private $mobileDetector;
 
@@ -45,8 +46,9 @@ class MobileDetectExtension extends AbstractExtension
      */
     private $request;
 
-    public function __construct(MobileDetector $mobileDetector, DeviceView $deviceView, array $redirectConf)
+    public function __construct(RequestStack $requestStack, MobileDetectorInterface $mobileDetector, DeviceView $deviceView, array $redirectConf)
     {
+        $this->request = method_exists(RequestStack::class, 'getMainRequest') ? $requestStack->getMainRequest() : $requestStack->getMasterRequest();
         $this->mobileDetector = $mobileDetector;
         $this->deviceView = $deviceView;
         $this->redirectConf = $redirectConf;
@@ -54,10 +56,8 @@ class MobileDetectExtension extends AbstractExtension
 
     /**
      * Get extension twig function.
-     *
-     * @return array
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('is_mobile', [$this, 'isMobile']),
@@ -69,8 +69,21 @@ class MobileDetectExtension extends AbstractExtension
             new TwigFunction('is_not_mobile_view', [$this, 'isNotMobileView']),
             new TwigFunction('is_ios', [$this, 'isIOS']),
             new TwigFunction('is_android_os', [$this, 'isAndroidOS']),
+            new TwigFunction('is_windows_os', [$this, 'isWindowsOS']),
             new TwigFunction('full_view_url', [$this, 'fullViewUrl'], ['is_safe' => ['html']]),
             new TwigFunction('device_version', [$this, 'deviceVersion']),
+            new TwigFunction('rules_list', [$this, 'getRules']),
+        ];
+    }
+
+    public function getRules(): array
+    {
+        return [
+            ...$this->mobileDetector->getPhoneDevices(),
+            ...$this->mobileDetector->getTabletDevices(),
+            ...$this->mobileDetector->getOperatingSystems(),
+            ...$this->mobileDetector->getBrowsers(),
+            ...$this->mobileDetector->getUtilities(),
         ];
     }
 
@@ -87,7 +100,7 @@ class MobileDetectExtension extends AbstractExtension
      *
      * @return string|float the version of the property we are trying to extract
      */
-    public function deviceVersion($propertyName, $type = \Mobile_Detect::VERSION_TYPE_STRING)
+    public function deviceVersion(string $propertyName, string $type = MobileDetector::VERSION_TYPE_STRING): string
     {
         return $this->mobileDetector->version($propertyName, $type);
     }
@@ -97,12 +110,8 @@ class MobileDetectExtension extends AbstractExtension
      * in the full/desktop view. This is useful for generating <link rel="canonical"> tags
      * on mobile pages for Search Engine Optimization.
      * See: http://searchengineland.com/the-definitive-guide-to-mobile-technical-seo-166066.
-     *
-     * @param bool $addCurrentPathAndQuery
-     *
-     * @return string
      */
-    public function fullViewUrl($addCurrentPathAndQuery = true)
+    public function fullViewUrl(bool $addCurrentPathAndQuery = true): ?string
     {
         if (!isset($this->redirectConf[DeviceView::VIEW_FULL]['host'])) {
             // The host property has not been configured for the full view
@@ -135,109 +144,58 @@ class MobileDetectExtension extends AbstractExtension
         return $result;
     }
 
-    /**
-     * Is mobile.
-     *
-     * @return bool
-     */
-    public function isMobile()
+    public function isMobile(): bool
     {
         return $this->mobileDetector->isMobile();
     }
 
-    /**
-     * Is tablet.
-     *
-     * @return bool
-     */
-    public function isTablet()
+    public function isTablet(): bool
     {
         return $this->mobileDetector->isTablet();
     }
 
     /**
-     * Is device.
-     *
      * @param string $deviceName is[iPhone|BlackBerry|HTC|Nexus|Dell|Motorola|Samsung|Sony|Asus|Palm|Vertu|...]
-     *
-     * @return bool
      */
-    public function isDevice($deviceName)
+    public function isDevice(string $deviceName): bool
     {
         $magicMethodName = 'is'.strtolower((string) $deviceName);
 
         return $this->mobileDetector->{$magicMethodName}();
     }
 
-    /**
-     * Is full view type.
-     *
-     * @return bool
-     */
-    public function isFullView()
+    public function isFullView(): bool
     {
         return $this->deviceView->isFullView();
     }
 
-    /**
-     * Is mobile view type.
-     *
-     * @return bool
-     */
-    public function isMobileView()
+    public function isMobileView(): bool
     {
         return $this->deviceView->isMobileView();
     }
 
-    /**
-     * Is tablet view type.
-     *
-     * @return bool
-     */
-    public function isTabletView()
+    public function isTabletView(): bool
     {
         return $this->deviceView->isTabletView();
     }
 
-    /**
-     * Is not mobile view type.
-     *
-     * @return bool
-     */
-    public function isNotMobileView()
+    public function isNotMobileView(): bool
     {
         return $this->deviceView->isNotMobileView();
     }
 
-    /**
-     * Is iOS.
-     *
-     * @return bool
-     */
-    public function isIOS()
+    public function isIOS(): bool
     {
         return $this->mobileDetector->isIOS();
     }
 
-    /**
-     * Is Android OS.
-     *
-     * @return bool
-     */
-    public function isAndroidOS()
+    public function isAndroidOS(): bool
     {
         return $this->mobileDetector->isAndroidOS();
     }
 
-    /**
-     * Sets the request from the current scope.
-     *
-     * @param RequestStack $requestStack
-     */
-    public function setRequestByRequestStack(RequestStack $requestStack = null)
+    public function isWindowsOS(): bool
     {
-        if (null !== $requestStack) {
-            $this->request = method_exists(RequestStack::class, 'getMainRequest') ? $requestStack->getMainRequest() : $requestStack->getMasterRequest();
-        }
+        return $this->mobileDetector->isWindowsMobileOS() || $this->mobileDetector->isWindowsPhoneOS();
     }
 }

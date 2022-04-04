@@ -16,10 +16,8 @@ namespace MobileDetectBundle\DeviceDetector;
 use Detection\MobileDetect;
 
 /**
- * MobileDetector class.
- *
  * @author suncat2000 <nikolay.kotovsky@gmail.com>
  */
-class MobileDetector extends MobileDetect
+class MobileDetector extends MobileDetect implements MobileDetectorInterface
 {
 }

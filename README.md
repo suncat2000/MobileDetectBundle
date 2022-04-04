@@ -1,5 +1,7 @@
+![Mobile Detect](https://user-images.githubusercontent.com/10502887/161483098-d40a2d7d-0e78-4f38-a7ac-49390718746e.png)
+
 MobileDetectBundle
-=============
+==================
 
 Symfony 3.4.x-6.0.x bundle for detect mobile devices, manage mobile view and redirect to the mobile and tablet version.
 
@@ -14,21 +16,58 @@ This Bundle use [Mobile_Detect](https://github.com/serbanghita/Mobile-Detect) cl
 * Manages site views for the various mobile devices (`mobile`, `tablet`, `full`)
 * Redirects to mobile and tablet sites
 
+Documentation
+-------------
 
-## Documentation
+### Installation
 
-The bulk of the documentation is stored in the `Resources/doc/index.md` file in this bundle:
+```sh
+composer require tattali/mobile-detect-bundle
+```
 
-[Read the Documentation for master](src/Resources/doc/index.md)
+### Usage
 
+#### Checking device
 
-## License
+```php
+use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 
-This bundle is under the MIT license. See the complete license in the bundle:
+public function someaction(MobileDetectorInterface $mobileDetector)
+{
+    $mobileDetector->isMobile();
+    $mobileDetector->isTablet();
+    $mobileDetector->is('iPhone');
+}
+```
 
-    Resources/meta/LICENSE
+```twig
+{% if is_mobile() %}
+{% if is_tablet() %}
+{% if is_device('iPhone') %} # magic methods is[...]
+```
 
+#### Switch device view
 
-## Credits
+For switch device view, use `device_view` GET parameter:
 
-- [tattali](https://github.com/tattali), [suncat2000](https://github.com/suncat2000), [HenriVesala](https://github.com/HenriVesala), [netmikey](https://github.com/netmikey) and [all contributors](https://github.com/tattali/MobileDetectBundle/graphs/contributors)
+```url
+http://localhost:8000?device_view={full/mobile/tablet}
+```
+
+Or using the Symfony toolbar
+![mbd-bundle-sf-toolbar](https://user-images.githubusercontent.com/10502887/161488224-aaedde1c-d3c3-4636-8761-a207fbd5d4ff.png)
+
+#### Going further
+
+- [Symfony legacy versions](src/Resources/doc/legacy-versions.md)
+- [Full reference](src/Resources/doc/reference.md)
+
+Contribute and feedback
+-----------------------
+
+Any feedback and contribution will be very appreciated.
+
+License
+-------
+
+This bundle is under the MIT license. See the complete [license](src/Resources/meta/LICENSE) in the bundle

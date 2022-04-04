@@ -46,7 +46,7 @@ class DeviceDataCollector extends DataCollector
         Request $request,
         Response $response,
         \Throwable $exception = null
-    ) {
+    ): void {
         $this->data['currentView'] = $this->deviceView->getViewType();
         $this->data['views'] = [
             [
@@ -102,7 +102,7 @@ class DeviceDataCollector extends DataCollector
         return 'device.collector';
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->data = [];
     }

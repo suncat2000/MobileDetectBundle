@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace MobileDetectBundle\EventListener;
 
-use MobileDetectBundle\DeviceDetector\MobileDetector;
+use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 use MobileDetectBundle\Helper\DeviceView;
 use MobileDetectBundle\Helper\RedirectResponseWithCookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -43,7 +43,7 @@ class RequestResponseListener
     protected $router;
 
     /**
-     * @var MobileDetector
+     * @var MobileDetectorInterface
      */
     protected $mobileDetector;
 
@@ -73,7 +73,7 @@ class RequestResponseListener
     protected $modifyResponseClosure;
 
     public function __construct(
-        MobileDetector $mobileDetector,
+        MobileDetectorInterface $mobileDetector,
         DeviceView $deviceView,
         RouterInterface $router,
         array $redirectConf,
@@ -88,7 +88,7 @@ class RequestResponseListener
         $this->isFullPath = $fullPath;
     }
 
-    public function handleRequest(RequestEvent $event)
+    public function handleRequest(RequestEvent $event): void
     {
         // only handle master request, do not handle sub request like esi includes
         // If the device view is "not the mobile view" (e.g. we're not in the request context)
@@ -144,15 +144,13 @@ class RequestResponseListener
     /**
      * Will this request listener modify the response? This flag will be set during the "handleRequest" phase.
      * Made public for testability.
-     *
-     * @return bool true if the response needs to be modified
      */
     public function needsResponseModification(): bool
     {
         return $this->needModifyResponse;
     }
 
-    public function handleResponse(ResponseEvent $event)
+    public function handleResponse(ResponseEvent $event): void
     {
         if ($this->needModifyResponse && $this->modifyResponseClosure instanceof \Closure) {
             $modifyClosure = $this->modifyResponseClosure;
@@ -190,7 +188,7 @@ class RequestResponseListener
      *
      * @param string $view the view for which to prepare the response modification
      */
-    protected function prepareResponseModification(string $view)
+    protected function prepareResponseModification(string $view): void
     {
         $this->modifyResponseClosure = function (DeviceView $deviceView, ResponseEvent $event) use ($view) {
             return $deviceView->modifyResponse($view, $event->getResponse());
@@ -206,6 +204,7 @@ class RequestResponseListener
         } else {
             if (true === $this->isFullPath) {
                 $redirectUrl = $request->getUriForPath($request->getPathInfo());
+                // $redirectUrl = ($request->getPathInfo()) ? $request->getUriForPath($request->getPathInfo()) : $this->getCurrentHost($request);
                 $queryParams = $request->query->all();
                 if (\array_key_exists($this->deviceView->getSwitchParam(), $queryParams)) {
                     unset($queryParams[$this->deviceView->getSwitchParam()]);

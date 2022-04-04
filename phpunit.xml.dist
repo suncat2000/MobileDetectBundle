@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<!-- https://phpunit.readthedocs.io/en/9.5/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" backupGlobals="false" colors="true"
-         bootstrap="./vendor/autoload.php">
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         backupGlobals="false"
+         bootstrap="./vendor/autoload.php"
+         colors="true">
     <coverage includeUncoveredFiles="true">
         <include>
             <directory>src</directory>
@@ -19,7 +21,7 @@
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[total]=0"/>
     </php>
     <testsuites>
-        <testsuite name="Project Test Suite">
+        <testsuite name="MobileDetectBundle Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

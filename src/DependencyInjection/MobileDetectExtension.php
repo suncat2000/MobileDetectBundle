@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class MobileDetectExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -55,7 +55,7 @@ class MobileDetectExtension extends Extension
         $container->setParameter('mobile_detect.cookie_path', $config['cookie_path']);
         $container->setParameter('mobile_detect.cookie_domain', $config['cookie_domain']);
         $container->setParameter('mobile_detect.cookie_secure', $config['cookie_secure']);
-        $container->setParameter('mobile_detect.cookie_httponly', $config['cookie_httponly']);
+        $container->setParameter('mobile_detect.cookie_httpOnly', $config['cookie_httpOnly']);
         $container->setParameter('mobile_detect.cookie_expire_datetime_modifier', $config['cookie_expire_datetime_modifier']);
         $container->setParameter('mobile_detect.switch_param', $config['switch_param']);
 
