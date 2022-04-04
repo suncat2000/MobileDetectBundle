@@ -278,89 +278,6 @@ interface MobileDetectorInterface
     public static function getUtilities();
 
     /**
-     * Check the HTTP headers for signs of mobile.
-     * This is the fastest mobile check possible; it's used
-     * inside isMobile() method.
-     *
-     * @return bool
-     */
-    public function checkHttpHeadersForMobile();
-
-    /**
-     * Retrieves the cloudfront headers.
-     *
-     * @return array
-     */
-    public function getCfHeaders();
-
-    /**
-     * Set CloudFront headers
-     * http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-device.
-     *
-     * @param array $cfHeaders List of HTTP headers
-     *
-     * @return bool If there were CloudFront headers to be set
-     */
-    public function setCfHeaders($cfHeaders = null);
-
-    /**
-     * Retrieves a particular header. If it doesn't exist, no exception/error is caused.
-     * Simply null is returned.
-     *
-     * @param string $header The name of the header to retrieve. Can be HTTP compliant such as
-     *                       "User-Agent" or "X-Device-User-Agent" or can be php-esque with the
-     *                       all-caps, HTTP_ prefixed, underscore seperated awesomeness.
-     *
-     * @return string|null the value of the header
-     */
-    public function getHttpHeader($header);
-
-    /**
-     * Retrieves the HTTP headers.
-     *
-     * @return array
-     */
-    public function getHttpHeaders();
-
-    /**
-     * Set the HTTP Headers. Must be PHP-flavored. This method will reset existing headers.
-     *
-     * @param array $httpHeaders The headers to set. If null, then using PHP's _SERVER to extract
-     *                           the headers. The default null is left for backwards compatibility.
-     */
-    public function setHttpHeaders($httpHeaders = null);
-
-    public function getMatchesArray();
-
-    public function getMatchingRegex();
-
-    public function getMobileHeaders();
-
-    /**
-     * Get all possible HTTP headers that
-     * can contain the User-Agent string.
-     *
-     * @return array list of HTTP headers
-     */
-    public function getUaHttpHeaders();
-
-    /**
-     * Retrieve the User-Agent.
-     *
-     * @return string|null the user agent if it's set
-     */
-    public function getUserAgent();
-
-    /**
-     * Set the User-Agent to be used.
-     *
-     * @param string $userAgent the user agent string to set
-     *
-     * @return string|null
-     */
-    public function setUserAgent($userAgent = null);
-
-    /**
      * This method checks for a certain property in the
      * userAgent.
      *
@@ -401,28 +318,4 @@ interface MobileDetectorInterface
      * @return bool
      */
     public function match($regex, $userAgent = null);
-
-    /**
-     * Prepare the version number.
-     *
-     * @param string $ver The string version, like "2.6.21.2152";
-     *
-     * @return float
-     */
-    public function prepareVersionNo($ver);
-
-    /**
-     * Check the version of the given property in the User-Agent.
-     * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31).
-     *
-     * @param string $propertyName The name of the property. See self::getProperties() array
-     *                             keys for all possible properties.
-     * @param string $type         Either self::VERSION_TYPE_STRING to get a string value or
-     *                             self::VERSION_TYPE_FLOAT indicating a float value. This parameter
-     *                             is optional and defaults to self::VERSION_TYPE_STRING. Passing an
-     *                             invalid parameter will default to the this type as well.
-     *
-     * @return string|float the version of the property we are trying to extract
-     */
-    public function version($propertyName, $type = MobileDetector::VERSION_TYPE_STRING);
 }

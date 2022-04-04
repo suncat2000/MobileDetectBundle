@@ -28,10 +28,11 @@ class MobileDetectExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('mobile_detect.xml');
-        $loader->load('listener.xml');
-        $loader->load('twig.xml');
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yaml');
+        // $loader->load('mobile_detect.xml');
+        // $loader->load('listener.xml');
+        // $loader->load('twig.xml');
 
         // valid mobile host
         if ($config['redirect']['mobile']['is_enabled'] && !$this->validHost($config['redirect']['mobile']['host'])) {

@@ -79,7 +79,7 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('service')
             ->addDefaultsIfNotSet()
             ->children()
-            ->scalarNode('mobile_detector')->defaultValue('mobile_detect.mobile_detector.default')->cannotBeEmpty()->end()
+            ->scalarNode('mobile_detector')->defaultValue(MobileDetectorInterface::class)->cannotBeEmpty()->end()
             ->end()
             ->end()
             ->scalarNode('cookie_key')->defaultValue(DeviceView::COOKIE_KEY_DEFAULT)->cannotBeEmpty()->end()

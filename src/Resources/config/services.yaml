@@ -1,0 +1,47 @@
+parameters:
+  mobile_detect.request_response_listener.class:
+  mobile_detect.redirect:
+  mobile_detect.switch_device_view.save_referer_path:
+
+  mobile_detect.mobile_detector.class:
+  mobile_detect.device_view.class:
+  mobile_detect.cookie_key:
+  mobile_detect.switch_param:
+  mobile_detect.cookie_expire_datetime_modifier:
+
+  mobile_detect.twig.extension.class:
+
+services:
+  MobileDetectBundle\DeviceDetector\MobileDetector:
+  MobileDetectBundle\DeviceDetector\MobileDetectorInterface:
+    alias: 'MobileDetectBundle\DeviceDetector\MobileDetector'
+
+  MobileDetectBundle\EventListener\RequestResponseListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: handleRequest, priority: 1 }
+      - { name: kernel.event_listener, event: kernel.response, method: handleResponse }
+    arguments: [ '@MobileDetectBundle\DeviceDetector\MobileDetectorInterface', '@MobileDetectBundle\Helper\DeviceView', '@router', '%mobile_detect.redirect%', '%mobile_detect.switch_device_view.save_referer_path%' ]
+
+  MobileDetectBundle\DataCollector\DeviceDataCollector:
+    tags:
+      - { name: data_collector, template: '@MobileDetect/Collector/device.html.twig', id: device.collector }
+    arguments: [ '@MobileDetectBundle\Helper\DeviceView' ]
+    calls:
+      - [ setRedirectConfig, [ '%mobile_detect.redirect%' ] ]
+
+  MobileDetectBundle\Helper\DeviceView:
+    arguments: [ '@request_stack' ]
+    calls:
+      - [ setCookieDomain, [ '%mobile_detect.cookie_domain%' ] ]
+      - [ setCookieExpireDatetimeModifier, [ '%mobile_detect.cookie_expire_datetime_modifier%' ] ]
+      - [ setCookieHttpOnly, [ '%mobile_detect.cookie_httpOnly%' ] ]
+      - [ setCookieKey, [ '%mobile_detect.cookie_key%' ] ]
+      - [ setCookiePath, [ '%mobile_detect.cookie_path%' ] ]
+      - [ setCookieSecure, [ '%mobile_detect.cookie_secure%' ] ]
+      - [ setRedirectConfig, [ '%mobile_detect.redirect%' ] ]
+      - [ setSwitchParam, [ '%mobile_detect.switch_param%' ] ]
+
+  MobileDetectBundle\Twig\Extension\MobileDetectExtension:
+    tags:
+      - { name: twig.extension }
+    arguments: [ '@request_stack', '@MobileDetectBundle\DeviceDetector\MobileDetectorInterface', '@MobileDetectBundle\Helper\DeviceView', '%mobile_detect.redirect%' ]
