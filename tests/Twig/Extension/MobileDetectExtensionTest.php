@@ -320,7 +320,7 @@ final class MobileDetectExtensionTest extends TestCase
             ->method('__call')
             ->withConsecutive(
                 [static::equalTo('isWindowsMobileOS')],
-                [static::equalTo('isWindowsPhoneOS')],
+                [static::equalTo('isWindowsPhoneOS')]
             )
             ->willReturnOnConsecutiveCalls(true)
         ;
@@ -335,7 +335,7 @@ final class MobileDetectExtensionTest extends TestCase
             ->method('__call')
             ->withConsecutive(
                 [static::equalTo('isWindowsMobileOS')],
-                [static::equalTo('isWindowsPhoneOS')],
+                [static::equalTo('isWindowsPhoneOS')]
             )
             ->willReturn(false)
         ;

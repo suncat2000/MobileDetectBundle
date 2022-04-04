@@ -74,7 +74,7 @@ jobs:
 
       - name: Lint via PHP Coding Standards Fixer and PHP_CodeSniffer
         run: |
-          vendor/bin/php-cs-fixer fix --dry-run --diff --ansi
+          vendor/bin/php-cs-fixer fix --dry-run --diff --ansi -vvv
           vendor/bin/phpcs --report=code
 
       - name: Static Analysis via PHPStan
