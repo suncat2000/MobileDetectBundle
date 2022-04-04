@@ -14,8 +14,11 @@
 
     <services>
         <service id="mobile_detect.mobile_detector.default" class="%mobile_detect.mobile_detector.class%"/>
-        <service id="MobileDetectBundle\DeviceDetector\MobileDetectorInterface"
-                 alias="mobile_detect.mobile_detector.default"/>
+
+        <service id="MobileDetectBundle\DeviceDetector\MobileDetectorInterface" alias="mobile_detect.mobile_detector"/>
+        <service id="mobile_detect.mobile_detector.abstract" class="%mobile_detect.mobile_detector.class%" abstract="true" lazy="true">
+            <factory class="%mobile_detect.mobile_detector.class%" method="create" />
+        </service>
 
         <service id="mobile_detect.device_view" class="%mobile_detect.device_view.class%">
             <argument type="service" id="request_stack" on-invalid="null"/>
