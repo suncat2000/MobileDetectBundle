@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace MobileDetectBundle\Tests\DependencyInjection;
 
 use MobileDetectBundle\DependencyInjection\MobileDetectExtension;
+use MobileDetectBundle\DeviceDetector\MobileDetector;
 use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 use MobileDetectBundle\EventListener\RequestResponseListener;
 use MobileDetectBundle\Helper\DeviceView;
@@ -87,8 +88,8 @@ final class MobileDetectExtensionTest extends TestCase
             $this->container->getParameter('mobile_detect.twig.extension.class')
         );
 
-        static::assertTrue($this->container->hasDefinition('mobile_detect.mobile_detector.default'));
-        static::assertTrue($this->container->hasAlias('mobile_detect.mobile_detector'));
+        static::assertTrue($this->container->hasDefinition(MobileDetector::class));
+        static::assertTrue($this->container->hasAlias(MobileDetectorInterface::class));
     }
 
     public function testCustomRedirectConfigMobileHost(): void
