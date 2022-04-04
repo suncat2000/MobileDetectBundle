@@ -50,12 +50,6 @@ jobs:
             stability: dev
 
     steps:
-      - name: Setup tmate session
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -94,6 +88,12 @@ jobs:
         with:
           name: phpunit-${{ matrix.php }}-${{ matrix.dependencies }}-${{ hashFiles('composer.lock') }}.coverage
           path: build/coverage.xml
+
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
   upload_coverage:
     name: Upload coverage to Codecov
