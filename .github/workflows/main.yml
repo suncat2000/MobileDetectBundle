@@ -112,7 +112,7 @@ jobs:
 
       - name: Upload to Codecov
         env:
-          CODECOV_TOKEN: secrets.CODECOV_TOKEN
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         uses: codecov/codecov-action@v2
         with:
           directory: reports
