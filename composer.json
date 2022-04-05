@@ -33,7 +33,7 @@
     ],
     "require": {
         "php": ">=7.2.5",
-        "mobiledetect/mobiledetectlib": "^2.8",
+        "mobiledetect/mobiledetectlib": "^2.8.15",
         "symfony/dependency-injection": "^5.0 || ^6.0",
         "symfony/event-dispatcher": "^5.0 || ^6.0",
         "symfony/framework-bundle": "^5.0 || ^6.0",
