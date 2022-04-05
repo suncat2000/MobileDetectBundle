@@ -15,9 +15,7 @@ namespace MobileDetectBundle\Tests\DependencyInjection;
 use MobileDetectBundle\DependencyInjection\MobileDetectExtension;
 use MobileDetectBundle\DeviceDetector\MobileDetector;
 use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
-use MobileDetectBundle\EventListener\RequestResponseListener;
 use MobileDetectBundle\Helper\DeviceView;
-use MobileDetectBundle\Twig\Extension\MobileDetectExtension as TwigMobileDetectExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,22 +68,6 @@ final class MobileDetectExtensionTest extends TestCase
         static::assertSame(
             DeviceView::SWITCH_PARAM_DEFAULT,
             $this->container->getParameter('mobile_detect.switch_param')
-        );
-        static::assertSame(
-            MobileDetectorInterface::class,
-            $this->container->getParameter('mobile_detect.mobile_detector.class')
-        );
-        static::assertSame(
-            DeviceView::class,
-            $this->container->getParameter('mobile_detect.device_view.class')
-        );
-        static::assertSame(
-            RequestResponseListener::class,
-            $this->container->getParameter('mobile_detect.request_response_listener.class')
-        );
-        static::assertSame(
-            TwigMobileDetectExtension::class,
-            $this->container->getParameter('mobile_detect.twig.extension.class')
         );
 
         static::assertTrue($this->container->hasDefinition(MobileDetector::class));
@@ -233,49 +215,5 @@ final class MobileDetectExtensionTest extends TestCase
         ];
         $this->extension->load($config, $this->container);
         static::assertSame('switch_param_custom', $this->container->getParameter('mobile_detect.switch_param'));
-    }
-
-    public function testCustomConfigMobileDetectorClass(): void
-    {
-        $config = [
-            'mobile_detect' => [
-                'mobile_detector_class' => 'Bla\Bla\Bla\Class',
-            ],
-        ];
-        $this->extension->load($config, $this->container);
-        static::assertSame('Bla\Bla\Bla\Class', $this->container->getParameter('mobile_detect.mobile_detector.class'));
-    }
-
-    public function testCustomConfigDeviceViewClass(): void
-    {
-        $config = [
-            'mobile_detect' => [
-                'device_view_class' => 'Bla\Bla\Bla\Class',
-            ],
-        ];
-        $this->extension->load($config, $this->container);
-        static::assertSame('Bla\Bla\Bla\Class', $this->container->getParameter('mobile_detect.device_view.class'));
-    }
-
-    public function testCustomConfigRequestResponseListenerClass(): void
-    {
-        $config = [
-            'mobile_detect' => [
-                'request_response_listener_class' => 'Bla\Bla\Bla\Class',
-            ],
-        ];
-        $this->extension->load($config, $this->container);
-        static::assertSame('Bla\Bla\Bla\Class', $this->container->getParameter('mobile_detect.request_response_listener.class'));
-    }
-
-    public function testCustomConfigTwigExtensionClass(): void
-    {
-        $config = [
-            'mobile_detect' => [
-                'twig_extension_class' => 'Bla\Bla\Bla\Class',
-            ],
-        ];
-        $this->extension->load($config, $this->container);
-        static::assertSame('Bla\Bla\Bla\Class', $this->container->getParameter('mobile_detect.twig.extension.class'));
     }
 }

@@ -100,9 +100,9 @@ class MobileDetectExtension extends AbstractExtension
      *
      * @return string|float the version of the property we are trying to extract
      */
-    public function deviceVersion(string $propertyName, string $type = MobileDetector::VERSION_TYPE_STRING): string
+    public function deviceVersion(string $propertyName, string $type = MobileDetector::VERSION_TYPE_STRING): ?string
     {
-        return $this->mobileDetector->version($propertyName, $type);
+        return $this->mobileDetector->version($propertyName, $type) ?: null;
     }
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MobileDetectBundle\Tests\Twig\Extension;
 
-use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
+use MobileDetectBundle\DeviceDetector\MobileDetector;
 use MobileDetectBundle\Helper\DeviceView;
 use MobileDetectBundle\Twig\Extension\MobileDetectExtension;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -22,7 +22,7 @@ use Twig\TwigFunction;
 final class MobileDetectExtensionTest extends TestCase
 {
     /**
-     * @var MockObject|MobileDetectorInterface
+     * @var MockObject|MobileDetector
      */
     private $mobileDetector;
 
@@ -47,7 +47,7 @@ final class MobileDetectExtensionTest extends TestCase
     {
         parent::setUp();
 
-        $this->mobileDetector = $this->createMock(MobileDetectorInterface::class);
+        $this->mobileDetector = $this->createMock(MobileDetector::class);
         $this->requestStack = $this->getMockBuilder(RequestStack::class)->disableOriginalConstructor()->getMock();
 
         $this->request = $this->getMockBuilder(Request::class)->getMock();
@@ -98,6 +98,29 @@ final class MobileDetectExtensionTest extends TestCase
             static::assertIsArray($callable);
             static::assertSame($names[$name], $callable[1]);
         }
+    }
+
+    public function testRulesList(): void
+    {
+        $deviceView = new DeviceView($this->requestStack);
+        $extension = new MobileDetectExtension($this->requestStack, new MobileDetector(), $deviceView, $this->config);
+        static::assertCount(190, $extension->getRules());
+    }
+
+    public function testDeviceVersion(): void
+    {
+        $this->mobileDetector->expects(static::exactly(2))
+            ->method('version')
+            ->withConsecutive(
+                [static::equalTo('Version'), static::equalTo(MobileDetector::VERSION_TYPE_STRING)],
+                [static::equalTo('Firefox'), static::equalTo(MobileDetector::VERSION_TYPE_STRING)]
+            )
+            ->willReturn(false, '98.0')
+        ;
+        $deviceView = new DeviceView($this->requestStack);
+        $extension = new MobileDetectExtension($this->requestStack, $this->mobileDetector, $deviceView, $this->config);
+        static::assertNull($extension->deviceVersion('Version', MobileDetector::VERSION_TYPE_STRING));
+        static::assertSame('98.0', $extension->deviceVersion('Firefox', MobileDetector::VERSION_TYPE_STRING));
     }
 
     public function testFullViewUrlHostNull(): void

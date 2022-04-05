@@ -102,6 +102,11 @@ class DeviceDataCollector extends DataCollector
         return 'device.collector';
     }
 
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
     public function reset(): void
     {
         $this->data = [];

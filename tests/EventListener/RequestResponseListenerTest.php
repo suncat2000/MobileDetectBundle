@@ -112,6 +112,31 @@ final class RequestResponseListenerTest extends TestCase
         }
     }
 
+    public function testHandleRequestBis(): void
+    {
+        $this->request->query = new ParameterBag(['myparam' => 'myvalue', $this->switchParam => DeviceView::VIEW_MOBILE]);
+        $this->request->expects(static::any())->method('getPathInfo')->willReturn('/');
+        $deviceView = new DeviceView($this->requestStack);
+        $deviceView->setRedirectConfig([DeviceView::VIEW_MOBILE => ['status_code' => Response::HTTP_FOUND]]);
+        $listener = new RequestResponseListener($this->mobileDetector, $deviceView, $this->router, [], false);
+        $event = $this->createGetResponseEvent('some content');
+
+        $listener->handleRequest($event);
+        static::assertFalse($listener->needsResponseModification());
+
+        $response = $event->getResponse();
+        static::assertInstanceOf(RedirectResponseWithCookie::class, $response);
+        static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+        $cookies = $response->headers->getCookies();
+        static::assertGreaterThan(0, \count($cookies));
+        foreach ($cookies as $cookie) {
+            static::assertInstanceOf(Cookie::class, $cookie);
+            if ($cookie->getName() === $deviceView->getCookieKey()) {
+                static::assertSame(DeviceView::VIEW_MOBILE, $cookie->getValue());
+            }
+        }
+    }
+
     public function testHandleRequestHasSwitchParamAndQuery(): void
     {
         $this->config['mobile'] = ['is_enabled' => true, 'host' => 'http://mobilehost.com'];

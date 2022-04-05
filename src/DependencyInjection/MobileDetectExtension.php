@@ -30,9 +30,6 @@ class MobileDetectExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
-        // $loader->load('mobile_detect.xml');
-        // $loader->load('listener.xml');
-        // $loader->load('twig.xml');
 
         // valid mobile host
         if ($config['redirect']['mobile']['is_enabled'] && !$this->validHost($config['redirect']['mobile']['host'])) {
@@ -59,13 +56,6 @@ class MobileDetectExtension extends Extension
         $container->setParameter('mobile_detect.cookie_httpOnly', $config['cookie_httpOnly']);
         $container->setParameter('mobile_detect.cookie_expire_datetime_modifier', $config['cookie_expire_datetime_modifier']);
         $container->setParameter('mobile_detect.switch_param', $config['switch_param']);
-
-        $container->setParameter('mobile_detect.mobile_detector.class', $config['mobile_detector_class']);
-        $container->setParameter('mobile_detect.device_view.class', $config['device_view_class']);
-        $container->setParameter('mobile_detect.request_response_listener.class', $config['request_response_listener_class']);
-        $container->setParameter('mobile_detect.twig.extension.class', $config['twig_extension_class']);
-
-        $container->setAlias('mobile_detect.mobile_detector', $config['service']['mobile_detector']);
     }
 
     protected function validHost(string $url): bool

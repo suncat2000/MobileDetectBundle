@@ -1,33 +1,27 @@
 parameters:
-  mobile_detect.request_response_listener.class:
+  mobile_detect.cookie_expire_datetime_modifier:
+  mobile_detect.cookie_key:
   mobile_detect.redirect:
   mobile_detect.switch_device_view.save_referer_path:
-
-  mobile_detect.mobile_detector.class:
-  mobile_detect.device_view.class:
-  mobile_detect.cookie_key:
   mobile_detect.switch_param:
-  mobile_detect.cookie_expire_datetime_modifier:
-
-  mobile_detect.twig.extension.class:
 
 services:
-  MobileDetectBundle\DeviceDetector\MobileDetector:
-  MobileDetectBundle\DeviceDetector\MobileDetectorInterface:
-    alias: 'MobileDetectBundle\DeviceDetector\MobileDetector'
-
   MobileDetectBundle\EventListener\RequestResponseListener:
+    arguments: [ '@mobile_detect.mobile_detector.default', '@mobile_detect.device_view', '@router', '%mobile_detect.redirect%', '%mobile_detect.switch_device_view.save_referer_path%' ]
     tags:
       - { name: kernel.event_listener, event: kernel.request, method: handleRequest, priority: 1 }
       - { name: kernel.event_listener, event: kernel.response, method: handleResponse }
-    arguments: [ '@MobileDetectBundle\DeviceDetector\MobileDetectorInterface', '@MobileDetectBundle\Helper\DeviceView', '@router', '%mobile_detect.redirect%', '%mobile_detect.switch_device_view.save_referer_path%' ]
+  mobile_detect.request_listener:
+    alias: MobileDetectBundle\EventListener\RequestResponseListener
 
   MobileDetectBundle\DataCollector\DeviceDataCollector:
-    tags:
-      - { name: data_collector, template: '@MobileDetect/Collector/device.html.twig', id: device.collector }
-    arguments: [ '@MobileDetectBundle\Helper\DeviceView' ]
+    arguments: [ '@mobile_detect.device_view' ]
     calls:
       - [ setRedirectConfig, [ '%mobile_detect.redirect%' ] ]
+    tags:
+      - { name: data_collector, template: '@MobileDetect/Collector/device.html.twig', id: device.collector }
+  mobile_detect_bundle.device.collector:
+    alias: MobileDetectBundle\DataCollector\DeviceDataCollector
 
   MobileDetectBundle\Helper\DeviceView:
     arguments: [ '@request_stack' ]
@@ -40,8 +34,18 @@ services:
       - [ setCookieSecure, [ '%mobile_detect.cookie_secure%' ] ]
       - [ setRedirectConfig, [ '%mobile_detect.redirect%' ] ]
       - [ setSwitchParam, [ '%mobile_detect.switch_param%' ] ]
+  mobile_detect.device_view:
+    alias: MobileDetectBundle\Helper\DeviceView
 
   MobileDetectBundle\Twig\Extension\MobileDetectExtension:
+    arguments: [ '@request_stack', '@mobile_detect.mobile_detector.default', '@mobile_detect.device_view', '%mobile_detect.redirect%' ]
     tags:
       - { name: twig.extension }
-    arguments: [ '@request_stack', '@MobileDetectBundle\DeviceDetector\MobileDetectorInterface', '@MobileDetectBundle\Helper\DeviceView', '%mobile_detect.redirect%' ]
+  mobile_detect.twig.extension:
+    alias: MobileDetectBundle\Twig\Extension\MobileDetectExtension
+
+  MobileDetectBundle\DeviceDetector\MobileDetector:
+  MobileDetectBundle\DeviceDetector\MobileDetectorInterface:
+    alias: MobileDetectBundle\DeviceDetector\MobileDetector
+  mobile_detect.mobile_detector.default:
+    alias: MobileDetectBundle\DeviceDetector\MobileDetectorInterface

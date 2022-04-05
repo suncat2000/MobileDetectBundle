@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace MobileDetectBundle\DependencyInjection;
 
-use MobileDetectBundle\DeviceDetector\MobileDetectorInterface;
 use MobileDetectBundle\EventListener\RequestResponseListener;
 use MobileDetectBundle\Helper\DeviceView;
-use MobileDetectBundle\Twig\Extension\MobileDetectExtension;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,9 +76,6 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->arrayNode('service')
             ->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode('mobile_detector')->defaultValue(MobileDetectorInterface::class)->cannotBeEmpty()->end()
-            ->end()
             ->end()
             ->scalarNode('cookie_key')->defaultValue(DeviceView::COOKIE_KEY_DEFAULT)->cannotBeEmpty()->end()
             ->scalarNode('cookie_path')->defaultValue(DeviceView::COOKIE_PATH_DEFAULT)->cannotBeEmpty()->end()
@@ -89,10 +84,6 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('cookie_httpOnly')->defaultValue(DeviceView::COOKIE_HTTP_ONLY_DEFAULT)->end()
             ->scalarNode('cookie_expire_datetime_modifier')->defaultValue(DeviceView::COOKIE_EXPIRE_DATETIME_MODIFIER_DEFAULT)->cannotBeEmpty()->end()
             ->scalarNode('switch_param')->defaultValue(DeviceView::SWITCH_PARAM_DEFAULT)->cannotBeEmpty()->end()
-            ->scalarNode('mobile_detector_class')->defaultValue(MobileDetectorInterface::class)->cannotBeEmpty()->end()
-            ->scalarNode('device_view_class')->defaultValue(DeviceView::class)->cannotBeEmpty()->end()
-            ->scalarNode('request_response_listener_class')->defaultValue(RequestResponseListener::class)->cannotBeEmpty()->end()
-            ->scalarNode('twig_extension_class')->defaultValue(MobileDetectExtension::class)->cannotBeEmpty()->end()
             ->end()
         ;
 

@@ -101,7 +101,7 @@ class DeviceView
     /**
      * @var array
      */
-    protected $redirectConfig;
+    protected $redirectConfig = [];
 
     public function __construct(RequestStack $requestStack = null)
     {
@@ -220,7 +220,7 @@ class DeviceView
             case self::VIEW_TABLET:
                 $viewType = self::VIEW_TABLET;
 
-                if (isset($this->redirectConfig['detect_tablet_as_mobile']) && true === $this->redirectConfig['detect_tablet_as_mobile']) {
+                if (isset($this->getRedirectConfig()['detect_tablet_as_mobile']) && true === $this->getRedirectConfig()['detect_tablet_as_mobile']) {
                     $viewType = self::VIEW_MOBILE;
                 }
                 break;
@@ -363,8 +363,8 @@ class DeviceView
 
     protected function getStatusCode(string $view): int
     {
-        if (isset($this->redirectConfig[$view]['status_code'])) {
-            return $this->redirectConfig[$view]['status_code'];
+        if (isset($this->getRedirectConfig()[$view]['status_code'])) {
+            return $this->getRedirectConfig()[$view]['status_code'];
         }
 
         return Response::HTTP_FOUND;

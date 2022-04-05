@@ -289,6 +289,14 @@ final class DeviceDataCollectorTest extends TestCase
         }
     }
 
+    public function testReset(): void
+    {
+        $deviceView = new DeviceView($this->requestStack);
+        $deviceDataCollector = new DeviceDataCollector($deviceView);
+        $deviceDataCollector->reset();
+        static::assertSame([], $deviceDataCollector->getData());
+    }
+
     public function testGetNameValue(): void
     {
         $deviceView = new DeviceView($this->requestStack);
