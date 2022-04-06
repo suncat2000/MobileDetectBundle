@@ -28,9 +28,6 @@ mobile_detect:
       status_code: 301            # default 302
     detect_tablet_as_mobile: true # default false
 
-  service:
-    mobile_detector: mobile_detect.mobile_detector.default
-
   switch_device_view:
     save_referer_path: false                  # default true
                                               # true  redirectUrl = http://site.com/current/path?currentQuery=string
@@ -38,7 +35,4 @@ mobile_detect:
   cookie_expire_datetime_modifier: '+1 month' # default
   cookie_key: 'device_view'                   # default
   switch_param: 'device_view'                 # default
-  device_view_class: 'MobileDetectBundle\Helper\DeviceView'
-  request_response_listener_class: 'MobileDetectBundle\EventListener\RequestResponseListener'
-  twig_extension_class: 'MobileDetectBundle\Twig\Extension\MobileDetectExtension'
 ```
