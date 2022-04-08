@@ -70,7 +70,9 @@ Contribute and feedback
 
 Any feedback and contribution will be very appreciated.
 
-License
+License and credits
 -------
 
 This bundle is under the MIT license. See the complete [license](src/Resources/meta/LICENSE) in the bundle
+
+Original authors: [suncat2000](https://github.com/suncat2000), [HenriVesala](https://github.com/HenriVesala), [netmikey](https://github.com/netmikey) and [all contributors](https://github.com/suncat2000/MobileDetectBundle/graphs/contributors)
