@@ -23,7 +23,7 @@ Documentation
 -------------
 
 ### Installation
-
+For Symfony legacy versions the documentation is [here](src/Resources/doc/legacy-versions.md)
 ```sh
 composer require tattali/mobile-detect-bundle
 ```
