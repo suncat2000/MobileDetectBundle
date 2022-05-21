@@ -109,18 +109,20 @@ final class MobileDetectExtensionTest extends TestCase
 
     public function testDeviceVersion(): void
     {
-        $this->mobileDetector->expects(static::exactly(2))
+        $this->mobileDetector->expects(static::exactly(3))
             ->method('version')
             ->withConsecutive(
                 [static::equalTo('Version'), static::equalTo(MobileDetector::VERSION_TYPE_STRING)],
-                [static::equalTo('Firefox'), static::equalTo(MobileDetector::VERSION_TYPE_STRING)]
+                [static::equalTo('Firefox'), static::equalTo(MobileDetector::VERSION_TYPE_STRING)],
+                [static::equalTo('Firefox'), static::equalTo(MobileDetector::VERSION_TYPE_FLOAT)]
             )
-            ->willReturn(false, '98.0')
+            ->willReturn(false, '98.0', 98.0)
         ;
         $deviceView = new DeviceView($this->requestStack);
         $extension = new MobileDetectExtension($this->requestStack, $this->mobileDetector, $deviceView, $this->config);
         static::assertNull($extension->deviceVersion('Version', MobileDetector::VERSION_TYPE_STRING));
         static::assertSame('98.0', $extension->deviceVersion('Firefox', MobileDetector::VERSION_TYPE_STRING));
+        static::assertSame(98.0, $extension->deviceVersion('Firefox', MobileDetector::VERSION_TYPE_FLOAT));
     }
 
     public function testFullViewUrlHostNull(): void

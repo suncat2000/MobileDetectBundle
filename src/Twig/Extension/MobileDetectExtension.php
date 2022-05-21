@@ -98,9 +98,9 @@ class MobileDetectExtension extends AbstractExtension
      *                             is optional and defaults to self::VERSION_TYPE_STRING. Passing an
      *                             invalid parameter will default to the this type as well.
      *
-     * @return string|float the version of the property we are trying to extract
+     * @return string|float|null the version of the property we are trying to extract
      */
-    public function deviceVersion(string $propertyName, string $type = MobileDetector::VERSION_TYPE_STRING): ?string
+    public function deviceVersion(string $propertyName, string $type = MobileDetector::VERSION_TYPE_STRING)
     {
         return $this->mobileDetector->version($propertyName, $type) ?: null;
     }
