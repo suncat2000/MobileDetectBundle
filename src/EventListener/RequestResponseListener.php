@@ -178,7 +178,7 @@ class RequestResponseListener
                     $redirectUrl .= '?'.Request::normalizeQueryString(http_build_query($queryParams, '', '&'));
                 }
             } else {
-                $redirectUrl = $this->getCurrentHost($request);
+                $redirectUrl = $request->getSchemeAndHttpHost();
             }
         }
 
@@ -188,24 +188,18 @@ class RequestResponseListener
     /**
      * Do we have to redirect?
      *
-     * @param string $view For which view should be check?
+     * @param string $viewType The view we want to redirect to
      */
-    protected function mustRedirect(Request $request, string $view): bool
+    protected function mustRedirect(Request $request, string $viewType): bool
     {
-        if (!isset($this->redirectConf[$view])
-            || !$this->redirectConf[$view]['is_enabled']
-            || (self::NO_REDIRECT === $this->getRoutingOption($request->get('_route'), $view))
+        if (!isset($this->redirectConf[$viewType])
+            || !$this->redirectConf[$viewType]['is_enabled']
+            || (self::NO_REDIRECT === $this->getRoutingOption($request->get('_route'), $viewType))
         ) {
             return false;
         }
 
-        $isHost = ($this->getCurrentHost($request) === $this->redirectConf[$view]['host']);
-
-        if (!$isHost) {
-            return true;
-        }
-
-        return false;
+        return $request->getSchemeAndHttpHost() !== $this->redirectConf[$viewType]['host'];
     }
 
     protected function getRoutingOption(string $routeName, string $optionName): ?string
@@ -228,28 +222,23 @@ class RequestResponseListener
         return null;
     }
 
-    protected function getCurrentHost(Request $request): string
+    protected function getRedirectUrl(Request $request, string $view): ?string
     {
-        return $request->getScheme().'://'.$request->getHost();
-    }
-
-    protected function getRedirectUrl(Request $request, string $platform): ?string
-    {
-        if (($routingOption = $this->getRoutingOption($request->get('_route'), $platform))) {
+        if (($routingOption = $this->getRoutingOption($request->get('_route'), $view))) {
             if (self::REDIRECT === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirection may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
                 $queryParams = $request->query->all();
-                $queryParams[$this->deviceView->getSwitchParam()] = $platform;
+                $queryParams[$this->deviceView->getSwitchParam()] = $view;
 
-                return rtrim($this->redirectConf[$platform]['host'], '/').$request->getPathInfo().'?'.Request::normalizeQueryString(http_build_query($queryParams, '', '&'));
+                return rtrim($this->redirectConf[$view]['host'], '/').$request->getPathInfo().'?'.Request::normalizeQueryString(http_build_query($queryParams));
             }
             if (self::REDIRECT_WITHOUT_PATH === $routingOption) {
                 // Make sure to hint at the device override, otherwise infinite loop
                 // redirections may occur if different device views are hosted on
                 // different domains (since the cookie can't be shared across domains)
-                return $this->redirectConf[$platform]['host'].'?'.$this->deviceView->getSwitchParam().'='.$platform;
+                return $this->redirectConf[$view]['host'].'?'.$this->deviceView->getSwitchParam().'='.$view;
             }
 
             return null;

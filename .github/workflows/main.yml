@@ -81,7 +81,7 @@ jobs:
         run: vendor/bin/phpstan analyse
 
       - name: Unit and Feature tests via PHPUnit
-        run: vendor/bin/phpunit
+        run: php vendor/bin/phpunit
 
       - name: Upload coverage file
         uses: actions/upload-artifact@v3

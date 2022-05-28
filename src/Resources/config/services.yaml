@@ -1,9 +1,9 @@
 parameters:
-  mobile_detect.cookie_expire_datetime_modifier:
-  mobile_detect.cookie_key:
-  mobile_detect.redirect:
-  mobile_detect.switch_device_view.save_referer_path:
-  mobile_detect.switch_param:
+  mobile_detect.cookie_expire_datetime_modifier: ~
+  mobile_detect.cookie_key: ~
+  mobile_detect.redirect: ~
+  mobile_detect.switch_device_view.save_referer_path: ~
+  mobile_detect.switch_param: ~
 
 services:
   MobileDetectBundle\EventListener\RequestResponseListener:

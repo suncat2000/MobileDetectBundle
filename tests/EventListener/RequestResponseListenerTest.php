@@ -239,7 +239,7 @@ final class RequestResponseListenerTest extends TestCase
 
     public function testHandleRequestHasTabletRedirect(): void
     {
-        $this->config['tablet'] = ['is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => Response::HTTP_FOUND];
+        $this->config['tablet'] = ['is_enabled' => true, 'host' => 'http://t.testsite.com', 'status_code' => Response::HTTP_FOUND];
 
         $this->request->query = new ParameterBag(['some' => 'param']);
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/some/parameters');
@@ -263,7 +263,7 @@ final class RequestResponseListenerTest extends TestCase
         static::assertInstanceOf(RedirectResponseWithCookie::class, $response);
         static::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         static::assertSame(sprintf(
-            'http://testsite.com/some/parameters?%s=%s&some=param',
+            'http://t.testsite.com/some/parameters?%s=%s&some=param',
             $this->switchParam,
             DeviceView::VIEW_TABLET
         ), $response->getTargetUrl());

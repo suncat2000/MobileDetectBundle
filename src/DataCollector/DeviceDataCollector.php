@@ -114,15 +114,9 @@ class DeviceDataCollector extends DataCollector
 
     protected function canUseView(string $view, ?string $host): bool
     {
-        if (!\is_array($this->redirectConfig)) {
-            return true;
-        }
-
-        if (!isset($this->redirectConfig[$view])) {
-            return true;
-        }
-
-        if (!isset($this->redirectConfig[$view]['is_enabled'])
+        if (!\is_array($this->redirectConfig)
+            || !isset($this->redirectConfig[$view])
+            || !isset($this->redirectConfig[$view]['is_enabled'])
             || false === $this->redirectConfig[$view]['is_enabled']
         ) {
             return true;
@@ -156,7 +150,7 @@ class DeviceDataCollector extends DataCollector
         $requestSwitchView->server->set(
             'QUERY_STRING',
             Request::normalizeQueryString(
-                http_build_query($requestSwitchView->query->all(), '', '&')
+                http_build_query($requestSwitchView->query->all())
             )
         );
 
