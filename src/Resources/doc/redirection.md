@@ -15,19 +15,25 @@ REDIRECT_DESKTOP=http://example.com
 REDIRECT_MOBILE=http://m.example.com
 ```
 ```yaml
+# conﬁg/services.yaml
+parameters:
+    redirect_desktop_host: '%env(string:key:host:url:REDIRECT_DESKTOP)%'
+    redirect_mobile_host: '%env(string:key:host:url:REDIRECT_MOBILE)%'
+```
+```yaml
 # conﬁg/packages/mobile_detect.yaml
 mobile_detect:
-  redirect:
-    full:
-      action: redirect                # redirect, no_redirect, redirect_without_path
-      host: '%env(REDIRECT_DESKTOP)%' # with scheme (http|https), default null, url validate
-      is_enabled: true                # default false
-      status_code: 301                # default 302
-    mobile:
-      action: redirect                # redirect, no_redirect, redirect_without_path
-      host: '%env(REDIRECT_MOBILE)%'  # with scheme (http|https), default null, url validate
-      is_enabled: true                # default false
-      status_code: 301                # default 302
+    redirect:
+        full:
+            action: redirect                # redirect, no_redirect, redirect_without_path
+            host: '%env(REDIRECT_DESKTOP)%' # with scheme (http|https), default null, url validate
+            is_enabled: true                # default false
+            status_code: 301                # default 302
+        mobile:
+            action: redirect                # redirect, no_redirect, redirect_without_path
+            host: '%env(REDIRECT_MOBILE)%'  # with scheme (http|https), default null, url validate
+            is_enabled: true                # default false
+            status_code: 301                # default 302
 ```
 
 Then you can create your Controllers and constrain your actions to match each host
@@ -41,7 +47,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(name: 'desktop_', host: '%env(REDIRECT_DESKTOP)%')]
+#[Route(name: 'desktop_', host: '%redirect_desktop_host%')]
 class DesktopController extends AbstractController
 {
     #[Route("/", name: "homepage")]
@@ -61,7 +67,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(name: 'mobile_', host: '%env(REDIRECT_MOBILE)%')]
+#[Route(name: 'mobile_', host: '%redirect_mobile_host%')]
 class MobileController extends AbstractController
 {
     #[Route("/", name: "homepage")]
@@ -84,7 +90,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends Controller
 {
-    #[Route("/myAction", name: 'my_action', host: '%env(REDIRECT_MOBILE)%')]
+    #[Route("/myAction", name: 'my_action', host: '%redirect_mobile_host%')]
     public function myAction()
     {
         // dd('myAction');
