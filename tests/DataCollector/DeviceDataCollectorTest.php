@@ -109,7 +109,6 @@ final class DeviceDataCollectorTest extends TestCase
             'action' => RequestResponseListener::REDIRECT,
         ];
         $this->request->query = new ParameterBag(['param1' => 'value1']);
-        $this->request->expects(static::any())->method('getHost')->willReturn('testsite.com');
         $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://t.testsite.com');
         $this->request->expects(static::any())->method('getBaseUrl')->willReturn('/base-url');
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/path-info');
@@ -157,7 +156,8 @@ final class DeviceDataCollectorTest extends TestCase
                         'http://t.testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_TABLET
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }
@@ -172,7 +172,6 @@ final class DeviceDataCollectorTest extends TestCase
             'action' => RequestResponseListener::REDIRECT,
         ];
         $this->request->query = new ParameterBag(['param1' => 'value1']);
-        $this->request->expects(static::any())->method('getHost')->willReturn('testsite.com');
         $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://t.testsite.com');
         $this->request->expects(static::any())->method('getBaseUrl')->willReturn('/base-url');
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/path-info');
@@ -220,7 +219,8 @@ final class DeviceDataCollectorTest extends TestCase
                         'http://t.testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_MOBILE
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }
@@ -235,8 +235,7 @@ final class DeviceDataCollectorTest extends TestCase
             'action' => RequestResponseListener::REDIRECT,
         ];
         $this->request->query = new ParameterBag(['param1' => 'value1']);
-        $this->request->expects(static::any())->method('getHost')->willReturn('testsite.com');
-        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://m.testsite.com');
+        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://testsite.com');
         $this->request->expects(static::any())->method('getBaseUrl')->willReturn('/base-url');
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/path-info');
         $test = $this;
@@ -280,10 +279,11 @@ final class DeviceDataCollectorTest extends TestCase
                 static::assertFalse($view['enabled']);
                 static::assertSame(
                     sprintf(
-                        'http://m.testsite.com/base-url/path-info?%s=%s&param1=value1',
+                        'http://testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_MOBILE
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }

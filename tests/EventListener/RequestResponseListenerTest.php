@@ -67,8 +67,7 @@ final class RequestResponseListenerTest extends TestCase
         $this->router = $this->createMock(RouterInterface::class);
 
         $this->request = $this->getMockBuilder(Request::class)->getMock();
-        $this->request->expects(static::any())->method('getScheme')->willReturn('http');
-        $this->request->expects(static::any())->method('getHost')->willReturn('testhost.com');
+        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://testhost.com');
         $this->request->expects(static::any())->method('get')->willReturn('value');
         $this->request->expects(static::any())->method('getUriForPath')->willReturn('/');
         $this->request->query = new ParameterBag();

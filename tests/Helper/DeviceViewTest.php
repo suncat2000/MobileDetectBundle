@@ -39,8 +39,7 @@ final class DeviceViewTest extends TestCase
         $this->requestStack = $this->getMockBuilder(RequestStack::class)->disableOriginalConstructor()->getMock();
 
         $this->request = $this->getMockBuilder(Request::class)->getMock();
-        $this->request->expects(static::any())->method('getScheme')->willReturn('http');
-        $this->request->expects(static::any())->method('getHost')->willReturn('testhost.com');
+        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://testsite.com');
         $this->request->expects(static::any())->method('getUriForPath')->willReturn('/');
         $this->request->query = new ParameterBag();
         $this->request->cookies = new ParameterBag();
