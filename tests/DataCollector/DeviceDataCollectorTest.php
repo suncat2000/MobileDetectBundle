@@ -70,7 +70,7 @@ final class DeviceDataCollectorTest extends TestCase
     {
         $redirectConfig['tablet'] = [
             'is_enabled' => true,
-            'host' => 'http://testsite.com',
+            'host' => 'http://t.testsite.com',
             'status_code' => Response::HTTP_FOUND,
             'action' => RequestResponseListener::REDIRECT,
         ];
@@ -104,13 +104,12 @@ final class DeviceDataCollectorTest extends TestCase
     {
         $redirectConfig['tablet'] = [
             'is_enabled' => true,
-            'host' => 'http://testsite.com',
+            'host' => 'http://t.testsite.com',
             'status_code' => Response::HTTP_FOUND,
             'action' => RequestResponseListener::REDIRECT,
         ];
         $this->request->query = new ParameterBag(['param1' => 'value1']);
-        $this->request->expects(static::any())->method('getHost')->willReturn('testsite.com');
-        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://testsite.com');
+        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://t.testsite.com');
         $this->request->expects(static::any())->method('getBaseUrl')->willReturn('/base-url');
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/path-info');
         $test = $this;
@@ -154,10 +153,11 @@ final class DeviceDataCollectorTest extends TestCase
                 static::assertTrue($view['enabled']);
                 static::assertSame(
                     sprintf(
-                        'http://testsite.com/base-url/path-info?%s=%s&param1=value1',
+                        'http://t.testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_TABLET
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }
@@ -167,13 +167,12 @@ final class DeviceDataCollectorTest extends TestCase
     {
         $redirectConfig['tablet'] = [
             'is_enabled' => true,
-            'host' => 'http://testsite.com',
+            'host' => 'http://t.testsite.com',
             'status_code' => Response::HTTP_FOUND,
             'action' => RequestResponseListener::REDIRECT,
         ];
         $this->request->query = new ParameterBag(['param1' => 'value1']);
-        $this->request->expects(static::any())->method('getHost')->willReturn('testsite.com');
-        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://testsite.com');
+        $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://t.testsite.com');
         $this->request->expects(static::any())->method('getBaseUrl')->willReturn('/base-url');
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/path-info');
         $test = $this;
@@ -217,10 +216,11 @@ final class DeviceDataCollectorTest extends TestCase
                 static::assertTrue($view['enabled']);
                 static::assertSame(
                     sprintf(
-                        'http://testsite.com/base-url/path-info?%s=%s&param1=value1',
+                        'http://t.testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_MOBILE
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }
@@ -235,7 +235,6 @@ final class DeviceDataCollectorTest extends TestCase
             'action' => RequestResponseListener::REDIRECT,
         ];
         $this->request->query = new ParameterBag(['param1' => 'value1']);
-        $this->request->expects(static::any())->method('getHost')->willReturn('testsite.com');
         $this->request->expects(static::any())->method('getSchemeAndHttpHost')->willReturn('http://testsite.com');
         $this->request->expects(static::any())->method('getBaseUrl')->willReturn('/base-url');
         $this->request->expects(static::any())->method('getPathInfo')->willReturn('/path-info');
@@ -283,7 +282,8 @@ final class DeviceDataCollectorTest extends TestCase
                         'http://testsite.com/base-url/path-info?%s=%s&param1=value1',
                         $deviceView->getSwitchParam(),
                         DeviceView::VIEW_MOBILE
-                    ), $view['link']
+                    ),
+                    $view['link']
                 );
             }
         }

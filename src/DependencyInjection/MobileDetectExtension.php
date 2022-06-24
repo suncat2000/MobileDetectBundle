@@ -58,10 +58,8 @@ class MobileDetectExtension extends Extension
         $container->setParameter('mobile_detect.switch_param', $config['switch_param']);
     }
 
-    protected function validHost(string $url): bool
+    protected function validHost(?string $url): bool
     {
-        $pattern = '/^(?:(http|https):\\/\\/)([A-Z0-9][A-Z0-9_-]*(?:\\.[A-Z0-9][A-Z0-9_-]*)+):?(\\d+)?\\/?/i';
-
-        return (bool) preg_match($pattern, $url);
+        return (bool) filter_var($url, \FILTER_VALIDATE_URL);
     }
 }

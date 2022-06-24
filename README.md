@@ -23,11 +23,10 @@ Documentation
 -------------
 
 ### Installation
-For Symfony legacy versions the documentation is [here](src/Resources/doc/legacy-versions.md)
 ```sh
 composer require tattali/mobile-detect-bundle
 ```
-
+*Install with Symfony legacy versions: [here](src/Resources/doc/legacy-versions.md)*
 ### Usage
 
 #### Checking device
@@ -43,6 +42,7 @@ public function someaction(MobileDetectorInterface $mobileDetector)
 }
 ```
 
+With Twig
 ```twig
 {% if is_mobile() %}
 {% if is_tablet() %}
@@ -63,6 +63,7 @@ Or using the Symfony toolbar
 #### Going further
 
 - [Symfony legacy versions](src/Resources/doc/legacy-versions.md)
+- [Redirection](src/Resources/doc/redirection.md)
 - [Full reference](src/Resources/doc/reference.md)
 
 Contribute and feedback

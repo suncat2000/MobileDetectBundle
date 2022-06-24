@@ -20,14 +20,12 @@
       {% set viewLink = '' %}
       {% if viewData.isCurrent %}
         {% set viewLink = '<span class="sf-toolbar-status sf-toolbar-status-green">current</span>' %}
-      {% elseif viewData.enabled == false %}
-        {% set viewLink = 'External' %}
       {% else %}
         {% set viewLink = '<span><a href="' ~ viewData.link ~ '">Use this view</a></span>' %}
       {% endif %}
       <div class="sf-toolbar-info-piece">
-        <b>{{ viewData.label }}</b>
-        {{ viewLink | raw }}
+        <b>{{ viewData.label }}{{ viewData.enabled == false ? ' (External)' : ''}}</b>
+        {{ viewLink|raw }}
       </div>
     {% endfor %}
   {% endset %}

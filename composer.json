@@ -3,12 +3,14 @@
     "description": "Symfony5/6 bundle for detect mobile devices, managing mobile view types, redirect to mobile version.",
     "keywords": [
         "mobile detect",
-        "mobile redirect",
+        "device detect",
+        "device detector",
         "mobile view managing",
-        "mobile",
         "mobiledetect",
         "mobiledetectbundle",
-        "symfony mobile"
+        "symfony mobile detect",
+        "symfony mobiledetect",
+        "symfony"
     ],
     "homepage": "https://github.com/tattali/MobileDetectBundle",
     "type": "symfony-bundle",
